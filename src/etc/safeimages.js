@@ -4,15 +4,15 @@
  */
 
 import logoImg from '../assets/logo.png';
-import heroIllustrationImg from '../assets/hero_illustration.jpg';
-import featuresIllustrationImg from '../assets/features_illustration.jpg';
-import mascotCharacterImg from '../assets/mascot_character.jpg';
+import heroIllustrationImg from '../assets/hero_illustration.png';
+import featuresIllustrationImg from '../assets/features_illustration.png';
+import mascotCharacterImg from '../assets/mascot_character.png';
 
 export const safeImages = {
   logo: logoImg || '/assets/logo.png',
-  heroIllustration: heroIllustrationImg || '/assets/hero_illustration.jpg',
-  featuresIllustration: featuresIllustrationImg || '/assets/features_illustration.jpg',
-  mascotCharacter: mascotCharacterImg || '/assets/mascot_character.jpg',
+  heroIllustration: heroIllustrationImg || '/assets/hero_illustration.png',
+  featuresIllustration: featuresIllustrationImg || '/assets/features_illustration.png',
+  mascotCharacter: mascotCharacterImg || '/assets/mascot_character.png',
 };
 
 /**
