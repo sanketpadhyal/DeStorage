@@ -704,6 +704,93 @@ section {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  width: 100%;
+}
+
+.lp-hero-img-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+}
+
+/* Skeleton Loading Portal */
+.lp-hero-skeleton {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 90%;
+  max-width: 440px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.lp-hero-skeleton-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(2, 132, 199, 0.16) 0%, rgba(99, 102, 241, 0.1) 45%, rgba(168, 85, 247, 0.04) 65%, transparent 75%);
+  animation: lpVortexPulse 2.4s ease-in-out infinite alternate;
+}
+
+.lp-hero-skeleton-ring {
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 2px dashed rgba(2, 132, 199, 0.35);
+  border-top-color: #0284c7;
+  border-right-color: #6366f1;
+  animation: spin 6s linear infinite;
+}
+
+.lp-hero-skeleton-shimmer {
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(135deg, transparent 35%, rgba(255, 255, 255, 0.5) 50%, transparent 65%);
+  animation: lpVortexShimmer 2.2s infinite linear;
+}
+
+.lp-hero-skeleton-core {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1.5px solid rgba(2, 132, 199, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.15);
+  z-index: 2;
+}
+
+.lp-hero-skeleton-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2.5px solid rgba(2, 132, 199, 0.2);
+  border-top-color: #0284c7;
+  border-right-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes lpVortexPulse {
+  0% { transform: scale(0.96); opacity: 0.7; }
+  100% { transform: scale(1.04); opacity: 1; }
+}
+
+@keyframes lpVortexShimmer {
+  0% { transform: translate(-30%, -30%) rotate(0deg); }
+  100% { transform: translate(30%, 30%) rotate(360deg); }
 }
 
 .lp-hero-img {
@@ -714,6 +801,19 @@ section {
   filter: drop-shadow(0 15px 35px rgba(2, 132, 199, 0.18)) drop-shadow(0 4px 14px rgba(168, 85, 247, 0.12));
   user-select: none;
   pointer-events: none;
+  position: relative;
+  z-index: 2;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-hero-img-loading {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.lp-hero-img-loaded {
+  opacity: 1;
+  transform: scale(1);
 }
 
 /* 3. ARCHITECTURE EXPERTISE SECTION */

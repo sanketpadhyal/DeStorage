@@ -47,6 +47,55 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
     mockCid: ''
   });
 
+  // Hero Image Local Storage Caching & Skeleton Loader
+  const [heroImageSrc, setHeroImageSrc] = useState<string>(() => {
+    try {
+      return localStorage.getItem('destorage_hero_illustration_v1') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [isHeroLoaded, setIsHeroLoaded] = useState<boolean>(() => {
+    try {
+      return Boolean(localStorage.getItem('destorage_hero_illustration_v1'));
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    if (heroImageSrc) {
+      setIsHeroLoaded(true);
+      return;
+    }
+
+    const img = new window.Image();
+    img.src = safeImages.heroIllustration;
+    img.onload = () => {
+      // Once loaded, convert to base64 Data URL and persist in local storage for instant future visits
+      fetch(safeImages.heroIllustration)
+        .then(res => res.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64 = reader.result as string;
+            try {
+              localStorage.setItem('destorage_hero_illustration_v1', base64);
+            } catch (e) {
+              console.warn('Could not store hero illustration in localStorage:', e);
+            }
+            setHeroImageSrc(base64);
+            setIsHeroLoaded(true);
+          };
+          reader.readAsDataURL(blob);
+        })
+        .catch(() => {
+          setHeroImageSrc(safeImages.heroIllustration);
+          setIsHeroLoaded(true);
+        });
+    };
+  }, [heroImageSrc]);
+
   // Always reset scroll to top on mount/refresh and clean URL hash
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
@@ -380,12 +429,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             </div>
 
             <div className="lp-hero-right lp-reveal lp-reveal-fade">
-              <img 
-                src={safeImages.heroIllustration} 
-                alt="DeStorage Cloud Vault Hero Illustration" 
-                className="lp-hero-img" 
-                draggable={false}
-              />
+              <div className="lp-hero-img-wrapper">
+                {!isHeroLoaded && (
+                  <div className="lp-hero-skeleton">
+                    <div className="lp-hero-skeleton-glow" />
+                    <div className="lp-hero-skeleton-shimmer" />
+                    <div className="lp-hero-skeleton-ring" />
+                    <div className="lp-hero-skeleton-core">
+                      <div className="lp-hero-skeleton-spinner" />
+                    </div>
+                  </div>
+                )}
+                <img 
+                  src={heroImageSrc || safeImages.heroIllustration} 
+                  alt="DeStorage Cloud Vault Hero Illustration" 
+                  className={`lp-hero-img ${isHeroLoaded ? 'lp-hero-img-loaded' : 'lp-hero-img-loading'}`} 
+                  draggable={false}
+                  onLoad={() => setIsHeroLoaded(true)}
+                />
+              </div>
             </div>
           </div>
         </section>
