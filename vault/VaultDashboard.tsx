@@ -10,6 +10,7 @@ import {
 } from '../crypto/encryptionEngine';
 import { uploadToIpfs, IpfsUploadResult } from '../ipfs/ipfsService';
 import { formatFileSize, truncateCid } from '../utils/formatters';
+import { VaultFileItem } from '../types';
 import { Wallet, Zap } from 'lucide-react';
 
 interface VaultDashboardProps {
