@@ -25,6 +25,7 @@ module.exports = {
             path.resolve(__dirname, 'utils'),
             path.resolve(__dirname, 'config'),
             path.resolve(__dirname, 'etc'),
+            path.resolve(__dirname, 'hover'),
             path.resolve(__dirname, 'src'),
           ];
           babelLoader.include = rootFolders;

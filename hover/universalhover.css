@@ -1,0 +1,114 @@
+/* =========================================================
+   UNIVERSAL TACTILE BUTTON & INTERACTION PHYSICS ENGINE
+   ========================================================= */
+
+/* 1. Global Interactive Tap-and-Hold Compression on ALL Buttons */
+button,
+a.btn,
+.lp-btn-cyan,
+.lp-btn-black,
+.vd-btn-connect,
+.vd-btn-select-file,
+.vd-btn-action,
+.vd-disconnect-btn,
+.vd-switch-net-btn,
+.vd-filter-tab,
+.vd-wallet-option-btn,
+.universal-btn {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+  transform: translate3d(0, 0, 0);
+  transition: 
+    transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    filter 0.18s ease;
+  will-change: transform, box-shadow;
+}
+
+/* Hover Lift Physics */
+button:hover:not(:disabled),
+a.btn:hover,
+.lp-btn-cyan:hover,
+.lp-btn-black:hover,
+.vd-btn-connect:hover:not(:disabled),
+.vd-btn-select-file:hover:not(:disabled),
+.vd-btn-action:hover,
+.universal-btn:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.04);
+}
+
+/* Tactile Active Pressed / Tap-and-Hold Physics */
+button:active:not(:disabled),
+a.btn:active,
+.lp-btn-cyan:active,
+.lp-btn-black:active,
+.vd-btn-connect:active:not(:disabled),
+.vd-btn-select-file:active:not(:disabled),
+.vd-btn-action:active,
+.vd-filter-tab:active,
+.vd-wallet-option-btn:active,
+.universal-btn:active:not(:disabled),
+.universal-btn.is-pressed {
+  transform: translateY(2px) scale(0.95) !important;
+  filter: brightness(0.92) contrast(1.05) !important;
+  transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Universal Button Variants */
+.universal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 9999px;
+  font-weight: 700;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  position: relative;
+  overflow: hidden;
+}
+
+.universal-btn-gradient {
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 45%, #06b6d4 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(236, 72, 153, 0.35);
+}
+
+.universal-btn-gradient:hover:not(:disabled) {
+  box-shadow: 0 8px 24px rgba(236, 72, 153, 0.5);
+}
+
+.universal-btn-primary {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+}
+
+.universal-btn-secondary {
+  background: #0b2447;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(11, 36, 71, 0.25);
+}
+
+.universal-btn-ghost {
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.universal-btn-ghost:hover:not(:disabled) {
+  background: #f8fafc;
+  color: #0b2447;
+  border-color: #cbd5e1;
+}
+
+.universal-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}

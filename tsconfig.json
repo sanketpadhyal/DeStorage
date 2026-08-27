@@ -30,6 +30,7 @@
     "types",
     "utils",
     "config",
-    "etc"
+    "etc",
+    "hover"
   ]
 }
