@@ -243,6 +243,9 @@ section {
   -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
   border-top: none !important;
   border-bottom: none !important;
+  border-bottom-left-radius: 28px !important;
+  border-bottom-right-radius: 28px !important;
+  box-shadow: 0 20px 40px -10px rgba(11, 36, 71, 0.15) !important;
 }
 
 .lp-mobile-panel.open {
@@ -253,13 +256,14 @@ section {
   transform: translateY(0);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  box-shadow: 0 24px 48px -12px rgba(11, 36, 71, 0.18) !important;
 }
 
 .lp-mobile-panel-inner {
   display: flex;
   flex-direction: column;
   min-height: auto;
-  padding: 12px 20px 24px;
+  padding: 14px 20px 38px;
 }
 
 .lp-mobile-nav-group {
