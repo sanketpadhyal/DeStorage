@@ -323,6 +323,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   <GithubIcon size={16} />
                   <span>View Source</span>
                 </a>
+
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('crypto-demo')}
+                  className="lp-btn-glass lp-btn-interactive"
+                >
+                  <Icon icon="iconamoon:lightning-bold" width={17} height={17} color="#0284c7" />
+                  <span>Live Sandbox</span>
+                </button>
               </div>
 
               {/* Hero Key Metrics Cards (Multi-Color Icon Suite) */}
