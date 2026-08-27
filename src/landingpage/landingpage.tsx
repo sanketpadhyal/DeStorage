@@ -10,13 +10,10 @@ import {
   User,
   Menu,
   X,
-  ShieldCheck,
   FileText,
   Image,
   Video,
   Music,
-  Cpu,
-  Layers,
   Box
 } from 'lucide-react';
 
@@ -311,12 +308,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 className="lp-hero-img" 
                 draggable={false}
               />
-              
-              <div className="lp-hero-pills-row">
-                <span className="lp-tech-pill"><ShieldCheck size={14} color="#00b4d8" /> Web Crypto API</span>
-                <span className="lp-tech-pill"><Layers size={14} color="#00b4d8" /> IPFS Decentralized</span>
-                <span className="lp-tech-pill"><Cpu size={14} color="#00b4d8" /> Base Sepolia EVM</span>
-              </div>
             </div>
           </div>
         </section>
