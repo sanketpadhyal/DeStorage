@@ -836,22 +836,22 @@
 @keyframes vdCardIn {
   from {
     opacity: 0;
-    transform: scale(0.92) translateY(14px);
+    transform: scale(0.94);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
   }
 }
 
 @keyframes vdCardOut {
   from {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
   }
   to {
     opacity: 0;
-    transform: scale(0.94) translateY(10px);
+    transform: scale(0.95);
   }
 }
 
@@ -1160,7 +1160,6 @@
   width: 100%;
   padding: 28px;
   box-shadow: 0 20px 60px rgba(11, 36, 71, 0.15), 0 0 1px rgba(11, 36, 71, 0.2);
-  animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .vd-modal-title-row {
