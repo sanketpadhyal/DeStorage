@@ -1433,10 +1433,46 @@
   background: linear-gradient(135deg, #a855f7 0%, #ec4899 45%, #06b6d4 100%);
 }
 
+.vd-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .vd-modal-title-row {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.vd-modal-close {
+  background: rgba(11, 36, 71, 0.05);
+  border: 1px solid rgba(11, 36, 71, 0.1);
+  border-radius: 9999px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, background, color;
+}
+
+.vd-modal-close:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  transform: scale(1.08) rotate(90deg);
+}
+
+.vd-modal-close:active {
+  transform: scale(0.92) rotate(90deg) !important;
 }
 
 .vd-wallet-modal-subtitle {
