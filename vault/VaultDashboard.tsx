@@ -67,6 +67,25 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     isDecrypting: boolean;
   } | null>(null);
 
+  const [isWalletClosing, setIsWalletClosing] = useState<boolean>(false);
+  const [isPreviewClosing, setIsPreviewClosing] = useState<boolean>(false);
+
+  const handleSmoothCloseWallet = () => {
+    setIsWalletClosing(true);
+    setTimeout(() => {
+      setIsWalletClosing(false);
+      closeWalletModal();
+    }, 220);
+  };
+
+  const handleSmoothClosePreview = () => {
+    setIsPreviewClosing(true);
+    setTimeout(() => {
+      setIsPreviewClosing(false);
+      setPreviewItem(null);
+    }, 220);
+  };
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Persist files metadata to localStorage
@@ -572,16 +591,23 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         </div>
       </main>
 
-      {/* ZERO-KNOWLEDGE DECRYPTED PREVIEW MODAL */}
+      {/* 2. IN-MEMORY DECRYPTED FILE PREVIEW MODAL */}
       {previewItem && (
-        <div className="vd-modal-overlay" onClick={closePreview}>
-          <div className="vd-preview-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="vd-preview-header">
-              <div className="vd-preview-title-box">
-                <Icon icon="iconamoon:shield-yes-bold" width={20} height={20} color="#0284c7" />
-                <h4>{previewItem.file.name}</h4>
+        <div 
+          className={`vd-modal-overlay ${isPreviewClosing ? 'vd-closing' : ''}`}
+          onClick={handleSmoothClosePreview}
+        >
+          <div className="vd-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="vd-modal-header">
+              <div className="vd-modal-title-wrap">
+                <Icon icon="iconamoon:shield-yes-bold" width={22} height={22} color="#0284c7" />
+                <h3>Decrypted File Preview</h3>
               </div>
-              <button type="button" className="vd-modal-close" onClick={closePreview}>
+              <button 
+                type="button" 
+                className="vd-modal-close" 
+                onClick={handleSmoothClosePreview}
+              >
                 <Icon icon="iconamoon:close-bold" width={20} height={20} />
               </button>
             </div>
@@ -589,8 +615,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             <div className="vd-preview-body">
               {previewItem.isDecrypting ? (
                 <div className="vd-decrypting-state">
-                  <div className="vd-progress-spinner"></div>
-                  <span>In-Memory AES-256 Decryption in Progress...</span>
+                  <div className="vd-progress-spinner" />
+                  <p>Deriving PBKDF2 Key & Decrypting AES-GCM Buffer in Memory...</p>
                 </div>
               ) : previewItem.file.mimeType.startsWith('image/') ? (
                 <div className="vd-preview-image-wrap">
@@ -637,14 +663,17 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
       {/* 3. CONNECT WALLET MODAL */}
       {isWalletModalOpen && (
-        <div className="vd-modal-overlay" onClick={closeWalletModal}>
+        <div 
+          className={`vd-modal-overlay ${isWalletClosing ? 'vd-closing' : ''}`} 
+          onClick={handleSmoothCloseWallet}
+        >
           <div className="vd-wallet-modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="vd-modal-header">
               <div className="vd-modal-title-row">
                 <Wallet size={20} color="#0284c7" />
                 <h3 className="vd-modal-title">Connect Web3 Wallet</h3>
               </div>
-              <button type="button" className="vd-modal-close" onClick={closeWalletModal}>
+              <button type="button" className="vd-modal-close" onClick={handleSmoothCloseWallet}>
                 <Icon icon="iconamoon:close-bold" width={20} height={20} />
               </button>
             </div>
