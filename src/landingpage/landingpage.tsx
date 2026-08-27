@@ -238,7 +238,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             <div className="lp-hero-left">
               <div className="lp-hero-badge">
                 <div className="lp-hero-badge-dot"></div>
-                <span>Client-Side AES-256-GCM • IPFS • Base Sepolia</span>
+                <span>Zero-Knowledge • Decentralized Cloud Vault</span>
               </div>
 
               <h1 className="lp-hero-title">
