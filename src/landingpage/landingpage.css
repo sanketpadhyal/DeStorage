@@ -196,14 +196,15 @@ section {
   display: flex;
   flex-direction: column;
   min-height: calc(100dvh - 100px);
-  padding: 22px 20px 32px; /* 22px top padding provides clean breathing room above Home */
+  padding: 16px 20px 32px;
 }
 
 .lp-mobile-nav-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
+  margin-top: 16px; /* Clear generous gap above Home button */
 }
 
 .lp-mobile-nav-link-btn {
