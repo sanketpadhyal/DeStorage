@@ -93,31 +93,25 @@ section {
 .lp-stagger-3 { transition-delay: 0.24s; }
 .lp-stagger-4 { transition-delay: 0.32s; }
 
-/* Interactive Animated Cards */
+/* Card Hover States (Calm color/border highlights, no popups) */
 .lp-card-animated {
   transition: 
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
     box-shadow 0.25s ease, 
     border-color 0.25s ease;
 }
 
 .lp-card-animated:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 36px -6px rgba(2, 132, 199, 0.14) !important;
-  border-color: rgba(2, 132, 199, 0.35) !important;
+  box-shadow: 0 8px 24px -4px rgba(2, 132, 199, 0.1) !important;
+  border-color: rgba(2, 132, 199, 0.25) !important;
 }
 
-/* Interactive Animated Buttons */
+/* Button States (Calm opacity/background, no popups) */
 .lp-btn-interactive {
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.2s ease, background-color 0.2s ease;
 }
 
 .lp-btn-interactive:hover {
-  transform: translateY(-2px);
-}
-
-.lp-btn-interactive:active {
-  transform: translateY(1px);
+  opacity: 0.92;
 }
 
 /* 1. SEAMLESS EXTENDING NAVBAR & MOBILE PANEL */
@@ -292,18 +286,16 @@ section {
   background: #ffffff;
   color: #0284c7;
   border-color: rgba(2, 132, 199, 0.25);
-  transform: translateX(2px);
 }
 
 .lp-nav-chevron {
   color: #94a3b8;
-  transition: transform 0.18s ease, color 0.18s ease;
+  transition: color 0.18s ease;
 }
 
 .lp-mobile-nav-link-btn:hover .lp-nav-chevron,
 .lp-mobile-nav-link-btn:active .lp-nav-chevron {
   color: #0284c7;
-  transform: translateX(3px);
 }
 
 .lp-mobile-panel-actions {
