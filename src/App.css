@@ -19,13 +19,13 @@
   -webkit-backface-visibility: hidden;
 }
 
-/* 1. Landing Page Layer (Pushes backwards with depth & parallax) */
+/* 1. Landing Page Layer (Pushes smoothly to the left with slow deep parallax) */
 .lp-layer {
   transition: 
-    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), 
-    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-    filter 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0.65s ease;
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), 
+    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), 
+    filter 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.85s ease;
   will-change: transform, opacity, filter;
 }
 
@@ -44,21 +44,21 @@
   top: 0;
   left: 0;
   right: 0;
-  transform: translateX(-24%) scale(0.95);
+  transform: translateX(-35%) scale(0.96);
   opacity: 0;
-  filter: blur(6px);
+  filter: blur(4px);
   pointer-events: none;
   visibility: hidden;
   z-index: 5;
 }
 
-/* 2. Vault Dashboard Layer (Pushes forward from right side with parallax) */
+/* 2. Vault Dashboard Layer (Foreground layer slides from right with responsive spring timing) */
 .vd-layer {
   transition: 
-    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), 
-    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-    filter 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0.65s ease;
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), 
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), 
+    filter 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.75s ease;
   will-change: transform, opacity;
 }
 
@@ -76,7 +76,7 @@
   top: 0;
   left: 0;
   right: 0;
-  transform: translateX(100%) scale(1.02);
+  transform: translateX(100%);
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
