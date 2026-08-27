@@ -17,7 +17,7 @@ export interface Web3ContextType {
   closeWalletModal: () => void;
   connectWallet: () => Promise<void>;
   connectDemoWallet: () => void;
-  disconnectWallet: () => void;
+  disconnectWallet: () => Promise<void> | void;
   switchToBaseSepolia: () => Promise<void>;
   provider: BrowserProvider | null;
 }
@@ -35,7 +35,7 @@ const Web3Context = createContext<Web3ContextType>({
   closeWalletModal: () => {},
   connectWallet: async () => {},
   connectDemoWallet: () => {},
-  disconnectWallet: () => {},
+  disconnectWallet: async () => {},
   switchToBaseSepolia: async () => {},
   provider: null,
 });
@@ -156,8 +156,8 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsWalletModalOpen(false);
   };
 
-  // Disconnect
-  const disconnectWallet = () => {
+  // Disconnect & Revoke MetaMask / Extension Permissions
+  const disconnectWallet = async () => {
     localStorage.setItem('destorage_disconnected', 'true');
     localStorage.removeItem('destorage_wallet_addr');
     localStorage.removeItem('destorage_wallet_bal');
@@ -165,6 +165,23 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setChainId(null);
     setBalance('0.0000');
     setProvider(null);
+
+    const ethereum = (window as any).ethereum;
+    if (ethereum && ethereum.request) {
+      try {
+        await ethereum.request({
+          method: 'wallet_revokePermissions',
+          params: [
+            {
+              eth_accounts: {},
+            },
+          ],
+        });
+      } catch (e) {
+        // Fallback for providers that don't support EIP-2255
+        console.log('Permissions revoked locally.');
+      }
+    }
   };
 
   // Auto-listen to account and network changes
