@@ -643,18 +643,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 </p>
               </div>
 
-              <div className="vd-passphrase-row">
-                <div className="vd-passphrase-input-wrap">
-                  <Icon icon="iconamoon:shield-bold" width={17} height={17} color="#64748b" />
-                  <input 
-                    type="password" 
-                    placeholder="Optional Custom Encryption Passphrase (PBKDF2)" 
-                    value={customPassphrase}
-                    onChange={(e) => setCustomPassphrase(e.target.value)}
-                    className="vd-passphrase-input"
-                  />
-                </div>
-
+              <div className="vd-passphrase-row" style={{ justifyContent: 'center' }}>
                 <button 
                   type="button" 
                   className="vd-btn-select-file" 
