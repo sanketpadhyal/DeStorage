@@ -85,65 +85,73 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
   }, [demoInput]);
 
   return (
-    <div className="template-page-wrapper">
+    <div className="lp-root animate-blur-in">
       
-      {/* 0. FLOATING TOP TITLE (Matching the template presentation) */}
-      <div className="template-top-title">
-        <span className="template-top-sub">DeStorage</span>
-        <h1 className="template-top-main">Privacy-First Decentralized Vault</h1>
-      </div>
-
-      {/* 1. HERO SECTION CARD */}
-      <div className="template-card">
-        {/* Inside Mini Navbar */}
-        <nav className="template-nav">
-          <a href="#hero" className="template-brand">
+      {/* 1. FULL-WIDTH STICKY NAVBAR */}
+      <header className="lp-navbar">
+        <div className="lp-container lp-nav-inner">
+          <a href="#hero" className="lp-brand">
             <img src={logoImg} alt="DeStorage Logo" />
             <span>DeStorage</span>
+            <span className="lp-subdomain-chip">destorage.sanketpadhyal.in</span>
           </a>
 
-          <ul className="template-nav-links">
-            <li><a href="#features" className="template-nav-link">Why us</a></li>
-            <li><a href="#features" className="template-nav-link">Architecture</a></li>
-            <li><a href="#how-it-works" className="template-nav-link">How it Works</a></li>
-            <li><a href="#pricing" className="template-nav-link">Pricing</a></li>
+          <ul className="lp-nav-links">
+            <li><a href="#features" className="lp-nav-link">Why us</a></li>
+            <li><a href="#features" className="lp-nav-link">Architecture</a></li>
+            <li><a href="#crypto-demo" className="lp-nav-link">Live Crypto Demo</a></li>
+            <li><a href="#pricing" className="lp-nav-link">Pricing</a></li>
+            <li><a href="#creator" className="lp-nav-link">Developer</a></li>
           </ul>
 
-          <a 
-            href="https://github.com/sanketpadhyal/DeStorage" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="template-nav-btn"
-          >
-            GitHub Repo
-          </a>
-        </nav>
+          <div className="lp-nav-actions">
+            <a 
+              href="https://github.com/sanketpadhyal/DeStorage" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="lp-btn-black"
+            >
+              <GithubIcon size={16} />
+              <span>GitHub</span>
+            </a>
+          </div>
+        </div>
+      </header>
 
-        {/* Hero 2-Column Content */}
-        <div id="hero" className="hero-content-grid">
-          <div className="hero-left">
-            <h2 className="hero-main-title">
-              Own your files with proper decentralized privacy
-            </h2>
-            <p className="hero-main-desc">
-              We deliver client-side AES-256-GCM encryption combined with IPFS content addressing and Base Sepolia EVM blockchain ownership records.
+      {/* 2. FULL-SCREEN HERO SECTION */}
+      <section id="hero" className="lp-hero-section">
+        <div className="lp-container lp-hero-grid">
+          <div className="lp-hero-left">
+            <div className="lp-hero-badge">
+              <div className="lp-hero-badge-dot"></div>
+              <span>Client-Side AES-256-GCM • IPFS • Base Sepolia</span>
+            </div>
+
+            <h1 className="lp-hero-title">
+              Own your files with <span>proper decentralized</span> privacy.
+            </h1>
+
+            <p className="lp-hero-desc">
+              We deliver browser-native AES-256-GCM encryption combined with IPFS content addressing and Base Sepolia EVM blockchain ownership records.
             </p>
-            <div className="hero-action-row">
+
+            <div className="lp-hero-actions">
               <button 
                 onClick={onLaunchApp || (() => {
                   const el = document.getElementById('crypto-demo');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
                 })}
-                className="btn-cyan"
+                className="lp-btn-cyan"
               >
                 <span>Launch Vault</span>
                 <ArrowRight size={16} />
               </button>
+
               <a 
                 href="https://github.com/sanketpadhyal/DeStorage" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="btn-dark-pill"
+                className="lp-btn-black"
               >
                 <GithubIcon size={16} />
                 <span>View Source</span>
@@ -151,210 +159,228 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             </div>
           </div>
 
-          <div className="hero-right">
+          <div className="lp-hero-right">
             <img 
               src={heroIllustration} 
               alt="DeStorage Cloud Vault Hero Illustration" 
-              className="hero-right-img" 
+              className="lp-hero-img" 
             />
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 2. NUMBERED 2x2 ARCHITECTURE EXPERTISE SECTION */}
-      <div id="features" className="template-card features-section-card">
-        <h3 className="features-header-title">Our deep decentralized security</h3>
-        
-        <div className="features-layout-grid">
-          <div className="numbered-grid-2x2">
-            <div className="numbered-item">
-              <span className="item-num">1</span>
-              <h4 className="item-heading">Client-Side Web Crypto</h4>
-              <p className="item-text">
-                Files are encrypted locally in your browser with AES-256-GCM before upload. Plaintext never leaves your machine.
-              </p>
+      {/* 3. ARCHITECTURE & SECURITY (2x2 with side illustration) */}
+      <section id="features" className="lp-features-section">
+        <div className="lp-container">
+          <div className="lp-section-header">
+            <span className="lp-section-tag">Security Architecture</span>
+            <h2 className="lp-section-title">Our deep decentralized security</h2>
+          </div>
+          
+          <div className="lp-features-grid">
+            <div className="lp-numbered-2x2">
+              <div className="lp-numbered-item">
+                <span className="lp-item-num">1</span>
+                <h3 className="lp-item-title">Client-Side Web Crypto</h3>
+                <p className="lp-item-desc">
+                  Files are encrypted locally in your browser with AES-256-GCM before upload. Plaintext never touches any server.
+                </p>
+              </div>
+
+              <div className="lp-numbered-item">
+                <span className="lp-item-num">2</span>
+                <h3 className="lp-item-title">IPFS Content Addressing</h3>
+                <p className="lp-item-desc">
+                  Encrypted ciphertexts are pinned across decentralized IPFS nodes, generating verifiable content-addressed CIDs.
+                </p>
+              </div>
+
+              <div className="lp-numbered-item">
+                <span className="lp-item-num">3</span>
+                <h3 className="lp-item-title">Base Sepolia Ownership</h3>
+                <p className="lp-item-desc">
+                  File registration, immutable ownership records, and SHA-256 integrity proofs are verified permanently on-chain.
+                </p>
+              </div>
+
+              <div className="lp-numbered-item">
+                <span className="lp-item-num">4</span>
+                <h3 className="lp-item-title">Zero-Knowledge Sharing</h3>
+                <p className="lp-item-desc">
+                  Share files directly with wallet addresses using public-key wrapped encryption without ever exposing master keys.
+                </p>
+              </div>
             </div>
 
-            <div className="numbered-item">
-              <span className="item-num">2</span>
-              <h4 className="item-heading">IPFS Content Addressing</h4>
-              <p className="item-text">
-                Encrypted ciphertexts are pinned across decentralized IPFS nodes, generating verifiable content-addressed CIDs.
-              </p>
-            </div>
-
-            <div className="numbered-item">
-              <span className="item-num">3</span>
-              <h4 className="item-heading">Base Sepolia Ownership</h4>
-              <p className="item-text">
-                File registration, immutable ownership records, and SHA-256 integrity proofs are verified permanently on-chain.
-              </p>
-            </div>
-
-            <div className="numbered-item">
-              <span className="item-num">4</span>
-              <h4 className="item-heading">Zero-Knowledge Sharing</h4>
-              <p className="item-text">
-                Share files directly with wallet addresses using public-key wrapped encryption without ever exposing master keys.
-              </p>
-            </div>
-          </div>
-
-          <div>
-            <img 
-              src={featuresIllustration} 
-              alt="Cryptographic Integrity & Inspection Illustration" 
-              className="features-side-img" 
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* 3. VAULT TIERS & PRICING (Matching 3-Card Template) */}
-      <div id="pricing" className="template-card pricing-section-card">
-        <h3 className="pricing-title">Vault storage pricing</h3>
-        <p className="pricing-sub">Check the tiers and choose the right privacy package for your files</p>
-
-        <div className="pricing-cards-grid">
-          {/* Tier 1 */}
-          <div className="price-card">
-            <div className="price-card-header">
-              <span className="price-card-name">Starter Vault</span>
-              <span className="price-card-desc">For personal files and documents</span>
-            </div>
-            <div className="price-amount">$0 <span>/ testnet</span></div>
-            <ul className="price-features-list">
-              <li><Check size={14} /> 5 GB Encrypted IPFS Storage</li>
-              <li><Check size={14} /> Client-Side AES-256-GCM</li>
-              <li><Check size={14} /> Base Sepolia EVM Records</li>
-              <li><Check size={14} /> In-Browser Local Decryption</li>
-            </ul>
-            <button className="btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
-              Get Started Free
-            </button>
-          </div>
-
-          {/* Tier 2 (Featured Pro) */}
-          <div className="price-card featured">
-            <div className="price-card-header">
-              <span className="price-card-name" style={{ color: '#0284c7' }}>Pro Vault (Recommended)</span>
-              <span className="price-card-desc">For power creators and media archives</span>
-            </div>
-            <div className="price-amount">$19 <span>/ year</span></div>
-            <ul className="price-features-list">
-              <li><Check size={14} /> 100 GB High-Speed IPFS Pinning</li>
-              <li><Check size={14} /> Zero-Knowledge Key Wrapping</li>
-              <li><Check size={14} /> Multi-Wallet Access Control</li>
-              <li><Check size={14} /> Unlimited On-Chain Verification</li>
-            </ul>
-            <button className="btn-cyan" style={{ width: '100%', justifyContent: 'center', background: '#0284c7' }}>
-              Launch Pro Vault
-            </button>
-          </div>
-
-          {/* Tier 3 */}
-          <div className="price-card">
-            <div className="price-card-header">
-              <span className="price-card-name">Decentralized Lite</span>
-              <span className="price-card-desc">For self-hosted IPFS nodes</span>
-            </div>
-            <div className="price-amount">$9 <span>/ year</span></div>
-            <ul className="price-features-list">
-              <li><Check size={14} /> 25 GB Custom IPFS Gateway</li>
-              <li><Check size={14} /> Dedicated Smart Contract Registry</li>
-              <li><Check size={14} /> Instant SHA-256 Integrity Checks</li>
-              <li><Check size={14} /> Wallet-to-Wallet File Sharing</li>
-            </ul>
-            <button className="btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
-              Choose Lite
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. LIVE CRYPTO ENGINE SANDBOX */}
-      <div id="crypto-demo" className="template-card sandbox-card">
-        <div className="sandbox-top">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Lock size={20} color="#38bdf8" />
-            <span style={{ fontWeight: 700, fontSize: '15px' }}>Live Browser SubtleCrypto (AES-256-GCM)</span>
-          </div>
-          <span style={{ color: '#38bdf8', fontSize: '12px', fontFamily: 'monospace' }}>● Real-Time Execution</span>
-        </div>
-
-        <div className="sandbox-layout">
-          <div className="sandbox-input-panel">
-            <label style={{ fontSize: '12px', color: '#94a3b8' }}>Plaintext Memory Input:</label>
-            <textarea 
-              value={demoInput} 
-              onChange={(e) => setDemoInput(e.target.value)} 
-              placeholder="Type sensitive data here to watch live encryption..."
-            />
-          </div>
-
-          <div className="sandbox-output-panel">
             <div>
-              <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase' }}>1. Random IV (Nonce):</div>
-              <div style={{ color: '#38bdf8', wordBreak: 'break-all' }}>{demoOutput.iv}</div>
-            </div>
-            <div>
-              <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase' }}>2. Encrypted Ciphertext:</div>
-              <div style={{ color: '#38bdf8', wordBreak: 'break-all' }}>{demoOutput.ciphertext}</div>
-            </div>
-            <div>
-              <div style={{ color: '#94a3b8', fontSize: '11px', textTransform: 'uppercase' }}>3. Content-Addressed CID:</div>
-              <div style={{ color: '#34d399', wordBreak: 'break-all' }}>{demoOutput.mockCid}</div>
+              <img 
+                src={featuresIllustration} 
+                alt="Cryptographic Integrity & Inspection Illustration" 
+                className="lp-features-img" 
+              />
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 5. CREATOR & COMMUNITY SECTION */}
-      <div className="template-card creator-section-card">
-        <img 
-          src={mascotCharacter} 
-          alt="DeStorage Mascot Character" 
-          className="creator-mascot-img" 
-        />
-
-        <div className="creator-details">
-          <h4 className="creator-title">Built by Sanket Padhyal</h4>
-          <p className="creator-text">
-            Full Stack & Web3 Engineer focused on decentralized systems, on-device AI models, and privacy-first software. DeStorage ensures that files, cryptographic keys, and ownership proofs belong exclusively to the user.
+      {/* 4. VAULT TIERS & PRICING */}
+      <section id="pricing" className="lp-pricing-section">
+        <div className="lp-container" style={{ textAlign: 'center' }}>
+          <span className="lp-section-tag">Storage Packages</span>
+          <h2 className="lp-section-title">Vault storage pricing</h2>
+          <p style={{ color: '#64748b', fontSize: '15px', marginTop: '6px' }}>
+            Check the tiers and choose the right privacy package for your files
           </p>
 
-          <div className="creator-btn-row">
-            <a 
-              href="https://sanketpadhyal.in" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="btn-dark-pill"
-            >
-              <User size={15} />
-              <span>sanketpadhyal.in</span>
-              <ExternalLink size={13} />
-            </a>
+          <div className="lp-pricing-grid">
+            {/* Tier 1 */}
+            <div className="lp-price-card">
+              <div>
+                <h4 className="lp-price-name">Starter Vault</h4>
+                <p className="lp-price-desc">For personal files and documents</p>
+                <div className="lp-price-val">$0 <span>/ testnet</span></div>
+              </div>
+              <ul className="lp-price-list">
+                <li><Check size={16} /> 5 GB Encrypted IPFS Storage</li>
+                <li><Check size={16} /> Client-Side AES-256-GCM</li>
+                <li><Check size={16} /> Base Sepolia EVM Records</li>
+                <li><Check size={16} /> In-Browser Local Decryption</li>
+              </ul>
+              <button className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
+                Get Started Free
+              </button>
+            </div>
 
-            <a 
-              href="https://github.com/sanketpadhyal/DeStorage" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="btn-cyan"
-            >
-              <GithubIcon size={15} />
-              <span>GitHub Repository</span>
-            </a>
+            {/* Tier 2 (Featured) */}
+            <div className="lp-price-card featured">
+              <div>
+                <h4 className="lp-price-name" style={{ color: '#0284c7' }}>Pro Vault (Recommended)</h4>
+                <p className="lp-price-desc">For power creators and media archives</p>
+                <div className="lp-price-val">$19 <span>/ year</span></div>
+              </div>
+              <ul className="lp-price-list">
+                <li><Check size={16} /> 100 GB High-Speed IPFS Pinning</li>
+                <li><Check size={16} /> Zero-Knowledge Key Wrapping</li>
+                <li><Check size={16} /> Multi-Wallet Access Control</li>
+                <li><Check size={16} /> Unlimited On-Chain Verification</li>
+              </ul>
+              <button className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center', background: '#0284c7' }}>
+                Launch Pro Vault
+              </button>
+            </div>
+
+            {/* Tier 3 */}
+            <div className="lp-price-card">
+              <div>
+                <h4 className="lp-price-name">Decentralized Lite</h4>
+                <p className="lp-price-desc">For self-hosted IPFS nodes</p>
+                <div className="lp-price-val">$9 <span>/ year</span></div>
+              </div>
+              <ul className="lp-price-list">
+                <li><Check size={16} /> 25 GB Custom IPFS Gateway</li>
+                <li><Check size={16} /> Dedicated Smart Contract Registry</li>
+                <li><Check size={16} /> Instant SHA-256 Integrity Checks</li>
+                <li><Check size={16} /> Wallet-to-Wallet File Sharing</li>
+              </ul>
+              <button className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
+                Choose Lite
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 6. FOOTER */}
-      <footer className="template-footer">
-        <div>
-          <strong>DeStorage</strong> • Privacy-First Decentralized Vault
+      {/* 5. LIVE CRYPTO ENGINE SANDBOX */}
+      <section id="crypto-demo" className="lp-sandbox-section">
+        <div className="lp-container">
+          <div className="lp-sandbox-header">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Lock size={20} color="#38bdf8" />
+              <span style={{ fontWeight: 700, fontSize: '16px' }}>Live Browser SubtleCrypto (AES-256-GCM) Sandbox</span>
+            </div>
+            <span style={{ color: '#38bdf8', fontSize: '12.5px', fontFamily: 'monospace' }}>● Real-Time Execution</span>
+          </div>
+
+          <div className="lp-sandbox-layout">
+            <div className="lp-sandbox-input-box">
+              <label style={{ fontSize: '12px', color: '#94a3b8' }}>Plaintext Memory Input (Type anything to test):</label>
+              <textarea 
+                value={demoInput} 
+                onChange={(e) => setDemoInput(e.target.value)} 
+                placeholder="Type sensitive data here to watch real-time encryption..."
+              />
+            </div>
+
+            <div className="lp-sandbox-output-box">
+              <div>
+                <div className="lp-sandbox-field-label">1. Random 12-Byte IV (Nonce):</div>
+                <div className="lp-sandbox-field-val">{demoOutput.iv}</div>
+              </div>
+              <div>
+                <div className="lp-sandbox-field-label">2. Encrypted Ciphertext:</div>
+                <div className="lp-sandbox-field-val">{demoOutput.ciphertext}</div>
+              </div>
+              <div>
+                <div className="lp-sandbox-field-label">3. Content-Addressed CID:</div>
+                <div style={{ color: '#34d399', wordBreak: 'break-all' }}>{demoOutput.mockCid}</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          Created by <a href="https://sanketpadhyal.in" target="_blank" rel="noopener noreferrer">Sanket Padhyal</a> • MIT License
+      </section>
+
+      {/* 6. CREATOR & COMMUNITY SECTION */}
+      <section id="creator" className="lp-creator-section">
+        <div className="lp-container">
+          <div className="lp-creator-card">
+            <img 
+              src={mascotCharacter} 
+              alt="DeStorage Mascot Character" 
+              className="lp-mascot-img" 
+            />
+
+            <div className="lp-creator-details">
+              <h3 className="lp-creator-name">Built by Sanket Padhyal</h3>
+              <p className="lp-creator-bio">
+                Full Stack & Web3 Engineer building decentralized systems, on-device AI models, and privacy-first software. DeStorage ensures that files, cryptographic keys, and ownership proofs belong exclusively to the user.
+              </p>
+
+              <div className="lp-creator-actions">
+                <a 
+                  href="https://sanketpadhyal.in" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="lp-btn-black"
+                >
+                  <User size={15} />
+                  <span>sanketpadhyal.in</span>
+                  <ExternalLink size={13} />
+                </a>
+
+                <a 
+                  href="https://github.com/sanketpadhyal/DeStorage" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="lp-btn-cyan"
+                >
+                  <GithubIcon size={15} />
+                  <span>GitHub Repository</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. FULL-WIDTH FOOTER */}
+      <footer className="lp-footer">
+        <div className="lp-container lp-footer-inner">
+          <div>
+            <strong>DeStorage</strong> • Privacy-First Decentralized Vault
+          </div>
+          <div>
+            Created by <a href="https://sanketpadhyal.in" target="_blank" rel="noopener noreferrer">Sanket Padhyal</a> • MIT License
+          </div>
         </div>
       </footer>
 

@@ -1,157 +1,120 @@
-/* Outer Page Wrapper with bright sky-blue gradient matching the template */
-.template-page-wrapper {
+/* Full-Screen Page Container */
+.lp-root {
+  width: 100%;
   min-height: 100vh;
-  background: #00a8ff;
-  background: linear-gradient(180deg, #00b4d8 0%, #0096c7 100%);
-  padding: 40px 20px 80px;
+  background-color: #ffffff;
+  color: #0f172a;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 32px;
-  position: relative;
   overflow-x: hidden;
 }
 
-/* Floating Banner Title on top (matching template "Rocket Consulting Landing Page Template") */
-.template-top-title {
-  text-align: center;
-  color: #ffffff;
-  margin-bottom: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.template-top-sub {
-  font-size: 20px;
-  font-weight: 600;
-  opacity: 0.95;
-  letter-spacing: 0.02em;
-}
-
-.template-top-main {
-  font-size: 38px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-/* Card Container matching the white floating cards in the template */
-.template-card {
+/* Global Content Container */
+.lp-container {
   width: 100%;
-  max-width: 1080px;
-  background: #ffffff;
-  border-radius: 28px;
-  box-shadow: 0 25px 60px -15px rgba(0, 50, 100, 0.25);
-  overflow: hidden;
-  position: relative;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-/* MINI TOP NAVBAR (inside the hero card like the template) */
-.template-nav {
-  padding: 24px 36px;
+/* 1. STICKY TOP NAVBAR (Full Bleed) */
+.lp-navbar {
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.lp-nav-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #f1f5f9;
+  height: 76px;
 }
 
-.template-brand {
+.lp-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
   color: #0f172a;
+  letter-spacing: -0.02em;
 }
 
-.template-brand img {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+.lp-brand img {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   object-fit: cover;
 }
 
-.template-nav-links {
+.lp-subdomain-chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #0284c7;
+  background: #f0f9ff;
+  border: 1px solid #e0f2fe;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.lp-nav-links {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 32px;
   list-style: none;
 }
 
-.template-nav-link {
-  font-size: 13.5px;
+.lp-nav-link {
+  font-size: 14px;
   font-weight: 600;
   color: #475569;
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
-.template-nav-link:hover {
-  color: #0f172a;
+.lp-nav-link:hover {
+  color: #0284c7;
 }
 
-.template-nav-btn {
+.lp-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* BUTTONS */
+.lp-btn-black {
   background: #0f172a;
   color: #ffffff;
   border-radius: 9999px;
-  padding: 8px 18px;
-  font-size: 12.5px;
+  padding: 10px 22px;
+  font-size: 13.5px;
   font-weight: 700;
   text-decoration: none;
-  border: none;
+  border: 1px solid #0f172a;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   transition: background-color 0.15s ease;
 }
 
-.template-nav-btn:hover {
+.lp-btn-black:hover {
   background: #1e293b;
 }
 
-/* HERO SECTION (2-Column with Illustration on right) */
-.hero-content-grid {
-  padding: 48px 48px 60px;
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  align-items: center;
-  gap: 40px;
-}
-
-.hero-left {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  text-align: left;
-}
-
-.hero-main-title {
-  font-size: 44px;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.03em;
-  line-height: 1.18;
-}
-
-.hero-main-desc {
-  font-size: 15px;
-  color: #64748b;
-  line-height: 1.6;
-  max-width: 480px;
-}
-
-.hero-action-row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  margin-top: 8px;
-}
-
-.btn-cyan {
+.lp-btn-cyan {
   background: #00b4d8;
   color: #ffffff;
   border-radius: 9999px;
-  padding: 12px 26px;
-  font-size: 14px;
+  padding: 12px 28px;
+  font-size: 14.5px;
   font-weight: 700;
   text-decoration: none;
   border: none;
@@ -162,344 +125,427 @@
   transition: background-color 0.15s ease;
 }
 
-.btn-cyan:hover {
+.lp-btn-cyan:hover {
   background: #0096c7;
 }
 
-.btn-dark-pill {
-  background: #0f172a;
-  color: #ffffff;
-  border-radius: 9999px;
-  padding: 12px 26px;
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
+/* 2. HERO SECTION (Full Screen) */
+.lp-hero-section {
+  width: 100%;
+  padding: 60px 0 80px;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.lp-hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 48px;
+}
+
+.lp-hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: left;
+}
+
+.lp-hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: background-color 0.15s ease;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 12px;
+  font-weight: 700;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.btn-dark-pill:hover {
-  background: #1e293b;
+.lp-hero-badge-dot {
+  width: 7px;
+  height: 7px;
+  background: #16a34a;
+  border-radius: 50%;
 }
 
-.hero-right-img {
-  width: 100%;
-  max-height: 380px;
-  object-fit: contain;
-  border-radius: 20px;
-}
-
-/* SECTION 2: 2x2 NUMBERED GRID WITH ILLUSTRATION ON RIGHT */
-.features-section-card {
-  padding: 48px;
-}
-
-.features-header-title {
-  font-size: 28px;
+.lp-hero-title {
+  font-size: 52px;
   font-weight: 800;
   color: #0f172a;
-  margin-bottom: 32px;
-  text-align: left;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
 }
 
-.features-layout-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 40px;
+.lp-hero-title span {
+  color: #00b4d8;
+}
+
+.lp-hero-desc {
+  font-size: 17px;
+  color: #64748b;
+  line-height: 1.65;
+  max-width: 540px;
+}
+
+.lp-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.lp-hero-right {
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
-.numbered-grid-2x2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px 28px;
+.lp-hero-img {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* 3. ARCHITECTURE EXPERTISE SECTION (2x2 with illustration) */
+.lp-features-section {
+  width: 100%;
+  padding: 80px 0;
+  background: #fafcff;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.lp-section-header {
+  margin-bottom: 48px;
   text-align: left;
 }
 
-.numbered-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.lp-section-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0284c7;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: #e0f2fe;
+  padding: 4px 12px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
-.item-num {
-  font-size: 22px;
+.lp-section-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.lp-features-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: 56px;
+}
+
+.lp-numbered-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px 36px;
+  text-align: left;
+}
+
+.lp-numbered-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lp-item-num {
+  font-size: 26px;
   font-weight: 800;
   color: #0f172a;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  margin-bottom: 2px;
 }
 
-.item-heading {
-  font-size: 16px;
+.lp-item-title {
+  font-size: 18px;
   font-weight: 700;
   color: #0f172a;
 }
 
-.item-text {
-  font-size: 13px;
-  color: #64748b;
-  line-height: 1.5;
-}
-
-.features-side-img {
-  width: 100%;
-  max-height: 360px;
-  object-fit: contain;
-  border-radius: 18px;
-}
-
-/* SECTION 3: 3 PRICING / STORAGE TIERS CARDS (MATCHING TEMPLATE) */
-.pricing-section-card {
-  padding: 48px;
-  text-align: center;
-}
-
-.pricing-title {
-  font-size: 28px;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 6px;
-}
-
-.pricing-sub {
+.lp-item-desc {
   font-size: 14px;
   color: #64748b;
-  margin-bottom: 36px;
+  line-height: 1.55;
 }
 
-.pricing-cards-grid {
+.lp-features-img {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  object-fit: contain;
+}
+
+/* 4. PRICING & STORAGE TIERS */
+.lp-pricing-section {
+  width: 100%;
+  padding: 80px 0;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.lp-pricing-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  align-items: stretch;
+  gap: 28px;
+  margin-top: 40px;
 }
 
-.price-card {
+.lp-price-card {
   background: #f8fafc;
   border: 1px solid #edf2f7;
-  border-radius: 20px;
-  padding: 28px 24px;
+  border-radius: 24px;
+  padding: 36px 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  text-align: left;
-  gap: 20px;
-}
-
-.price-card.featured {
-  background: #e0f2fe;
-  border: 2px solid #38bdf8;
-  box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
-}
-
-.price-card-header {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.price-card-name {
-  font-size: 16px;
-  font-weight: 800;
-  color: #0f172a;
-}
-
-.price-card-desc {
-  font-size: 12px;
-  color: #64748b;
-}
-
-.price-amount {
-  font-size: 32px;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 12px 0 6px;
-}
-
-.price-amount span {
-  font-size: 13px;
-  font-weight: 500;
-  color: #64748b;
-}
-
-.price-features-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 12.5px;
-  color: #334155;
-  list-style: none;
-}
-
-.price-features-list li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.price-features-list li svg {
-  color: #0284c7;
-  flex-shrink: 0;
-}
-
-/* SECTION 4: INTERACTIVE CRYPTO SANDBOX */
-.sandbox-card {
-  padding: 40px 48px;
-  background: #0f172a;
-  color: #ffffff;
-}
-
-.sandbox-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 16px;
-  margin-bottom: 24px;
-}
-
-.sandbox-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 28px;
   text-align: left;
 }
 
-.sandbox-input-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.lp-price-card.featured {
+  background: #f0f9ff;
+  border: 2px solid #38bdf8;
+  box-shadow: 0 16px 40px -10px rgba(56, 189, 248, 0.25);
 }
 
-.sandbox-input-panel textarea {
-  width: 100%;
-  height: 140px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  padding: 14px;
-  color: #ffffff;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  outline: none;
-  resize: none;
-}
-
-.sandbox-output-panel {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-}
-
-/* SECTION 5: CREATOR & TRUSTED INFO */
-.creator-section-card {
-  padding: 40px 48px;
-  display: flex;
-  align-items: center;
-  gap: 36px;
-  text-align: left;
-}
-
-.creator-mascot-img {
-  width: 130px;
-  height: 130px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.creator-details {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.creator-title {
-  font-size: 22px;
+.lp-price-name {
+  font-size: 18px;
   font-weight: 800;
   color: #0f172a;
 }
 
-.creator-text {
-  font-size: 14px;
+.lp-price-desc {
+  font-size: 13px;
   color: #64748b;
-  line-height: 1.6;
+  margin-top: 4px;
 }
 
-.creator-btn-row {
+.lp-price-val {
+  font-size: 38px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 16px 0 6px;
+}
+
+.lp-price-val span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.lp-price-list {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  margin-top: 6px;
+  font-size: 13.5px;
+  color: #334155;
+  list-style: none;
 }
 
-/* FOOTER */
-.template-footer {
+.lp-price-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lp-price-list li svg {
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+/* 5. INTERACTIVE WEB CRYPTO SANDBOX */
+.lp-sandbox-section {
   width: 100%;
-  max-width: 1080px;
-  padding: 24px 36px;
+  padding: 80px 0;
+  background: #0f172a;
+  color: #ffffff;
+  border-bottom: 1px solid #1e293b;
+}
+
+.lp-sandbox-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 20px;
+  margin-bottom: 32px;
 }
 
-.template-footer a {
+.lp-sandbox-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  text-align: left;
+}
+
+.lp-sandbox-input-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lp-sandbox-input-box textarea {
+  width: 100%;
+  height: 160px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 16px;
+  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13.5px;
+  outline: none;
+  resize: none;
+}
+
+.lp-sandbox-output-box {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+}
+
+.lp-sandbox-field-label {
+  color: #94a3b8;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.lp-sandbox-field-val {
+  color: #38bdf8;
+  word-break: break-all;
+}
+
+/* 6. CREATOR SECTION */
+.lp-creator-section {
+  width: 100%;
+  padding: 80px 0;
+  background: #ffffff;
+}
+
+.lp-creator-card {
+  background: #fafcff;
+  border: 1px solid #edf2f7;
+  border-radius: 28px;
+  padding: 48px;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  text-align: left;
+}
+
+.lp-mascot-img {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.lp-creator-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lp-creator-name {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.lp-creator-bio {
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.65;
+}
+
+.lp-creator-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+/* 7. FOOTER (Full Bleed) */
+.lp-footer {
+  width: 100%;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 40px 0;
+  border-top: 1px solid #1e293b;
+}
+
+.lp-footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  color: #94a3b8;
+}
+
+.lp-footer a {
   color: #ffffff;
   text-decoration: underline;
-  font-weight: 700;
 }
 
 /* RESPONSIVE */
-@media (max-width: 900px) {
-  .hero-content-grid, .features-layout-grid {
+@media (max-width: 960px) {
+  .lp-hero-grid, .lp-features-grid, .lp-sandbox-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .lp-pricing-grid {
     grid-template-columns: 1fr;
   }
-  .pricing-cards-grid {
-    grid-template-columns: 1fr;
+  .lp-hero-title {
+    font-size: 38px;
   }
-  .sandbox-layout {
-    grid-template-columns: 1fr;
-  }
-  .creator-section-card {
+  .lp-creator-card {
     flex-direction: column;
     text-align: center;
   }
-  .creator-btn-row {
+  .lp-creator-actions {
     justify-content: center;
   }
 }
 
-@media (max-width: 600px) {
-  .template-page-wrapper {
-    padding: 20px 12px 60px;
-  }
-  .hero-content-grid, .features-section-card, .pricing-section-card, .sandbox-card, .creator-section-card {
-    padding: 28px 20px;
-  }
-  .hero-main-title {
-    font-size: 28px;
-  }
-  .template-nav-links {
+@media (max-width: 640px) {
+  .lp-nav-links {
     display: none;
   }
-  .numbered-grid-2x2 {
-    grid-template-columns: 1fr;
+  .lp-hero-title {
+    font-size: 30px;
   }
-  .template-footer {
+  .lp-numbered-2x2 {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .lp-footer-inner {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     text-align: center;
   }
 }
