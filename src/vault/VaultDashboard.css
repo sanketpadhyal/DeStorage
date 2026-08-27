@@ -938,11 +938,45 @@
   .vd-container {
     padding: 0 16px;
   }
-  .vd-brand-group {
-    gap: 10px;
+  .vd-nav-inner {
+    height: 64px;
   }
-  .vd-brand span:not(.vd-brand-accent) {
+  .vd-brand-group {
+    gap: 8px;
+  }
+  .vd-brand {
+    font-size: 18px;
+    gap: 8px;
+  }
+  .vd-brand img {
+    width: 28px;
+    height: 28px;
+  }
+  .vd-nav-actions {
+    gap: 8px;
+  }
+  .vd-network-pill {
+    padding: 0 8px;
+    height: 36px;
+  }
+  .vd-network-pill span {
     display: none;
+  }
+  .vd-btn-connect {
+    height: 36px;
+    padding: 0 12px;
+    font-size: 12.5px;
+    gap: 6px;
+  }
+  .vd-wallet-badge {
+    height: 36px;
+    padding: 0 10px;
+    font-size: 11.5px;
+    gap: 6px;
+  }
+  .vd-disconnect-btn {
+    padding: 5px 10px;
+    font-size: 11px;
   }
   .vd-stats-grid {
     grid-template-columns: 1fr;
