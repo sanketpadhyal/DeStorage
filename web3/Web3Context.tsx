@@ -119,6 +119,7 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     try {
       setIsConnecting(true);
+      localStorage.removeItem('destorage_disconnected');
       const browserProvider = new BrowserProvider(ethereum);
       const accounts = await browserProvider.send('eth_requestAccounts', []);
       const network = await browserProvider.getNetwork();
@@ -145,6 +146,7 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Connect Instant Demo / Testnet Session
   const connectDemoWallet = () => {
+    localStorage.removeItem('destorage_disconnected');
     const demoAddr = '0x71C2a8F0A795C48a43fA059B6d034C74fDa88b8e';
     setAddress(demoAddr);
     setChainId(BASE_SEPOLIA_DECIMAL);
@@ -156,12 +158,13 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Disconnect
   const disconnectWallet = () => {
+    localStorage.setItem('destorage_disconnected', 'true');
+    localStorage.removeItem('destorage_wallet_addr');
+    localStorage.removeItem('destorage_wallet_bal');
     setAddress(null);
     setChainId(null);
     setBalance('0.0000');
     setProvider(null);
-    localStorage.removeItem('destorage_wallet_addr');
-    localStorage.removeItem('destorage_wallet_bal');
   };
 
   // Auto-listen to account and network changes
@@ -169,20 +172,23 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const ethereum = (window as any).ethereum;
     if (!ethereum) return;
 
+    const isExplicitlyDisconnected = localStorage.getItem('destorage_disconnected') === 'true';
     const browserProvider = new BrowserProvider(ethereum);
 
-    browserProvider.send('eth_accounts', []).then(async (accounts: string[]) => {
-      if (accounts && accounts.length > 0) {
-        const network = await browserProvider.getNetwork();
-        setAddress(accounts[0]);
-        setChainId(Number(network.chainId));
-        setProvider(browserProvider);
-        await updateBalance(accounts[0], browserProvider);
-      }
-    }).catch(() => {});
+    if (!isExplicitlyDisconnected) {
+      browserProvider.send('eth_accounts', []).then(async (accounts: string[]) => {
+        if (accounts && accounts.length > 0 && localStorage.getItem('destorage_disconnected') !== 'true') {
+          const network = await browserProvider.getNetwork();
+          setAddress(accounts[0]);
+          setChainId(Number(network.chainId));
+          setProvider(browserProvider);
+          await updateBalance(accounts[0], browserProvider);
+        }
+      }).catch(() => {});
+    }
 
     const handleAccountsChanged = (accounts: string[]) => {
-      if (accounts.length > 0) {
+      if (accounts.length > 0 && localStorage.getItem('destorage_disconnected') !== 'true') {
         setAddress(accounts[0]);
         updateBalance(accounts[0], browserProvider);
       } else {
@@ -202,7 +208,7 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
       ethereum.removeListener?.('accountsChanged', handleAccountsChanged);
       ethereum.removeListener?.('chainChanged', handleChainChanged);
     };
-  }, [address, updateBalance]);
+  }, [updateBalance]);
 
   return (
     <Web3Context.Provider
