@@ -566,9 +566,22 @@ section {
 
 .lp-hero-img {
   width: 100%;
-  max-width: 520px;
+  max-width: 480px;
   height: auto;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 28px;
+  box-shadow: 0 20px 50px -10px rgba(11, 36, 71, 0.18), 0 0 1px rgba(2, 132, 199, 0.3);
+  animation: heroFloat 6s ease-in-out infinite;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+@keyframes heroFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 /* 3. ARCHITECTURE EXPERTISE SECTION */
