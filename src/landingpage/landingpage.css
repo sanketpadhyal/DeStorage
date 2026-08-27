@@ -62,11 +62,11 @@ section {
   border: none;
   cursor: pointer;
   padding: 0;
-  font-size: 20px;
+  font-family: var(--font-serif);
+  font-size: 22px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
   letter-spacing: -0.02em;
-  font-family: inherit;
 }
 
 .lp-brand-btn img {
@@ -74,18 +74,6 @@ section {
   height: 38px;
   border-radius: 10px;
   object-fit: cover;
-}
-
-.lp-subdomain-chip {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: #0284c7;
-  background: #f0f9ff;
-  border: 1px solid #e0f2fe;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-weight: 700;
-  display: inline-block;
 }
 
 .lp-nav-links {
@@ -102,13 +90,13 @@ section {
   font-size: 14px;
   font-weight: 600;
   color: #475569;
-  font-family: inherit;
+  font-family: var(--font-sans);
   padding: 8px 0;
   transition: color 0.15s ease;
 }
 
 .lp-nav-link-btn:hover {
-  color: #0284c7;
+  color: #00b4d8;
 }
 
 .lp-nav-actions {
@@ -159,13 +147,13 @@ section {
   font-size: 16px;
   font-weight: 700;
   color: #1e293b;
-  font-family: inherit;
+  font-family: var(--font-sans);
   padding: 10px 0;
   border-bottom: 1px solid #f8fafc;
 }
 
 .lp-mobile-nav-link-btn:hover {
-  color: #0284c7;
+  color: #00b4d8;
 }
 
 .lp-mobile-panel-actions {
@@ -190,7 +178,7 @@ section {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-family: inherit;
+  font-family: var(--font-sans);
   transition: background-color 0.15s ease;
 }
 
@@ -212,7 +200,7 @@ section {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-family: inherit;
+  font-family: var(--font-sans);
   transition: background-color 0.15s ease;
 }
 
@@ -220,7 +208,7 @@ section {
   background: #0096c7;
 }
 
-/* 2. RICH HERO SECTION */
+/* 2. RICH HERO SECTION (Medora Editorial Typography) */
 .lp-hero-section {
   width: 100%;
   padding: 60px 0 80px;
@@ -252,11 +240,12 @@ section {
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
   color: #166534;
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
   font-weight: 700;
   width: fit-content;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .lp-hero-badge-dot {
@@ -266,19 +255,25 @@ section {
   border-radius: 50%;
 }
 
+/* Medora Bold Serif + Italic Swash Accent */
 .lp-hero-title {
-  font-size: 52px;
+  font-family: var(--font-serif);
+  font-size: 56px;
   font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.03em;
-  line-height: 1.14;
+  color: #0b2447;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
 }
 
 .lp-hero-title span {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
   color: #00b4d8;
 }
 
 .lp-hero-desc {
+  font-family: var(--font-sans);
   font-size: 16.5px;
   color: #64748b;
   line-height: 1.65;
@@ -331,15 +326,16 @@ section {
 }
 
 .lp-hero-stat-val {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
-  color: #0f172a;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #0b2447;
+  font-family: var(--font-serif);
 }
 
 .lp-hero-stat-label {
   font-size: 11.5px;
   color: #64748b;
+  font-family: var(--font-mono);
   font-weight: 500;
 }
 
@@ -366,7 +362,8 @@ section {
 }
 
 .lp-tech-pill {
-  font-size: 11.5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 700;
   color: #475569;
   background: #f8fafc;
@@ -392,8 +389,8 @@ section {
 }
 
 .lp-section-tag {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
   font-weight: 700;
   color: #0284c7;
   text-transform: uppercase;
@@ -406,9 +403,10 @@ section {
 }
 
 .lp-section-title {
-  font-size: 38px;
+  font-family: var(--font-serif);
+  font-size: 40px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
   letter-spacing: -0.02em;
 }
 
@@ -433,16 +431,17 @@ section {
 }
 
 .lp-item-num {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
-  color: #0f172a;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #0b2447;
+  font-family: var(--font-serif);
 }
 
 .lp-item-title {
   font-size: 18px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b2447;
+  font-family: var(--font-sans);
 }
 
 .lp-item-desc {
@@ -496,7 +495,8 @@ section {
 .lp-filetype-name {
   font-size: 16px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b2447;
+  font-family: var(--font-sans);
 }
 
 .lp-filetype-desc {
@@ -541,7 +541,8 @@ section {
 .lp-price-name {
   font-size: 18px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
+  font-family: var(--font-sans);
 }
 
 .lp-price-desc {
@@ -551,9 +552,10 @@ section {
 }
 
 .lp-price-val {
-  font-size: 38px;
+  font-size: 42px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
+  font-family: var(--font-serif);
   margin: 16px 0 6px;
 }
 
@@ -561,6 +563,7 @@ section {
   font-size: 14px;
   font-weight: 500;
   color: #64748b;
+  font-family: var(--font-sans);
 }
 
 .lp-price-list {
@@ -587,16 +590,16 @@ section {
 .lp-sandbox-section {
   width: 100%;
   padding: 90px 0;
-  background: #0f172a;
+  background: #0b2447;
   color: #ffffff;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid #19376d;
 }
 
 .lp-sandbox-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   padding-bottom: 20px;
   margin-bottom: 32px;
 }
@@ -622,7 +625,7 @@ section {
   border-radius: 16px;
   padding: 16px;
   color: #ffffff;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 13.5px;
   outline: none;
   resize: none;
@@ -636,7 +639,7 @@ section {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 12.5px;
 }
 
@@ -683,9 +686,10 @@ section {
 }
 
 .lp-creator-name {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
+  font-family: var(--font-serif);
 }
 
 .lp-creator-bio {
@@ -703,10 +707,10 @@ section {
 /* 8. FOOTER */
 .lp-footer {
   width: 100%;
-  background: #0f172a;
+  background: #071933;
   color: #ffffff;
   padding: 40px 0;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid #0b2447;
 }
 
 .lp-footer-inner {
@@ -730,9 +734,6 @@ section {
   .lp-mobile-menu-toggle {
     display: flex;
   }
-  .lp-subdomain-chip {
-    display: none;
-  }
   .lp-hero-grid, .lp-features-grid, .lp-sandbox-layout {
     grid-template-columns: 1fr;
     gap: 36px;
@@ -748,7 +749,7 @@ section {
     grid-template-columns: 1fr;
   }
   .lp-hero-title {
-    font-size: 38px;
+    font-size: 42px;
   }
   .lp-creator-card {
     flex-direction: column;
@@ -769,8 +770,8 @@ section {
     padding: 40px 0 50px;
   }
   .lp-hero-title {
-    font-size: 32px;
-    line-height: 1.2;
+    font-size: 34px;
+    line-height: 1.18;
   }
   .lp-hero-desc {
     font-size: 15px;
@@ -795,7 +796,7 @@ section {
     grid-template-columns: 1fr;
   }
   .lp-section-title {
-    font-size: 26px;
+    font-size: 28px;
   }
   .lp-numbered-2x2 {
     grid-template-columns: 1fr;
