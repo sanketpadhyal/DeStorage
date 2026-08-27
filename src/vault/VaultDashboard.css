@@ -226,21 +226,31 @@
 }
 
 .vd-stat-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(2, 132, 199, 0.15);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(2, 132, 199, 0.16);
   border-radius: 20px;
-  padding: 20px;
+  padding: 22px 24px;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.04);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vd-stat-card:hover {
+  border-color: rgba(2, 132, 199, 0.35);
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.08);
 }
 
 .vd-stat-icon {
   width: 48px;
   height: 48px;
   border-radius: 14px;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  color: #0284c7;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -328,10 +328,10 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       <main className="vd-main-content">
         <div className="vd-container">
           
-          {/* STATS OVERVIEW CARDS (IconaMoon 1.1 Icon Set) */}
+          {/* STATS OVERVIEW CARDS (Unified DeStorage Brand Theme) */}
           <div className="vd-stats-grid">
             <div className="vd-stat-card">
-              <div className="vd-stat-icon" style={{ background: '#eff6ff', color: '#0284c7' }}>
+              <div className="vd-stat-icon">
                 <Icon icon="iconamoon:lock-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
@@ -341,7 +341,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             </div>
 
             <div className="vd-stat-card">
-              <div className="vd-stat-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>
+              <div className="vd-stat-icon">
                 <Icon icon="iconamoon:folder-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
@@ -351,7 +351,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             </div>
 
             <div className="vd-stat-card">
-              <div className="vd-stat-icon" style={{ background: '#faf5ff', color: '#7c3aed' }}>
+              <div className="vd-stat-icon">
                 <Icon icon="iconamoon:component-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
@@ -361,7 +361,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             </div>
 
             <div className="vd-stat-card">
-              <div className="vd-stat-icon" style={{ background: '#fef3c7', color: '#d97706' }}>
+              <div className="vd-stat-icon">
                 <Icon icon="iconamoon:apps-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
