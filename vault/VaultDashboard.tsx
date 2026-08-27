@@ -10,8 +10,7 @@ import {
 } from '../crypto/encryptionEngine';
 import { uploadToIpfs, IpfsUploadResult } from '../ipfs/ipfsService';
 import { formatFileSize, truncateCid } from '../utils/formatters';
-import { VaultFileItem } from '../types';
-import { Wallet } from 'lucide-react';
+import { Wallet, Zap } from 'lucide-react';
 
 interface VaultDashboardProps {
   onBackToHome: () => void;
@@ -808,8 +807,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 onClick={connectDemoWallet}
               >
                 <div className="vd-wallet-option-left">
-                  <div className="vd-wallet-logo-box" style={{ background: '#eff6ff', color: '#0284c7' }}>
-                    <Icon icon="iconamoon:lightning-bold" width={22} height={22} color="#0284c7" />
+                  <div className="vd-wallet-logo-box" style={{ background: '#fef3c7', color: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Zap size={20} color="#d97706" fill="#d97706" />
                   </div>
                   <div className="vd-wallet-option-meta">
                     <span className="vd-wallet-name">Instant Demo Wallet</span>

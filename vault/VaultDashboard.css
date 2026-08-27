@@ -1317,17 +1317,18 @@
   border-color: #bbf7d0;
 }
 
-.vd-wallet-demo-option:hover {
-  background: #dcfce7;
-  border-color: #86efac;
-}
-
-.vd-wallet-pill-quick {
+.vd-wallet-pill-quick,
+.vd-demo-badge {
   background: #16a34a;
   color: #ffffff;
   font-size: 11.5px;
   font-weight: 700;
-  padding: 4px 10px;
+  padding: 5px 12px;
   border-radius: 9999px;
   white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
 }
