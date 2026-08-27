@@ -136,7 +136,7 @@
 
 /* WALLET ACTIONS */
 .vd-btn-connect {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 45%, #06b6d4 100%);
   color: #ffffff;
   border: none;
   border-radius: 9999px;
@@ -150,13 +150,15 @@
   align-items: center;
   gap: 8px;
   font-family: var(--font-sans);
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
-  transition: opacity 0.15s ease;
+  box-shadow: 0 4px 16px rgba(236, 72, 153, 0.35);
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .vd-btn-connect:hover {
-  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.45);
+  opacity: 0.95;
 }
 
 .vd-wallet-connected {
