@@ -326,15 +326,14 @@ section {
   box-shadow: 0 4px 16px rgba(2, 132, 199, 0.04);
 }
 
-.lp-mobile-watermark-icon {
-  width: 32px;
-  height: 32px;
+.lp-mobile-watermark-avatar {
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
+  border: 2px solid rgba(2, 132, 199, 0.35);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+  object-fit: cover;
   background: #eff6ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #0284c7;
 }
 
 .lp-mobile-watermark-content {

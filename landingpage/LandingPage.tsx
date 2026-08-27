@@ -245,15 +245,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
             {/* Open Source Watermark & Attribution Card */}
             <div className="lp-mobile-watermark">
-              <div className="lp-mobile-watermark-icon">
-                <Icon icon="iconamoon:code-bold" width={18} height={18} color="#0284c7" />
-              </div>
+              <img 
+                src="https://github.com/sanketpadhyal.png" 
+                alt="Sanket Padhyal" 
+                className="lp-mobile-watermark-avatar"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = safeImages.mascotCharacter;
+                }}
+              />
               <div className="lp-mobile-watermark-content">
                 <p className="lp-mobile-watermark-author">
-                  Engineered with 💙 by <strong>Sanket Padhyal</strong>
+                  Engineered by <strong>Sanket Padhyal</strong>
                 </p>
                 <p className="lp-mobile-watermark-license">
-                  100% Open Source under <strong>MIT License</strong>. Contributions & PRs welcome!
+                  Open Source Architecture under <strong>MIT License</strong>
                 </p>
               </div>
               <a 
@@ -262,6 +267,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 rel="noopener noreferrer"
                 className="lp-mobile-watermark-link"
               >
+                <GithubIcon size={13} />
                 <span>Contribute on GitHub</span>
                 <ChevronRight size={13} />
               </a>
