@@ -799,24 +799,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 </div>
                 <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
               </button>
-
-              {/* Option 3: Instant Demo Session */}
-              <button 
-                type="button" 
-                className="vd-wallet-option-btn vd-wallet-demo-option"
-                onClick={connectDemoWallet}
-              >
-                <div className="vd-wallet-option-left">
-                  <div className="vd-wallet-logo-box" style={{ background: '#fef3c7', color: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Zap size={20} color="#d97706" fill="#d97706" />
-                  </div>
-                  <div className="vd-wallet-option-meta">
-                    <span className="vd-wallet-name">Instant Demo Wallet</span>
-                    <span className="vd-wallet-status">No extension needed • 0.4500 ETH Base Testnet</span>
-                  </div>
-                </div>
-                <span className="vd-demo-badge">1-Click Test</span>
-              </button>
             </div>
           </div>
         </div>
