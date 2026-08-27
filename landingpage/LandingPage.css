@@ -114,26 +114,26 @@ section {
   opacity: 0.92;
 }
 
-/* 1. DARK FROSTED GLASS TRANSLUCENT NAVBAR */
+/* 1. CRYSTAL WHITE FROSTED GLASS TRANSLUCENT NAVBAR */
 .lp-navbar {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  background: rgba(7, 25, 51, 0.82) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(255, 255, 255, 0.68) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(2, 132, 199, 0.12) !important;
   z-index: 999999 !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 24px rgba(11, 36, 71, 0.05);
   transition: background-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .lp-navbar.menu-open {
-  background: rgba(7, 25, 51, 0.96) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 20px 40px rgba(11, 36, 71, 0.12) !important;
+  border-bottom: 1px solid rgba(2, 132, 199, 0.2) !important;
 }
 
 .lp-nav-inner {
@@ -143,7 +143,7 @@ section {
   height: 76px;
 }
 
-/* Brand Logo Text - Bold White with Cyber Cyan Accent */
+/* Brand Logo Text - Bold Geometric Navy with Cyan Accent */
 .lp-brand-btn {
   display: flex;
   align-items: center;
@@ -155,12 +155,12 @@ section {
   font-family: var(--font-sans);
   font-size: 26px;
   font-weight: 800;
-  color: #ffffff;
+  color: #0b2447;
   letter-spacing: -0.03em;
 }
 
 .lp-brand-accent {
-  color: #38bdf8;
+  color: #0284c7;
 }
 
 .lp-brand-btn img {
@@ -183,7 +183,7 @@ section {
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.82);
+  color: #334155;
   font-family: var(--font-sans);
   padding: 8px 16px;
   border-radius: 9999px;
@@ -191,8 +191,9 @@ section {
 }
 
 .lp-nav-link-btn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.12);
+  color: #0284c7;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
 }
 
 .lp-nav-actions {
@@ -206,7 +207,7 @@ section {
   display: none;
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: #0b2447;
   cursor: pointer;
   padding: 8px;
   border-radius: 10px;
@@ -217,7 +218,7 @@ section {
 
 .lp-mobile-menu-toggle:active {
   transform: scale(0.92);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(2, 132, 199, 0.1);
 }
 
 /* ANIMATED MOBILE DROPDOWN PANEL */
@@ -235,8 +236,10 @@ section {
     opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
     transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
     visibility 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  background: rgba(7, 25, 51, 0.98);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-top: 1px solid rgba(2, 132, 199, 0.12);
 }
 
 .lp-mobile-panel.open {
@@ -265,8 +268,8 @@ section {
 }
 
 .lp-mobile-nav-link-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(2, 132, 199, 0.12);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -274,7 +277,7 @@ section {
   text-align: left;
   font-size: 15.5px;
   font-weight: 700;
-  color: #ffffff;
+  color: #0b2447;
   font-family: var(--font-sans);
   padding: 14px 18px;
   border-radius: 14px;
@@ -283,19 +286,19 @@ section {
 
 .lp-mobile-nav-link-btn:hover,
 .lp-mobile-nav-link-btn:active {
-  background: rgba(255, 255, 255, 0.16);
-  color: #38bdf8;
-  border-color: rgba(56, 189, 248, 0.4);
+  background: #ffffff;
+  color: #0284c7;
+  border-color: rgba(2, 132, 199, 0.3);
 }
 
 .lp-nav-chevron {
-  color: rgba(255, 255, 255, 0.6);
+  color: #64748b;
   transition: color 0.18s ease;
 }
 
 .lp-mobile-nav-link-btn:hover .lp-nav-chevron,
 .lp-mobile-nav-link-btn:active .lp-nav-chevron {
-  color: #38bdf8;
+  color: #0284c7;
 }
 
 .lp-mobile-panel-actions {
