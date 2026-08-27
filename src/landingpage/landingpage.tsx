@@ -10,7 +10,9 @@ import {
   Check, 
   ExternalLink,
   ArrowRight,
-  User
+  User,
+  Menu,
+  X
 } from 'lucide-react';
 
 const GithubIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
@@ -31,6 +33,7 @@ interface CryptoDemoOutput {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [demoInput, setDemoInput] = useState<string>('My top-secret financial report & encrypted family photos.');
   const [demoOutput, setDemoOutput] = useState<CryptoDemoOutput>({
     iv: '',
@@ -84,18 +87,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
     runLiveEncryption();
   }, [demoInput]);
 
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
   return (
     <div className="lp-root animate-blur-in">
       
       {/* 1. FULL-WIDTH STICKY NAVBAR */}
       <header className="lp-navbar">
         <div className="lp-container lp-nav-inner">
-          <a href="#hero" className="lp-brand">
+          <a href="#hero" className="lp-brand" onClick={closeMobileMenu}>
             <img src={logoImg} alt="DeStorage Logo" />
             <span>DeStorage</span>
             <span className="lp-subdomain-chip">destorage.sanketpadhyal.in</span>
           </a>
 
+          {/* Desktop Navigation Links */}
           <ul className="lp-nav-links">
             <li><a href="#features" className="lp-nav-link">Why us</a></li>
             <li><a href="#features" className="lp-nav-link">Architecture</a></li>
@@ -104,6 +110,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             <li><a href="#creator" className="lp-nav-link">Developer</a></li>
           </ul>
 
+          {/* Desktop Actions */}
           <div className="lp-nav-actions">
             <a 
               href="https://github.com/sanketpadhyal/DeStorage" 
@@ -113,6 +120,51 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             >
               <GithubIcon size={16} />
               <span>GitHub</span>
+            </a>
+          </div>
+
+          {/* Mobile Menu Hamburger Toggle */}
+          <button 
+            className="lp-mobile-menu-toggle"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle Navigation Menu"
+          >
+            {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
+        </div>
+
+        {/* Mobile Dropdown Panel */}
+        <div className={`lp-mobile-panel ${isMobileMenuOpen ? 'open' : ''}`}>
+          <a href="#hero" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Home</a>
+          <a href="#features" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Why us & Architecture</a>
+          <a href="#pricing" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Storage Packages</a>
+          <a href="#crypto-demo" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Live Crypto Demo</a>
+          <a href="#creator" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Developer Profile</a>
+
+          <div className="lp-mobile-panel-actions">
+            <button 
+              onClick={() => {
+                closeMobileMenu();
+                if (onLaunchApp) onLaunchApp();
+                else {
+                  const el = document.getElementById('crypto-demo');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="lp-btn-cyan"
+            >
+              <span>Launch Vault</span>
+              <ArrowRight size={16} />
+            </button>
+
+            <a 
+              href="https://github.com/sanketpadhyal/DeStorage" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="lp-btn-black"
+            >
+              <GithubIcon size={16} />
+              <span>GitHub Repository</span>
             </a>
           </div>
         </div>

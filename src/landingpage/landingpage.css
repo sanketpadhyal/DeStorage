@@ -20,7 +20,9 @@
 /* 1. STICKY TOP NAVBAR (Full Bleed) */
 .lp-navbar {
   width: 100%;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid #f1f5f9;
   position: sticky;
   top: 0;
@@ -46,9 +48,9 @@
 }
 
 .lp-brand img {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   object-fit: cover;
 }
 
@@ -61,6 +63,7 @@
   padding: 3px 8px;
   border-radius: 6px;
   font-weight: 700;
+  display: inline-block;
 }
 
 .lp-nav-links {
@@ -88,6 +91,59 @@
   gap: 12px;
 }
 
+/* MOBILE HAMBURGER BUTTON */
+.lp-mobile-menu-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #0f172a;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* MOBILE DROPDOWN PANEL */
+.lp-mobile-panel {
+  display: none;
+  position: absolute;
+  top: 76px;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 2px solid #e2e8f0;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  flex-direction: column;
+  gap: 18px;
+  z-index: 99;
+}
+
+.lp-mobile-panel.open {
+  display: flex;
+}
+
+.lp-mobile-nav-link {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 1px solid #f8fafc;
+}
+
+.lp-mobile-nav-link:hover {
+  color: #0284c7;
+}
+
+.lp-mobile-panel-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
 /* BUTTONS */
 .lp-btn-black {
   background: #0f172a;
@@ -101,6 +157,7 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: background-color 0.15s ease;
 }
@@ -121,6 +178,7 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: background-color 0.15s ease;
 }
@@ -511,8 +569,17 @@
   text-decoration: underline;
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE & MOBILE OPTIMIZATIONS */
 @media (max-width: 960px) {
+  .lp-nav-links, .lp-nav-actions {
+    display: none;
+  }
+  .lp-mobile-menu-toggle {
+    display: flex;
+  }
+  .lp-subdomain-chip {
+    display: none;
+  }
   .lp-hero-grid, .lp-features-grid, .lp-sandbox-layout {
     grid-template-columns: 1fr;
     gap: 36px;
@@ -526,22 +593,50 @@
   .lp-creator-card {
     flex-direction: column;
     text-align: center;
+    padding: 32px 24px;
   }
   .lp-creator-actions {
     justify-content: center;
+    flex-wrap: wrap;
   }
 }
 
 @media (max-width: 640px) {
-  .lp-nav-links {
-    display: none;
+  .lp-container {
+    padding: 0 18px;
+  }
+  .lp-hero-section, .lp-features-section, .lp-pricing-section, .lp-sandbox-section, .lp-creator-section {
+    padding: 50px 0;
   }
   .lp-hero-title {
-    font-size: 30px;
+    font-size: 32px;
+    line-height: 1.2;
+  }
+  .lp-hero-desc {
+    font-size: 15px;
+  }
+  .lp-hero-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  .lp-hero-actions button, .lp-hero-actions a {
+    width: 100%;
+    justify-content: center;
+  }
+  .lp-section-title {
+    font-size: 26px;
   }
   .lp-numbered-2x2 {
     grid-template-columns: 1fr;
     gap: 24px;
+  }
+  .lp-price-card {
+    padding: 28px 20px;
+  }
+  .lp-sandbox-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
   .lp-footer-inner {
     flex-direction: column;
