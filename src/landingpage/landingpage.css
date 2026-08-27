@@ -195,35 +195,40 @@ section {
 .lp-mobile-panel-inner {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: calc(100dvh - 110px);
-  padding: 16px 24px 36px;
-  gap: 6px;
+  min-height: calc(100dvh - 100px);
+  padding: 16px 20px 32px;
+}
+
+.lp-mobile-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 }
 
 .lp-mobile-nav-link-btn {
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(2, 132, 199, 0.08);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: left;
-  font-size: 16px;
+  font-size: 15.5px;
   font-weight: 700;
   color: #0b2447;
   font-family: var(--font-sans);
-  padding: 13px 12px;
-  border-radius: 12px;
-  border-bottom: 1px solid rgba(2, 132, 199, 0.08);
+  padding: 14px 18px;
+  border-radius: 14px;
   transition: all 0.18s ease;
 }
 
 .lp-mobile-nav-link-btn:hover,
 .lp-mobile-nav-link-btn:active {
-  background: rgba(255, 255, 255, 0.8);
+  background: #ffffff;
   color: #0284c7;
-  padding-left: 16px;
+  border-color: rgba(2, 132, 199, 0.25);
+  transform: translateX(2px);
 }
 
 .lp-nav-chevron {
@@ -241,9 +246,21 @@ section {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(2, 132, 199, 0.12);
+  margin-top: auto; /* Cleanly pushes action buttons to bottom */
+  padding-top: 24px;
+}
+
+.lp-mobile-panel-actions button,
+.lp-mobile-panel-actions a {
+  height: 50px;
+  width: 100%;
+  border-radius: 9999px;
+  font-size: 15px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 /* BUTTONS */

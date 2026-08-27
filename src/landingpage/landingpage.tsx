@@ -199,30 +199,32 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* Seamless Animated Mobile Extension Panel */}
         <div className={`lp-mobile-panel ${isMobileMenuOpen ? 'open' : ''}`}>
           <div className="lp-container lp-mobile-panel-inner">
-            <button type="button" className="lp-mobile-nav-link-btn" onClick={scrollToTop}>
-              <span>Home</span>
-              <ChevronRight size={16} className="lp-nav-chevron" />
-            </button>
-            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('features')}>
-              <span>Why us & Architecture</span>
-              <ChevronRight size={16} className="lp-nav-chevron" />
-            </button>
-            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('filetypes')}>
-              <span>Supported Files</span>
-              <ChevronRight size={16} className="lp-nav-chevron" />
-            </button>
-            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('pricing')}>
-              <span>Storage Packages</span>
-              <ChevronRight size={16} className="lp-nav-chevron" />
-            </button>
-            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>
-              <span>Live Crypto Demo</span>
-              <ChevronRight size={16} className="lp-nav-chevron" />
-            </button>
-            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('creator')}>
-              <span>Developer Profile</span>
-              <ChevronRight size={16} className="lp-nav-chevron" />
-            </button>
+            <div className="lp-mobile-nav-group">
+              <button type="button" className="lp-mobile-nav-link-btn" onClick={scrollToTop}>
+                <span>Home</span>
+                <ChevronRight size={16} className="lp-nav-chevron" />
+              </button>
+              <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('features')}>
+                <span>Why us & Architecture</span>
+                <ChevronRight size={16} className="lp-nav-chevron" />
+              </button>
+              <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('filetypes')}>
+                <span>Supported Files</span>
+                <ChevronRight size={16} className="lp-nav-chevron" />
+              </button>
+              <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('pricing')}>
+                <span>Storage Packages</span>
+                <ChevronRight size={16} className="lp-nav-chevron" />
+              </button>
+              <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>
+                <span>Live Crypto Demo</span>
+                <ChevronRight size={16} className="lp-nav-chevron" />
+              </button>
+              <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('creator')}>
+                <span>Developer Profile</span>
+                <ChevronRight size={16} className="lp-nav-chevron" />
+              </button>
+            </div>
 
             <div className="lp-mobile-panel-actions">
               <button 
