@@ -21,6 +21,15 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "vault",
+    "landingpage",
+    "web3",
+    "crypto",
+    "ipfs",
+    "types",
+    "utils",
+    "config",
+    "etc"
   ]
 }

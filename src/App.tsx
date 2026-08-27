@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Lenis from 'lenis';
-import { Web3Provider } from './web3/Web3Context';
-import { LandingPage } from './landingpage/LandingPage';
-import { VaultDashboard } from './vault/VaultDashboard';
+import { Web3Provider } from '../web3/Web3Context';
+import { LandingPage } from '../landingpage/LandingPage';
+import { VaultDashboard } from '../vault/VaultDashboard';
 import './App.css';
 
 export type ViewMode = 'landing' | 'vault';
