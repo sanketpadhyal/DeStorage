@@ -731,6 +731,9 @@ section {
     grid-template-columns: 1fr;
     gap: 36px;
   }
+  .lp-hero-right {
+    order: -1;
+  }
   .lp-hero-stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
