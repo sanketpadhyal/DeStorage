@@ -1232,12 +1232,20 @@
   }
   .vd-nav-inner {
     height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   .vd-brand-group {
-    gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .vd-back-btn {
+    padding: 4px;
   }
   .vd-brand {
-    font-size: 18px;
+    font-size: 19px;
     gap: 8px;
   }
   .vd-brand img {
@@ -1245,27 +1253,29 @@
     height: 28px;
   }
   .vd-nav-actions {
-    gap: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0;
   }
   .vd-network-pill {
-    padding: 0 8px;
-    height: 36px;
-  }
-  .vd-network-pill span {
     display: none;
   }
   .vd-btn-connect,
   .vd-btn-wallet-active {
-    height: 36px;
-    padding: 0 10px;
+    height: 38px;
+    padding: 0 12px;
     font-size: 12px;
-    gap: 6px;
+    gap: 7px;
+    border-radius: 9999px;
   }
   .vd-wallet-status-label {
     display: none;
   }
   .vd-wallet-addr-pill {
-    font-size: 11.5px;
+    font-size: 12px;
+    padding: 2px 7px;
+    background: rgba(255, 255, 255, 0.22);
+    border-radius: 6px;
   }
   .vd-wallet-badge {
     height: 36px;
