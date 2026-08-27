@@ -1587,14 +1587,16 @@
 
 .vd-account-action-pill:hover {
   background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
-  color: #ffffff;
+  color: #ffffff !important;
   border-color: transparent;
-  transform: translateY(-2px) scale(1.02);
+  transform: scale(1.03);
+  filter: brightness(1.04);
   box-shadow: 0 6px 18px rgba(2, 132, 199, 0.28);
 }
 
 .vd-account-action-pill:active {
-  transform: scale(0.98);
+  transform: scale(0.96) !important;
+  filter: brightness(0.94) !important;
 }
 
 .vd-account-stats-grid {
@@ -1662,10 +1664,17 @@
 }
 
 .vd-account-faucet-link:hover {
-  background: linear-gradient(135deg, rgba(2, 132, 199, 0.16) 0%, rgba(6, 182, 212, 0.16) 100%);
-  border-color: #0284c7;
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  color: #ffffff !important;
+  border-color: transparent;
+  transform: scale(1.03);
+  filter: brightness(1.04);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.35);
+}
+
+.vd-account-faucet-link:active {
+  transform: scale(0.96) !important;
+  filter: brightness(0.94) !important;
 }
 
 .vd-account-logout-wrapper {
@@ -1693,12 +1702,14 @@
 
 .vd-btn-logout-wallet:hover {
   background: linear-gradient(135deg, #ef4444 0%, #f43f5e 100%);
-  color: #ffffff;
+  color: #ffffff !important;
   border-color: transparent;
-  transform: translateY(-2px) scale(1.02);
+  transform: scale(1.03);
+  filter: brightness(1.04);
   box-shadow: 0 8px 24px rgba(239, 68, 68, 0.35);
 }
 
 .vd-btn-logout-wallet:active {
-  transform: scale(0.98);
+  transform: scale(0.96) !important;
+  filter: brightness(0.94) !important;
 }
