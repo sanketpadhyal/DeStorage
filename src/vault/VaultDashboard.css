@@ -103,6 +103,12 @@
   margin-left: 2px;
 }
 
+.vd-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .vd-network-pill {
   display: flex;
   align-items: center;
@@ -110,7 +116,9 @@
   background: #ffffff;
   border: 1px solid rgba(2, 132, 199, 0.18);
   border-radius: 9999px;
-  padding: 6px 14px;
+  padding: 0 14px;
+  height: 40px;
+  box-sizing: border-box;
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 600;
@@ -132,8 +140,10 @@
   color: #ffffff;
   border: none;
   border-radius: 9999px;
-  padding: 10px 22px;
-  font-size: 14px;
+  padding: 0 20px;
+  height: 40px;
+  box-sizing: border-box;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -142,6 +152,7 @@
   font-family: var(--font-sans);
   box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
   transition: opacity 0.15s ease;
+  white-space: nowrap;
 }
 
 .vd-btn-connect:hover {
