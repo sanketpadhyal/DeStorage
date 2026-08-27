@@ -84,6 +84,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   const [batchDone, setBatchDone] = useState<number>(0);
   const [uploadedBytes, setUploadedBytes] = useState<number>(0);
   const [totalBytes, setTotalBytes] = useState<number>(0);
+  const [uploadSpeed, setUploadSpeed] = useState<string>('');
+  const [uploadEta, setUploadEta] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [copiedCid, setCopiedCid] = useState<string | null>(null);
@@ -395,6 +397,9 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       setUploadStage(isBatch ? `${file.name}: Pinning to IPFS...` : 'Pinning to IPFS...');
       setUploadedBytes(0);
       setTotalBytes(encryptedData.encryptedBuffer.byteLength);
+      setUploadSpeed('');
+      setUploadEta('');
+      const uploadStartTime = Date.now();
       const ipfsResult: IpfsUploadResult = await uploadToIpfs(
         encryptedData.encryptedBuffer,
         file.name,
@@ -410,6 +415,19 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         (loaded, total) => {
           setUploadedBytes(loaded);
           setTotalBytes(total);
+          const elapsedSec = (Date.now() - uploadStartTime) / 1000;
+          if (elapsedSec > 0.3 && loaded > 0) {
+            const bytesPerSec = loaded / elapsedSec;
+            const mbPerSec = bytesPerSec / (1024 * 1024);
+            setUploadSpeed(mbPerSec >= 1 ? `${mbPerSec.toFixed(1)} MB/s` : `${(bytesPerSec / 1024).toFixed(0)} KB/s`);
+            const remainingBytes = total - loaded;
+            const etaSec = Math.ceil(remainingBytes / bytesPerSec);
+            if (etaSec > 0 && etaSec < 3600) {
+              setUploadEta(etaSec < 60 ? `~${etaSec}s left` : `~${Math.ceil(etaSec / 60)}m left`);
+            } else {
+              setUploadEta('');
+            }
+          }
         }
       );
 
@@ -776,9 +794,13 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                       <span className="vd-uploading-counter">
                         {(uploadedBytes / 1048576).toFixed(2)} MB / {(totalBytes / 1048576).toFixed(2)} MB
                       </span>
-                      <span className="vd-uploading-pct">
-                        {Math.min(100, Math.round((uploadedBytes / totalBytes) * 100))}%
-                      </span>
+                      <div className="vd-uploading-right-meta">
+                        {uploadSpeed && <span className="vd-uploading-speed-tag">{uploadSpeed}</span>}
+                        {uploadEta && <span className="vd-uploading-eta-tag">{uploadEta}</span>}
+                        <span className="vd-uploading-pct">
+                          {Math.min(100, Math.round((uploadedBytes / totalBytes) * 100))}%
+                        </span>
+                      </div>
                     </div>
                     {batchTotal > 1 && (
                       <span className="vd-uploading-batch-label">{batchDone} of {batchTotal} files done</span>
