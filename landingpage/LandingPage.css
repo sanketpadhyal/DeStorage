@@ -566,13 +566,11 @@ section {
 
 .lp-hero-img {
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   height: auto;
-  object-fit: cover;
-  border-radius: 28px;
-  box-shadow: 0 20px 50px -10px rgba(11, 36, 71, 0.18), 0 0 1px rgba(2, 132, 199, 0.3);
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(2, 132, 199, 0.2)) drop-shadow(0 6px 16px rgba(168, 85, 247, 0.15));
   animation: heroFloat 6s ease-in-out infinite;
-  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 @keyframes heroFloat {
@@ -580,7 +578,7 @@ section {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-10px);
   }
 }
 
