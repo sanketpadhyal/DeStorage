@@ -236,11 +236,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <section id="hero" className="lp-hero-section">
           <div className="lp-container lp-hero-grid">
             <div className="lp-hero-left">
-              <div className="lp-hero-badge">
-                <div className="lp-hero-badge-dot"></div>
-                <span>Zero-Knowledge • Decentralized Cloud Vault</span>
-              </div>
-
               <h1 className="lp-hero-title">
                 Own your files with <span>proper decentralized</span> privacy.
               </h1>
