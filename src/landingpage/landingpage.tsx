@@ -95,7 +95,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
       {/* 1. FULL-WIDTH STICKY NAVBAR */}
       <header className="lp-navbar">
         <div className="lp-container lp-nav-inner">
-          <a href="#hero" className="lp-brand" onClick={closeMobileMenu}>
+          <a 
+            href="#hero" 
+            className="lp-brand" 
+            onClick={(e) => {
+              e.preventDefault();
+              closeMobileMenu();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              window.history.pushState(null, '', '/');
+            }}
+          >
             <img src={logoImg} alt="DeStorage Logo" />
             <span>DeStorage</span>
             <span className="lp-subdomain-chip">destorage.sanketpadhyal.in</span>

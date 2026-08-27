@@ -17,16 +17,22 @@
   padding: 0 24px;
 }
 
+/* Scroll Offset for all targeted sections so sticky navbar never overlaps */
+section {
+  scroll-margin-top: 84px;
+}
+
 /* 1. STICKY TOP NAVBAR (Full Bleed) */
 .lp-navbar {
   width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid #f1f5f9;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .lp-nav-inner {
@@ -187,10 +193,13 @@
   background: #0096c7;
 }
 
-/* 2. HERO SECTION (Full Screen) */
+/* 2. HERO SECTION (Full Viewport Screen Fit) */
 .lp-hero-section {
   width: 100%;
-  padding: 60px 0 80px;
+  min-height: calc(100vh - 76px);
+  display: flex;
+  align-items: center;
+  padding: 40px 0 60px;
   background: #ffffff;
   border-bottom: 1px solid #f1f5f9;
 }
@@ -200,12 +209,13 @@
   grid-template-columns: 1.15fr 0.85fr;
   align-items: center;
   gap: 48px;
+  width: 100%;
 }
 
 .lp-hero-left {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
   text-align: left;
 }
 
@@ -237,7 +247,7 @@
   font-weight: 800;
   color: #0f172a;
   letter-spacing: -0.03em;
-  line-height: 1.15;
+  line-height: 1.14;
 }
 
 .lp-hero-title span {
@@ -275,7 +285,7 @@
 /* 3. ARCHITECTURE EXPERTISE SECTION (2x2 with illustration) */
 .lp-features-section {
   width: 100%;
-  padding: 80px 0;
+  padding: 100px 0;
   background: #fafcff;
   border-bottom: 1px solid #f1f5f9;
 }
@@ -300,7 +310,7 @@
 }
 
 .lp-section-title {
-  font-size: 36px;
+  font-size: 38px;
   font-weight: 800;
   color: #0f172a;
   letter-spacing: -0.02em;
@@ -355,7 +365,7 @@
 /* 4. PRICING & STORAGE TIERS */
 .lp-pricing-section {
   width: 100%;
-  padding: 80px 0;
+  padding: 100px 0;
   background: #ffffff;
   border-bottom: 1px solid #f1f5f9;
 }
@@ -433,7 +443,7 @@
 /* 5. INTERACTIVE WEB CRYPTO SANDBOX */
 .lp-sandbox-section {
   width: 100%;
-  padding: 80px 0;
+  padding: 100px 0;
   background: #0f172a;
   color: #ffffff;
   border-bottom: 1px solid #1e293b;
@@ -501,7 +511,7 @@
 /* 6. CREATOR SECTION */
 .lp-creator-section {
   width: 100%;
-  padding: 80px 0;
+  padding: 100px 0;
   background: #ffffff;
 }
 
@@ -580,6 +590,10 @@
   .lp-subdomain-chip {
     display: none;
   }
+  .lp-hero-section {
+    min-height: auto;
+    padding: 60px 0;
+  }
   .lp-hero-grid, .lp-features-grid, .lp-sandbox-layout {
     grid-template-columns: 1fr;
     gap: 36px;
@@ -605,7 +619,10 @@
   .lp-container {
     padding: 0 18px;
   }
-  .lp-hero-section, .lp-features-section, .lp-pricing-section, .lp-sandbox-section, .lp-creator-section {
+  .lp-hero-section {
+    padding: 44px 0 50px;
+  }
+  .lp-features-section, .lp-pricing-section, .lp-sandbox-section, .lp-creator-section {
     padding: 50px 0;
   }
   .lp-hero-title {
