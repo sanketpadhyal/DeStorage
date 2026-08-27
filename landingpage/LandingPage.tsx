@@ -181,11 +181,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 Supported Files
               </button>
             </li>
-            <li>
-              <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>
-                Live Crypto Demo
-              </button>
-            </li>
           </ul>
 
           {/* Desktop Actions */}
