@@ -15,7 +15,7 @@ export interface Web3ContextType {
   hasInjectedWallet: boolean;
   openWalletModal: () => void;
   closeWalletModal: () => void;
-  connectWallet: () => Promise<void>;
+  connectWallet: () => Promise<boolean>;
   connectDemoWallet: () => void;
   disconnectWallet: () => Promise<void> | void;
   switchToBaseSepolia: () => Promise<void>;
@@ -110,11 +110,11 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // Connect Injected (MetaMask / Coinbase / Rainbow)
-  const connectWallet = async () => {
+  const connectWallet = async (): Promise<boolean> => {
     const ethereum = (window as any).ethereum;
     if (!ethereum) {
       setIsWalletModalOpen(true);
-      return;
+      return false;
     }
 
     try {
@@ -135,10 +135,12 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (Number(network.chainId) !== BASE_SEPOLIA_DECIMAL) {
           await switchToBaseSepolia();
         }
-        setIsWalletModalOpen(false);
+        return true;
       }
+      return false;
     } catch (err: any) {
       console.error('Wallet connection error:', err);
+      throw err;
     } finally {
       setIsConnecting(false);
     }

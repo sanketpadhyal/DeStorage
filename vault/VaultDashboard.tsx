@@ -105,11 +105,51 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   const [isAccountClosing, setIsAccountClosing] = useState<boolean>(false);
   const [copiedAddress, setCopiedAddress] = useState<boolean>(false);
 
+  // PhonePe-style animated connection state
+  const [connectStep, setConnectStep] = useState<'idle' | 'waiting' | 'success' | 'error'>('idle');
+  const [selectedWalletName, setSelectedWalletName] = useState<string>('MetaMask');
+  const [selectedWalletLogo, setSelectedWalletLogo] = useState<string>(safeImages.metamask);
+  const [connectErrorMsg, setConnectErrorMsg] = useState<string>('');
+
+  const handleInitiateConnect = async (
+    walletName: string,
+    logo: string,
+    isInstalled: boolean,
+    downloadUrl: string
+  ) => {
+    if (!isInstalled) {
+      window.open(downloadUrl, '_blank');
+      return;
+    }
+    setSelectedWalletName(walletName);
+    setSelectedWalletLogo(logo);
+    setConnectStep('waiting');
+    setConnectErrorMsg('');
+
+    try {
+      const success = await connectWallet();
+      if (success) {
+        setConnectStep('success');
+        setTimeout(() => {
+          handleSmoothCloseWallet();
+          setTimeout(() => setConnectStep('idle'), 350);
+        }, 1600);
+      } else {
+        setConnectStep('error');
+        setConnectErrorMsg('Connection was not completed. Please try again.');
+      }
+    } catch (err: any) {
+      setConnectStep('error');
+      setConnectErrorMsg(err?.message || 'Connection request rejected or cancelled.');
+    }
+  };
+
   const handleSmoothCloseWallet = () => {
     setIsWalletClosing(true);
     setTimeout(() => {
       setIsWalletClosing(false);
       closeWalletModal();
+      setConnectStep('idle');
     }, 300);
   };
 
@@ -732,82 +772,143 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
           onClick={handleSmoothCloseWallet}
         >
           <div className="vd-wallet-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="vd-modal-header">
-              <div className="vd-modal-title-row">
-                <Wallet size={20} color="#0284c7" />
-                <h3 className="vd-modal-title">Connect Web3 Wallet</h3>
-              </div>
-              <button type="button" className="vd-modal-close" onClick={handleSmoothCloseWallet}>
-                <Icon icon="iconamoon:close-bold" width={20} height={20} />
-              </button>
-            </div>
-
-            <p className="vd-wallet-modal-subtitle">
-              Connect to Base Sepolia testnet to anchor your encrypted file proofs and cryptographic hashes on-chain.
-            </p>
-
-            <div className="vd-wallet-options-list">
-              {/* Option 1: MetaMask (Recommended) */}
-              <button 
-                type="button" 
-                className="vd-wallet-option-btn vd-wallet-recommended-option"
-                onClick={() => {
-                  if (hasInjectedWallet) {
-                    connectWallet();
-                  } else {
-                    window.open('https://metamask.io/download/', '_blank');
-                  }
-                }}
-              >
-                <div className="vd-wallet-option-left">
-                  <div className="vd-wallet-logo-box" style={{ background: '#ffffff', padding: '4px', border: '1px solid rgba(0,0,0,0.06)' }}>
-                    <img 
-                      src={safeImages.metamask} 
-                      alt="MetaMask" 
-                      style={{ width: '28px', height: '28px', objectFit: 'contain' }} 
-                    />
+            {connectStep === 'idle' && (
+              <>
+                <div className="vd-modal-header">
+                  <div className="vd-modal-title-row">
+                    <Wallet size={20} color="#0284c7" />
+                    <h3 className="vd-modal-title">Connect Web3 Wallet</h3>
                   </div>
-                  <div className="vd-wallet-option-meta">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span className="vd-wallet-name">MetaMask</span>
-                      <span className="vd-wallet-recommended-badge">Recommended</span>
+                  <button type="button" className="vd-modal-close" onClick={handleSmoothCloseWallet}>
+                    <Icon icon="iconamoon:close-bold" width={20} height={20} />
+                  </button>
+                </div>
+
+                <p className="vd-wallet-modal-subtitle">
+                  Connect to Base Sepolia testnet to anchor your encrypted file proofs and cryptographic hashes on-chain.
+                </p>
+
+                <div className="vd-wallet-options-list">
+                  {/* Option 1: MetaMask (Recommended) */}
+                  <button 
+                    type="button" 
+                    className="vd-wallet-option-btn vd-wallet-recommended-option"
+                    onClick={() => handleInitiateConnect(
+                      'MetaMask', 
+                      safeImages.metamask, 
+                      hasInjectedWallet, 
+                      'https://metamask.io/download/'
+                    )}
+                  >
+                    <div className="vd-wallet-option-left">
+                      <div className="vd-wallet-logo-box" style={{ background: '#ffffff', padding: '4px', border: '1px solid rgba(0,0,0,0.06)' }}>
+                        <img 
+                          src={safeImages.metamask} 
+                          alt="MetaMask" 
+                          style={{ width: '28px', height: '28px', objectFit: 'contain' }} 
+                        />
+                      </div>
+                      <div className="vd-wallet-option-meta">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span className="vd-wallet-name">MetaMask</span>
+                          <span className="vd-wallet-recommended-badge">Recommended</span>
+                        </div>
+                        <span className="vd-wallet-status">
+                          {hasInjectedWallet ? 'Detected Browser Extension' : 'Install MetaMask Extension'}
+                        </span>
+                      </div>
                     </div>
-                    <span className="vd-wallet-status">
-                      {hasInjectedWallet ? 'Detected Browser Extension' : 'Install MetaMask Extension'}
-                    </span>
-                  </div>
-                </div>
-                <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
-              </button>
+                    <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
+                  </button>
 
-              {/* Option 2: Coinbase Wallet */}
-              <button 
-                type="button" 
-                className="vd-wallet-option-btn"
-                onClick={() => {
-                  if (hasInjectedWallet) {
-                    connectWallet();
-                  } else {
-                    window.open('https://www.coinbase.com/wallet/downloads', '_blank');
-                  }
-                }}
-              >
-                <div className="vd-wallet-option-left">
-                  <div className="vd-wallet-logo-box" style={{ background: '#ffffff', padding: '4px', border: '1px solid rgba(0,0,0,0.06)' }}>
-                    <img 
-                      src={safeImages.coinbase} 
-                      alt="Coinbase Wallet" 
-                      style={{ width: '28px', height: '28px', objectFit: 'contain', borderRadius: '6px' }} 
-                    />
-                  </div>
-                  <div className="vd-wallet-option-meta">
-                    <span className="vd-wallet-name">Coinbase Wallet</span>
-                    <span className="vd-wallet-status">Smart Wallet & Injected</span>
+                  {/* Option 2: Coinbase Wallet */}
+                  <button 
+                    type="button" 
+                    className="vd-wallet-option-btn"
+                    onClick={() => handleInitiateConnect(
+                      'Coinbase Wallet', 
+                      safeImages.coinbase, 
+                      hasInjectedWallet, 
+                      'https://www.coinbase.com/wallet/downloads'
+                    )}
+                  >
+                    <div className="vd-wallet-option-left">
+                      <div className="vd-wallet-logo-box" style={{ background: '#ffffff', padding: '4px', border: '1px solid rgba(0,0,0,0.06)' }}>
+                        <img 
+                          src={safeImages.coinbase} 
+                          alt="Coinbase Wallet" 
+                          style={{ width: '28px', height: '28px', objectFit: 'contain', borderRadius: '6px' }} 
+                        />
+                      </div>
+                      <div className="vd-wallet-option-meta">
+                        <span className="vd-wallet-name">Coinbase Wallet</span>
+                        <span className="vd-wallet-status">Smart Wallet & Injected</span>
+                      </div>
+                    </div>
+                    <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* WAITING FOR WALLET SIGNATURE / APPROVAL ANIMATION */}
+            {connectStep === 'waiting' && (
+              <div className="vd-connect-anim-box">
+                <div className="vd-connect-spinner-wrap">
+                  <div className="vd-connect-spinner-ring" />
+                  <div className="vd-connect-logo-center">
+                    <img src={selectedWalletLogo} alt={selectedWalletName} />
                   </div>
                 </div>
-                <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
-              </button>
-            </div>
+                <h3 className="vd-connect-status-title">Waiting for Approval...</h3>
+                <p className="vd-connect-status-desc">
+                  Please accept the connection request in your <strong>{selectedWalletName}</strong> popup window.
+                </p>
+                <div className="vd-connect-step-indicator">
+                  <span className="vd-pulse-dot" />
+                  <span>Connecting to Base Sepolia Testnet</span>
+                </div>
+              </div>
+            )}
+
+            {/* PHONEPE-STYLE SUCCESS ANIMATION (ANIMATED GREEN CIRCLE + DRAW TICK) */}
+            {connectStep === 'success' && (
+              <div className="vd-connect-anim-box vd-connect-success-box">
+                <div className="vd-phonepe-tick-wrapper">
+                  <div className="vd-phonepe-tick-circle">
+                    <svg className="vd-phonepe-tick-svg" viewBox="0 0 52 52">
+                      <circle className="vd-phonepe-tick-circle-bg" cx="26" cy="26" r="24" fill="none"/>
+                      <path className="vd-phonepe-tick-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                  </div>
+                </div>
+                <h3 className="vd-connect-success-title">Connected Successfully!</h3>
+                <p className="vd-connect-success-desc">
+                  Zero-Knowledge cryptographic session linked to Base Sepolia.
+                </p>
+              </div>
+            )}
+
+            {/* ERROR / REJECTED VIEW */}
+            {connectStep === 'error' && (
+              <div className="vd-connect-anim-box">
+                <div className="vd-connect-error-icon">
+                  <Icon icon="iconamoon:close-circle-bold" width={56} height={56} color="#ef4444" />
+                </div>
+                <h3 className="vd-connect-status-title" style={{ color: '#dc2626' }}>Connection Cancelled</h3>
+                <p className="vd-connect-status-desc">
+                  {connectErrorMsg || 'The connection request was rejected or timed out.'}
+                </p>
+                <button 
+                  type="button" 
+                  className="vd-btn-connect"
+                  style={{ marginTop: '16px' }}
+                  onClick={() => setConnectStep('idle')}
+                >
+                  <span>Try Again</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

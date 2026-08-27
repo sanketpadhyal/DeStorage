@@ -1460,6 +1460,209 @@
   box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
 }
 
+/* PHONEPE-STYLE WALLET CONNECTION ANIMATIONS */
+.vd-connect-anim-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 8px 8px;
+  animation: vdFadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes vdFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vd-connect-spinner-wrap {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin: 8px auto 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vd-connect-spinner-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3.5px solid transparent;
+  border-top-color: #ec4899;
+  border-right-color: #06b6d4;
+  border-bottom-color: #a855f7;
+  animation: vdSpinRing 1.1s linear infinite;
+  box-shadow: 0 0 16px rgba(236, 72, 153, 0.25);
+}
+
+@keyframes vdSpinRing {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.vd-connect-logo-center {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(2, 132, 199, 0.18);
+  box-shadow: 0 6px 20px rgba(11, 36, 71, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.vd-connect-logo-center img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.vd-connect-status-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #0b2447;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+
+.vd-connect-status-desc {
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0 0 18px;
+  max-width: 360px;
+}
+
+.vd-connect-status-desc strong {
+  color: #0284c7;
+  font-weight: 700;
+}
+
+.vd-connect-step-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0284c7;
+}
+
+.vd-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #0284c7;
+  animation: vdDotPulse 1.5s infinite;
+}
+
+/* PHONEPE ICONIC TICK DRAW ANIMATION */
+.vd-phonepe-tick-wrapper {
+  margin: 8px auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vd-phonepe-tick-circle {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(22, 163, 74, 0.35);
+  animation: vdTickPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.vd-phonepe-tick-svg {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: block;
+}
+
+.vd-phonepe-tick-circle-bg {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 3.5;
+  stroke-miterlimit: 10;
+  stroke: #16a34a;
+  fill: #16a34a;
+  animation: vdCircleStroke 0.55s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.vd-phonepe-tick-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke: #ffffff;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: vdCheckStroke 0.35s cubic-bezier(0.65, 0, 0.45, 1) 0.45s forwards;
+}
+
+@keyframes vdCircleStroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes vdCheckStroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes vdTickPop {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.vd-connect-success-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: #15803d;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.vd-connect-success-desc {
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.vd-connect-error-icon {
+  margin: 4px auto 14px;
+}
+
 /* CONNECTED ACCOUNT & SESSION DETAILS MODAL */
 .vd-account-modal-card {
   max-width: 440px;
