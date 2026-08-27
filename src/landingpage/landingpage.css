@@ -196,7 +196,7 @@ section {
   display: flex;
   flex-direction: column;
   min-height: calc(100dvh - 100px);
-  padding: 16px 20px 32px;
+  padding: 22px 20px 32px; /* 22px top padding provides clean breathing room above Home */
 }
 
 .lp-mobile-nav-group {
