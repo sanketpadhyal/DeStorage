@@ -87,20 +87,18 @@ a.btn:active,
   transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Universal File Card Panel Physics */
+/* Universal File Card Panel - Clean Border Hover (No Pop-up Scale) */
 .vd-file-card {
-  transform: translate3d(0, 0, 0);
+  transform: none !important;
   transition: 
-    transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-    border-color 0.22s ease,
-    box-shadow 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  will-change: transform, box-shadow;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .vd-file-card:hover {
-  transform: scale(1.012);
+  transform: none !important;
   border-color: rgba(2, 132, 199, 0.45);
-  box-shadow: 0 10px 30px -4px rgba(2, 132, 199, 0.12), 0 0 1px rgba(2, 132, 199, 0.3);
+  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.08);
 }
 
 /* Universal Button Variants */
