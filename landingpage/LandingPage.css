@@ -569,17 +569,9 @@ section {
   max-width: 520px;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 20px 40px rgba(2, 132, 199, 0.2)) drop-shadow(0 6px 16px rgba(168, 85, 247, 0.15));
-  animation: heroFloat 6s ease-in-out infinite;
-}
-
-@keyframes heroFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  filter: drop-shadow(0 15px 35px rgba(2, 132, 199, 0.18)) drop-shadow(0 4px 14px rgba(168, 85, 247, 0.12));
+  user-select: none;
+  pointer-events: none;
 }
 
 /* 3. ARCHITECTURE EXPERTISE SECTION */
