@@ -75,7 +75,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     setTimeout(() => {
       setIsWalletClosing(false);
       closeWalletModal();
-    }, 220);
+    }, 300);
   };
 
   const handleSmoothClosePreview = () => {
@@ -83,7 +83,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     setTimeout(() => {
       setIsPreviewClosing(false);
       setPreviewItem(null);
-    }, 220);
+    }, 300);
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);

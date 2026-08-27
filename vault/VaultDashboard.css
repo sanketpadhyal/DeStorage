@@ -780,18 +780,18 @@
   right: 0;
   bottom: 0;
   background: rgba(11, 36, 71, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  animation: vdOverlayIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: vdOverlayIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .vd-modal-overlay.vd-closing {
-  animation: vdOverlayOut 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: vdOverlayOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes vdOverlayIn {
@@ -802,16 +802,16 @@
   }
   to {
     opacity: 1;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
 }
 
 @keyframes vdOverlayOut {
   from {
     opacity: 1;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
   }
   to {
     opacity: 0;
@@ -823,35 +823,44 @@
 .vd-preview-modal,
 .vd-modal-content,
 .vd-wallet-modal-card {
-  animation: vdCardIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity;
+  animation: vdCardIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+  transform-origin: center center;
 }
 
 .vd-modal-overlay.vd-closing .vd-preview-modal,
 .vd-modal-overlay.vd-closing .vd-modal-content,
 .vd-modal-overlay.vd-closing .vd-wallet-modal-card {
-  animation: vdCardOut 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: vdCardOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes vdCardIn {
-  from {
+  0% {
     opacity: 0;
-    transform: scale(0.94);
+    transform: scale(0.88);
+    filter: blur(6px);
   }
-  to {
+  65% {
+    transform: scale(1.015);
+    filter: blur(0px);
+  }
+  100% {
     opacity: 1;
     transform: scale(1);
+    filter: blur(0px);
   }
 }
 
 @keyframes vdCardOut {
-  from {
+  0% {
     opacity: 1;
     transform: scale(1);
+    filter: blur(0px);
   }
-  to {
+  100% {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scale(0.92);
+    filter: blur(4px);
   }
 }
 
