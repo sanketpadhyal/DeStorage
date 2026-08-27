@@ -163,37 +163,41 @@ section {
   background: rgba(2, 132, 199, 0.1);
 }
 
-/* ANIMATED MOBILE DROPDOWN PANEL (Extended directly from navbar) */
+/* ANIMATED MOBILE DROPDOWN PANEL (Extended full-height from navbar) */
 .lp-mobile-panel {
   display: block;
   max-height: 0;
+  height: 0;
   overflow: hidden;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
   transition: 
-    max-height 0.65s cubic-bezier(0.16, 1, 0.3, 1), 
-    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+    height 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+    opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   background: #e5f3f9;
   border-top: 1px solid rgba(2, 132, 199, 0.1);
-  border-bottom-left-radius: 28px;
-  border-bottom-right-radius: 28px;
-  box-shadow: 0 25px 60px -10px rgba(11, 36, 71, 0.25);
 }
 
 .lp-mobile-panel.open {
-  max-height: 660px;
+  max-height: calc(100dvh - 76px);
+  height: calc(100dvh - 76px);
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .lp-mobile-panel-inner {
   display: flex;
   flex-direction: column;
-  padding: 16px 24px 34px; /* Generous bottom spacing for clean finish */
+  justify-content: space-between;
+  min-height: calc(100dvh - 110px);
+  padding: 16px 24px 36px;
   gap: 6px;
 }
 
