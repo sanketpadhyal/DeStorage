@@ -1,3 +1,6 @@
+/// <reference types="jest" />
+/// <reference types="@types/jest" />
+
 import { TextEncoder, TextDecoder } from 'util';
 import { webcrypto } from 'crypto';
 
