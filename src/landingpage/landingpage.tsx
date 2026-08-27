@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './LandingPage.css';
-import logoImg from '../assets/logo.png';
-import heroIllustration from '../assets/hero_illustration.jpg';
-import featuresIllustration from '../assets/features_illustration.jpg';
-import mascotCharacter from '../assets/mascot_character.jpg';
+import { safeImages } from '../etc/safeimages';
 
 import { 
   Lock, 
@@ -133,7 +130,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             className="lp-brand-btn" 
             onClick={scrollToTop}
           >
-            <img src={logoImg} alt="DeStorage Logo" />
+            <img src={safeImages.logo} alt="DeStorage Logo" />
             <span>DeStorage</span>
           </button>
 
@@ -314,7 +311,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
             <div className="lp-hero-right">
               <img 
-                src={heroIllustration} 
+                src={safeImages.heroIllustration} 
                 alt="DeStorage Cloud Vault Hero Illustration" 
                 className="lp-hero-img" 
               />
@@ -417,7 +414,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
               <div>
                 <img 
-                  src={featuresIllustration} 
+                  src={safeImages.featuresIllustration} 
                   alt="Cryptographic Integrity & Inspection Illustration" 
                   className="lp-features-img" 
                 />
@@ -537,7 +534,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <div className="lp-container">
             <div className="lp-creator-card">
               <img 
-                src={mascotCharacter} 
+                src={safeImages.mascotCharacter} 
                 alt="DeStorage Mascot Character" 
                 className="lp-mascot-img" 
               />
