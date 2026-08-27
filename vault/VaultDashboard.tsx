@@ -1171,7 +1171,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               >
                 {previewItem.isDecrypting ? (
                   <>
-                    <div className="vd-progress-spinner" style={{ width: '15px', height: '15px', borderWidth: '2px' }} />
+                    <div className="vd-spinner-white" />
                     <span>Decrypting...</span>
                   </>
                 ) : (

@@ -1644,15 +1644,32 @@
   will-change: transform, box-shadow;
 }
 
-.vd-btn-save-device:hover {
+.vd-btn-save-device:hover:not(:disabled) {
   transform: scale(1.03);
   filter: brightness(1.06);
   box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45);
 }
 
-.vd-btn-save-device:active {
+.vd-btn-save-device:active:not(:disabled) {
   transform: scale(0.96) !important;
   filter: brightness(0.94) !important;
+}
+
+.vd-btn-save-device:disabled {
+  opacity: 0.88;
+  cursor: not-allowed;
+  filter: none;
+  transform: none !important;
+}
+
+.vd-spinner-white {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
 }
 
 /* RESPONSIVE FOR PREVIEW MODAL */
