@@ -295,7 +295,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
   // Persist files strictly scoped to active wallet & background sync
   useEffect(() => {
-    if (isConnected && address && files.length > 0) {
+    if (isConnected && address) {
       const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
       const metadataOnly = files.map(f => ({
         ...f,
@@ -463,9 +463,38 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     setPreviewItem(null);
   };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to remove this file from your vault?')) {
-      setFiles(prev => prev.filter(f => f.id !== id));
+  const handleDelete = async (id: string) => {
+    const fileToDelete = files.find(f => f.id === id);
+    if (!fileToDelete) return;
+
+    if (window.confirm(`Permanently delete "${fileToDelete.name}" from your vault and IPFS cloud?`)) {
+      const remaining = files.filter(f => f.id !== id);
+      setFiles(remaining);
+
+      if (address) {
+        const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
+        localStorage.setItem(walletKey, JSON.stringify(remaining));
+
+        // Record in deleted CIDs registry so cloud auto-recovery never resurrects it
+        const delKey = `destorage_deleted_${address.toLowerCase()}`;
+        try {
+          const delCids = JSON.parse(localStorage.getItem(delKey) || '[]');
+          if (Array.isArray(delCids) && !delCids.includes(fileToDelete.ipfsCid)) {
+            delCids.push(fileToDelete.ipfsCid);
+            localStorage.setItem(delKey, JSON.stringify(delCids));
+          }
+        } catch (e) {}
+      }
+
+      // Unpin permanently from Pinata IPFS Cloud
+      if (fileToDelete.ipfsCid) {
+        try {
+          const { unpinFromIpfs } = await import('../ipfs/ipfsService');
+          await unpinFromIpfs(fileToDelete.ipfsCid);
+        } catch (e) {
+          console.warn('Cloud unpin error:', e);
+        }
+      }
     }
   };
 

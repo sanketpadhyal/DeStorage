@@ -237,10 +237,50 @@ export async function fetchWalletFilesFromPinata(
       }
     }
 
+    // Filter out locally deleted CIDs
+    if (typeof localStorage !== 'undefined') {
+      const delKey = `destorage_deleted_${targetOwner}`;
+      const delCids = JSON.parse(localStorage.getItem(delKey) || '[]');
+      if (Array.isArray(delCids) && delCids.length > 0) {
+        const delSet = new Set(delCids);
+        return recoveredFiles.filter(f => !delSet.has(f.ipfsCid));
+      }
+    }
+
     return recoveredFiles;
   } catch (err) {
     console.warn('Could not recover files from Pinata:', err);
     return [];
+  }
+}
+
+/**
+ * Permanently unpin and delete a file from Pinata IPFS Cloud
+ */
+export async function unpinFromIpfs(
+  cid: string,
+  pinataJwt?: string
+): Promise<boolean> {
+  const activeJwt = (
+    pinataJwt || 
+    process.env.REACT_APP_PINATA_JWT || 
+    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
+    ''
+  ).trim();
+
+  if (!activeJwt || !cid) return false;
+
+  try {
+    const res = await fetch(`https://api.pinata.cloud/pinning/unpin/${cid}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${activeJwt}`,
+      },
+    });
+    return res.ok;
+  } catch (err) {
+    console.warn('Could not unpin from Pinata:', err);
+    return false;
   }
 }
 
