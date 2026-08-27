@@ -742,10 +742,10 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             </p>
 
             <div className="vd-wallet-options-list">
-              {/* Option 1: MetaMask */}
+              {/* Option 1: MetaMask (Recommended) */}
               <button 
                 type="button" 
-                className="vd-wallet-option-btn"
+                className="vd-wallet-option-btn vd-wallet-recommended-option"
                 onClick={() => {
                   if (hasInjectedWallet) {
                     connectWallet();
@@ -763,7 +763,10 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                     />
                   </div>
                   <div className="vd-wallet-option-meta">
-                    <span className="vd-wallet-name">MetaMask</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className="vd-wallet-name">MetaMask</span>
+                      <span className="vd-wallet-recommended-badge">Recommended</span>
+                    </div>
                     <span className="vd-wallet-status">
                       {hasInjectedWallet ? 'Detected Browser Extension' : 'Install MetaMask Extension'}
                     </span>
