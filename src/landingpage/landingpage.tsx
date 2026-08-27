@@ -134,7 +134,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           >
             <img src={logoImg} alt="DeStorage Logo" />
             <span>DeStorage</span>
-            <span className="lp-subdomain-chip">destorage.sanketpadhyal.in</span>
           </button>
 
           {/* Desktop Navigation Links */}
