@@ -1,22 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
 :root {
   --font-serif: 'Fraunces', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
+  --theme-bg: #e5f3f9;
   --navy: #0b2447;
   --navy-light: #19376d;
   --navy-dark: #071933;
   --card-white: #ffffff;
-  --text-dark: #0f172a;
+  --text-dark: #0b2447;
   --text-gray: #475569;
   --text-muted: #94a3b8;
-  --cyan: #00b4d8;
-  --cyan-dark: #0096c7;
-  --purple: #5b58eb;
-  --teal: #00b4b6;
-  --pink: #f43f75;
+  --cyan: #0284c7;
+  --cyan-dark: #0369a1;
   --blue: #2563eb;
   --emerald: #10b981;
 }
@@ -43,8 +41,8 @@ img {
 html {
   width: 100%;
   min-height: 100%;
-  background: #ffffff;
-  background-color: #ffffff;
+  background: #e5f3f9;
+  background-color: #e5f3f9;
   scroll-behavior: smooth;
   scroll-padding-top: 84px;
 }
@@ -52,8 +50,8 @@ html {
 body {
   width: 100%;
   min-height: 100vh;
-  background: #ffffff;
-  background-color: #ffffff;
+  background: #e5f3f9;
+  background-color: #e5f3f9;
   color: var(--text-dark);
   margin: 0;
   overflow-x: hidden;
