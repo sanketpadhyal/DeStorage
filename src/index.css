@@ -29,6 +29,17 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+
 html {
   width: 100%;
   min-height: 100%;

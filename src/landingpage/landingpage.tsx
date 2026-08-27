@@ -130,7 +130,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             className="lp-brand-btn" 
             onClick={scrollToTop}
           >
-            <img src={safeImages.logo} alt="DeStorage Logo" />
+            <img src={safeImages.logo} alt="DeStorage Logo" draggable={false} />
             <span>DeStorage</span>
           </button>
 
@@ -314,6 +314,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 src={safeImages.heroIllustration} 
                 alt="DeStorage Cloud Vault Hero Illustration" 
                 className="lp-hero-img" 
+                draggable={false}
               />
               
               <div className="lp-hero-pills-row">
@@ -417,6 +418,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   src={safeImages.featuresIllustration} 
                   alt="Cryptographic Integrity & Inspection Illustration" 
                   className="lp-features-img" 
+                  draggable={false}
                 />
               </div>
             </div>
@@ -537,6 +539,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 src={safeImages.mascotCharacter} 
                 alt="DeStorage Mascot Character" 
                 className="lp-mascot-img" 
+                draggable={false}
               />
 
               <div className="lp-creator-details">
