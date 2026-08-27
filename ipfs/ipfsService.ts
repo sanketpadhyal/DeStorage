@@ -36,8 +36,16 @@ export async function uploadToIpfs(
   // Store in browser memory cache for zero-friction instant decryption & testing
   localIpfsCache.set(cid, encryptedBuffer);
 
+  // Auto-detect JWT from parameter, process.env or localStorage
+  const activeJwt = (
+    pinataJwt || 
+    process.env.REACT_APP_PINATA_JWT || 
+    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
+    ''
+  ).trim();
+
   // If Pinata JWT is configured, upload to live IPFS network
-  if (pinataJwt && pinataJwt.trim().length > 0) {
+  if (activeJwt.length > 0) {
     try {
       const blob = new Blob([encryptedBuffer], { type: 'application/octet-stream' });
       const formData = new FormData();
@@ -56,7 +64,7 @@ export async function uploadToIpfs(
       const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${pinataJwt}`,
+          Authorization: `Bearer ${activeJwt}`,
         },
         body: formData,
       });
