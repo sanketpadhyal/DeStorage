@@ -861,7 +861,8 @@
   gap: 6px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  padding: 6px 12px;
+  padding: 0 12px;
+  height: 32px;
   border-radius: 9999px;
   font-family: var(--font-mono);
   font-size: 11.5px;
@@ -896,7 +897,8 @@
   color: #16a34a;
   background: #f0fdf4;
   border: 1px solid #bbf7d0;
-  padding: 5px 10px;
+  padding: 0 10px;
+  height: 32px;
   border-radius: 9999px;
   white-space: nowrap;
   flex-shrink: 0;
@@ -913,7 +915,8 @@
   background: transparent;
   border: 1px solid rgba(2, 132, 199, 0.18);
   border-radius: 9999px;
-  padding: 7px 15px;
+  padding: 0 16px;
+  height: 38px;
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
@@ -950,7 +953,10 @@
 
 .vd-delete-btn {
   color: #94a3b8;
-  padding: 7px 11px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 9999px;
 }
 
 .vd-delete-btn:hover {
@@ -1452,26 +1458,40 @@
 
   /* FILE CARD MOBILE OPTIMIZATION */
   .vd-file-card {
-    padding: 16px;
-    gap: 12px;
-    border-radius: 18px;
+    padding: 16px 18px;
+    gap: 14px;
+    border-radius: 20px;
+    width: 100%;
+    box-sizing: border-box;
   }
   .vd-file-left {
     width: 100%;
     gap: 12px;
+    min-width: 0;
   }
   .vd-file-icon-box {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+  .vd-file-details {
+    min-width: 0;
+    flex: 1;
+    gap: 4px;
   }
   .vd-file-name {
-    max-width: 210px;
-    font-size: 14px;
+    max-width: 100%;
+    font-size: 14.5px;
+    font-weight: 700;
   }
   .vd-file-meta-row {
-    font-size: 11.5px;
+    font-size: 11px;
     gap: 6px;
+    flex-wrap: wrap;
+  }
+  .vd-file-lock-tag {
+    font-size: 10.5px;
+    padding: 2px 6px;
   }
   .vd-file-center {
     width: 100%;
@@ -1484,33 +1504,39 @@
     flex: 1;
     min-width: 0;
     justify-content: space-between;
-    padding: 5px 10px;
+    padding: 0 10px;
+    height: 32px;
     font-size: 11px;
   }
   .vd-cid-val {
-    max-width: 110px;
+    max-width: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .vd-verified-badge {
-    padding: 4px 8px;
+    padding: 0 8px;
+    height: 32px;
     font-size: 10.5px;
+    flex-shrink: 0;
   }
   .vd-file-actions {
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    display: flex;
+    align-items: center;
     gap: 8px;
   }
-  .vd-action-btn {
-    padding: 8px 10px;
+  .vd-preview-btn,
+  .vd-download-btn {
+    flex: 1;
+    height: 38px;
+    padding: 0 10px;
     font-size: 12px;
-    width: 100%;
   }
   .vd-delete-btn {
-    width: 36px;
-    padding: 8px 0;
-    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    flex-shrink: 0;
   }
 }
 
