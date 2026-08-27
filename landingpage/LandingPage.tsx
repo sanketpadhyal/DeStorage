@@ -496,39 +496,74 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* LIVE CRYPTO ENGINE SANDBOX */}
         <section id="crypto-demo" className="lp-sandbox-section">
           <div className="lp-container">
-            <div className="lp-sandbox-header lp-reveal lp-reveal-up">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Lock size={20} color="#38bdf8" />
-                <span style={{ fontWeight: 700, fontSize: '16px' }}>Live Browser SubtleCrypto (AES-256-GCM) Sandbox</span>
+            
+            {/* Main Sky-Blue Glassmorphic Console Card */}
+            <div className="lp-sandbox-card lp-reveal lp-reveal-up">
+              {/* Gradient Accent Bar (Purple-Magenta-Cyan) */}
+              <div className="lp-sandbox-accent-bar" />
+
+              {/* Console Header */}
+              <div className="lp-sandbox-header">
+                <div className="lp-sandbox-header-left">
+                  <div className="lp-sandbox-icon-badge">
+                    <Lock size={18} />
+                  </div>
+                  <div className="lp-sandbox-header-text">
+                    <h3 className="lp-sandbox-title">Browser SubtleCrypto (AES-256-GCM) Engine</h3>
+                    <p className="lp-sandbox-subtitle">Zero-knowledge client-side encryption playground</p>
+                  </div>
+                </div>
+
+                <div className="lp-sandbox-status-pill">
+                  <span className="lp-sandbox-live-dot" />
+                  <span>Real-Time Execution</span>
+                </div>
               </div>
-              <span style={{ color: '#38bdf8', fontSize: '12.5px', fontFamily: 'monospace' }}>● Real-Time Execution</span>
+
+              {/* Console Body Grid (Responsive 2-Col Desktop / 1-Col Mobile) */}
+              <div className="lp-sandbox-layout">
+                {/* Input Editor */}
+                <div className="lp-sandbox-input-box">
+                  <div className="lp-sandbox-input-header">
+                    <label className="lp-sandbox-label">Plaintext Memory Buffer (Type to Encrypt)</label>
+                    <span className="lp-sandbox-char-count">{demoInput.length} chars</span>
+                  </div>
+                  <textarea 
+                    value={demoInput} 
+                    onChange={(e) => setDemoInput(e.target.value)} 
+                    placeholder="Type sensitive data here to watch real-time encryption..."
+                    className="lp-sandbox-textarea"
+                  />
+                  <span className="lp-sandbox-hint">🔒 Encrypted instantly in WebAssembly / SubtleCrypto memory before network transmission.</span>
+                </div>
+
+                {/* Output Terminal */}
+                <div className="lp-sandbox-output-box">
+                  <div className="lp-sandbox-out-field">
+                    <div className="lp-sandbox-field-header">
+                      <span className="lp-sandbox-field-tag lp-tag-purple">1. RANDOM 12-BYTE IV (NONCE)</span>
+                    </div>
+                    <div className="lp-sandbox-field-val lp-val-purple">{demoOutput.iv}</div>
+                  </div>
+
+                  <div className="lp-sandbox-out-field">
+                    <div className="lp-sandbox-field-header">
+                      <span className="lp-sandbox-field-tag lp-tag-cyan">2. ENCRYPTED AES-256-GCM CIPHERTEXT</span>
+                    </div>
+                    <div className="lp-sandbox-field-val lp-val-cyan">{demoOutput.ciphertext}</div>
+                  </div>
+
+                  <div className="lp-sandbox-out-field">
+                    <div className="lp-sandbox-field-header">
+                      <span className="lp-sandbox-field-tag lp-tag-emerald">3. CONTENT-ADDRESSED IPFS CID</span>
+                    </div>
+                    <div className="lp-sandbox-field-val lp-val-emerald">{demoOutput.mockCid}</div>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <div className="lp-sandbox-layout">
-              <div className="lp-sandbox-input-box lp-reveal lp-stagger-1">
-                <label style={{ fontSize: '12px', color: '#94a3b8' }}>Plaintext Memory Input (Type anything to test):</label>
-                <textarea 
-                  value={demoInput} 
-                  onChange={(e) => setDemoInput(e.target.value)} 
-                  placeholder="Type sensitive data here to watch real-time encryption..."
-                />
-              </div>
-
-              <div className="lp-sandbox-output-box lp-reveal lp-stagger-2">
-                <div>
-                  <div className="lp-sandbox-field-label">1. Random 12-Byte IV (Nonce):</div>
-                  <div className="lp-sandbox-field-val">{demoOutput.iv}</div>
-                </div>
-                <div>
-                  <div className="lp-sandbox-field-label">2. Encrypted Ciphertext:</div>
-                  <div className="lp-sandbox-field-val">{demoOutput.ciphertext}</div>
-                </div>
-                <div>
-                  <div className="lp-sandbox-field-label">3. Content-Addressed CID:</div>
-                  <div style={{ color: '#34d399', wordBreak: 'break-all' }}>{demoOutput.mockCid}</div>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
