@@ -43,21 +43,16 @@ body {
   overflow-x: hidden;
 }
 
-/* Smooth blur-to-focus entrance animation on page load */
-@keyframes smoothBlurIn {
+/* Smooth entrance animation */
+@keyframes smoothFadeIn {
   0% {
     opacity: 0;
-    filter: blur(14px);
-    transform: scale(0.98);
   }
   100% {
     opacity: 1;
-    filter: blur(0px);
-    transform: scale(1);
   }
 }
 
 .animate-blur-in {
-  animation: smoothBlurIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: opacity, filter, transform;
+  animation: smoothFadeIn 0.5s ease-out forwards;
 }
