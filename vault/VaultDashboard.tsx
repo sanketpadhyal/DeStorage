@@ -343,38 +343,35 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     if (!selectedFiles || selectedFiles.length === 0) return;
 
     const allFiles = Array.from(selectedFiles);
-    const imageFiles = allFiles.filter(f => f.type.startsWith('image/'));
-    const nonImageFiles = allFiles.filter(f => !f.type.startsWith('image/'));
 
-    // Images: batch up to 10
-    if (imageFiles.length > 0) {
-      if (allFiles.length > imageFiles.length) {
-        alert('Batch upload is for photos only. Non-image files will be skipped.');
-      }
-      const batch = imageFiles.slice(0, 10);
-      if (imageFiles.length > 10) {
-        alert(`Only the first 10 photos will be uploaded (${imageFiles.length} selected).`);
-      }
-      setBatchTotal(batch.length);
-      setBatchDone(0);
-      setIsUploading(true);
-      for (let i = 0; i < batch.length; i++) {
-        setBatchDone(i);
-        await processFileUpload(batch[i], true);
-      }
-      setBatchDone(batch.length);
-      setUploadStage(`${batch.length} photo${batch.length > 1 ? 's' : ''} encrypted & stored!`);
-      setTimeout(() => {
-        setIsUploading(false);
-        setUploadStage('');
-        setBatchTotal(0);
-        setBatchDone(0);
-      }, 1500);
+    // Batch up to 10 files of any type
+    if (allFiles.length > 10) {
+      alert(`Only the first 10 files will be uploaded (${allFiles.length} selected).`);
+    }
+    const batch = allFiles.slice(0, 10);
+
+    if (batch.length === 1) {
+      // Single file — use normal flow
+      await processFileUpload(batch[0]);
       return;
     }
 
-    // Non-image: single file upload
-    await processFileUpload(nonImageFiles[0]);
+    // Multi-file batch
+    setBatchTotal(batch.length);
+    setBatchDone(0);
+    setIsUploading(true);
+    for (let i = 0; i < batch.length; i++) {
+      setBatchDone(i);
+      await processFileUpload(batch[i], true);
+    }
+    setBatchDone(batch.length);
+    setUploadStage(`${batch.length} files encrypted & stored!`);
+    setTimeout(() => {
+      setIsUploading(false);
+      setUploadStage('');
+      setBatchTotal(0);
+      setBatchDone(0);
+    }, 1500);
   };
 
   const processFileUpload = async (file: File, isBatch = false) => {
@@ -736,7 +733,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               ref={fileInputRef} 
               style={{ display: 'none' }} 
               multiple
-              accept="image/*,*"
               onChange={handleFileSelect} 
             />
 
@@ -780,7 +776,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 <div className="vd-upload-texts">
                   <h3 className="vd-upload-title">Drag & drop to encrypt and store</h3>
                   <p className="vd-upload-desc">
-                    Upload up to <strong>10 photos at once</strong> — AES-256-GCM encrypted locally before IPFS storage. Plaintext never leaves your device.
+                    Upload up to <strong>10 files at once</strong> — photos, videos, docs & more. AES-256-GCM encrypted locally before IPFS storage.
                   </p>
                 </div>
 
@@ -791,7 +787,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <Icon icon="iconamoon:cloud-upload-bold" width={19} height={19} />
-                    <span>Select Photos to Encrypt</span>
+                    <span>Select Files to Encrypt</span>
                   </button>
                 </div>
               </div>
