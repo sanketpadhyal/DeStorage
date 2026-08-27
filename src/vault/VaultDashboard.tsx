@@ -328,11 +328,11 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       <main className="vd-main-content">
         <div className="vd-container">
           
-          {/* STATS OVERVIEW CARDS (Unified DeStorage Brand Theme) */}
+          {/* STATS OVERVIEW CARDS (Premium Multi-Color Gradient Suite) */}
           <div className="vd-stats-grid">
-            <div className="vd-stat-card">
-              <div className="vd-stat-icon">
-                <Icon icon="iconamoon:lock-bold" width={22} height={22} />
+            <div className="vd-stat-card vd-card-blue">
+              <div className="vd-stat-icon vd-icon-blue">
+                <Icon icon="iconamoon:shield-yes-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
                 <span className="vd-stat-label">Encrypted Files</span>
@@ -340,9 +340,9 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               </div>
             </div>
 
-            <div className="vd-stat-card">
-              <div className="vd-stat-icon">
-                <Icon icon="iconamoon:folder-bold" width={22} height={22} />
+            <div className="vd-stat-card vd-card-emerald">
+              <div className="vd-stat-icon vd-icon-emerald">
+                <Icon icon="iconamoon:folder-check-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
                 <span className="vd-stat-label">Storage Consumed</span>
@@ -350,8 +350,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               </div>
             </div>
 
-            <div className="vd-stat-card">
-              <div className="vd-stat-icon">
+            <div className="vd-stat-card vd-card-purple">
+              <div className="vd-stat-icon vd-icon-purple">
                 <Icon icon="iconamoon:component-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
@@ -360,8 +360,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               </div>
             </div>
 
-            <div className="vd-stat-card">
-              <div className="vd-stat-icon">
+            <div className="vd-stat-card vd-card-amber">
+              <div className="vd-stat-icon vd-icon-amber">
                 <Icon icon="iconamoon:apps-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
