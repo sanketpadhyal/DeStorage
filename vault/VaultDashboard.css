@@ -1008,108 +1008,195 @@
   }
 }
 
-.vd-preview-modal {
-  background: #ffffff;
-  border-radius: 24px;
-  width: 100%;
-  max-width: 720px;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
+/* DECRYPTED FILE PREVIEW MODAL (CYBER GLASS) */
+.vd-preview-modal-card {
+  max-width: 620px;
+  padding: 26px 28px 28px;
 }
 
-.vd-preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 24px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.vd-preview-title-box {
+.vd-preview-meta-pill {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.vd-preview-title-box h4 {
-  font-size: 16px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(2, 132, 199, 0.18);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  margin-bottom: 16px;
+  font-size: 12px;
   font-weight: 700;
-  color: #0b2447;
+  width: fit-content;
+  max-width: 100%;
 }
 
-.vd-modal-close {
-  background: transparent;
-  border: none;
-  cursor: pointer;
+.vd-preview-filename {
+  color: #0b2447;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vd-preview-filesize {
   color: #64748b;
+  font-size: 11.5px;
+}
+
+.vd-preview-cipher-tag {
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284c7;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+}
+
+.vd-preview-stage {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  border-radius: 20px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  border-radius: 8px;
+  min-height: 220px;
+  max-height: 52vh;
+  overflow: hidden;
+  margin-bottom: 16px;
+  box-shadow: inset 0 2px 10px rgba(11, 36, 71, 0.04);
 }
 
-.vd-modal-close:hover {
-  background: #f1f5f9;
-  color: #0b2447;
-}
-
-.vd-preview-body {
-  padding: 24px;
+.vd-preview-image-wrap {
+  width: 100%;
+  height: 100%;
+  max-height: 48vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 300px;
-  max-height: 520px;
-  overflow: auto;
-  background: #f8fafc;
 }
 
 .vd-preview-image-wrap img {
   max-width: 100%;
-  max-height: 480px;
+  max-height: 48vh;
   object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(11, 36, 71, 0.12);
 }
 
-.vd-preview-video, .vd-preview-audio {
+.vd-preview-video,
+.vd-preview-audio {
   max-width: 100%;
+  border-radius: 12px;
 }
 
-.vd-preview-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  border-top: 1px solid #e2e8f0;
-  background: #ffffff;
-}
-
-.vd-preview-hash-box {
+.vd-preview-unsupported {
   display: flex;
   flex-direction: column;
-  text-align: left;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13.5px;
+}
+
+.vd-preview-footer-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(2, 132, 199, 0.16);
+  border-radius: 18px;
+  padding: 12px 16px;
+}
+
+.vd-preview-checksum-col {
+  display: flex;
+  flex-direction: column;
   gap: 2px;
+  min-width: 0;
+  flex: 1;
 }
 
 .vd-preview-hash-label {
-  font-size: 11px;
-  color: #64748b;
+  font-size: 10.5px;
+  font-weight: 700;
   text-transform: uppercase;
-  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #64748b;
 }
 
 .vd-preview-hash-val {
-  font-size: 12px;
   font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
   color: #0284c7;
-  max-width: 420px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.vd-btn-save-device {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  color: #ffffff !important;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transform: translate3d(0, 0, 0);
+  transition: 
+    transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    filter 0.18s ease;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+  will-change: transform, box-shadow;
+}
+
+.vd-btn-save-device:hover {
+  transform: scale(1.03);
+  filter: brightness(1.06);
+  box-shadow: 0 8px 22px rgba(2, 132, 199, 0.45);
+}
+
+.vd-btn-save-device:active {
+  transform: scale(0.96) !important;
+  filter: brightness(0.94) !important;
+}
+
+/* RESPONSIVE FOR PREVIEW MODAL */
+@media (max-width: 640px) {
+  .vd-preview-modal-card {
+    padding: 20px 18px 20px;
+    max-width: 100%;
+  }
+  .vd-preview-stage {
+    min-height: 180px;
+    max-height: 42vh;
+    padding: 10px;
+  }
+  .vd-preview-image-wrap img {
+    max-height: 40vh;
+  }
+  .vd-preview-footer-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .vd-btn-save-device {
+    width: 100%;
+    height: 42px;
+  }
 }
 
 /* CONNECT WALLET MODAL */

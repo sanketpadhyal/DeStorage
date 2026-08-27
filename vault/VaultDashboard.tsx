@@ -719,11 +719,11 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
           className={`vd-modal-overlay ${isPreviewClosing ? 'vd-closing' : ''}`}
           onClick={handleSmoothClosePreview}
         >
-          <div className="vd-modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="vd-wallet-modal-card vd-preview-modal-card" onClick={(e) => e.stopPropagation()}>
             <div className="vd-modal-header">
-              <div className="vd-modal-title-wrap">
+              <div className="vd-modal-title-row">
                 <Icon icon="iconamoon:shield-yes-bold" width={22} height={22} color="#0284c7" />
-                <h3>Decrypted File Preview</h3>
+                <h3 className="vd-modal-title">Decrypted File Preview</h3>
               </div>
               <button 
                 type="button" 
@@ -734,7 +734,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               </button>
             </div>
 
-            <div className="vd-preview-body">
+            {/* File Meta Pill Bar */}
+            <div className="vd-preview-meta-pill">
+              <span className="vd-preview-filename">{previewItem.file.name}</span>
+              <span className="vd-preview-filesize">{formatBytes(previewItem.file.size)}</span>
+              <span className="vd-preview-cipher-tag">AES-256-GCM</span>
+            </div>
+
+            <div className="vd-preview-stage">
               {previewItem.isDecrypting ? (
                 <div className="vd-decrypting-state">
                   <div className="vd-progress-spinner" />
@@ -752,30 +759,24 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 <div className="vd-preview-unsupported">
                   <Icon icon="iconamoon:file-document-bold" width={48} height={48} color="#0284c7" />
                   <p>Encrypted file decrypted cleanly in memory buffer.</p>
-                  <button 
-                    type="button" 
-                    className="vd-btn-select-file"
-                    onClick={() => handleDecryptDownload(previewItem.file)}
-                  >
-                    <Icon icon="iconamoon:cloud-download-bold" width={16} height={16} />
-                    <span>Download Decrypted File</span>
-                  </button>
                 </div>
               )}
             </div>
 
-            <div className="vd-preview-footer">
-              <div className="vd-preview-hash-box">
-                <span className="vd-preview-hash-label">Verified SHA-256 Checksum:</span>
-                <span className="vd-preview-hash-val">{previewItem.file.sha256Hash}</span>
+            <div className="vd-preview-footer-card">
+              <div className="vd-preview-checksum-col">
+                <span className="vd-preview-hash-label">Verified SHA-256 Checksum</span>
+                <span className="vd-preview-hash-val" title={previewItem.file.sha256Hash}>
+                  {previewItem.file.sha256Hash.slice(0, 14)}...{previewItem.file.sha256Hash.slice(-10)}
+                </span>
               </div>
 
               <button 
                 type="button" 
-                className="vd-btn-select-file" 
+                className="vd-btn-save-device" 
                 onClick={() => handleDecryptDownload(previewItem.file)}
               >
-                <Icon icon="iconamoon:cloud-download-bold" width={16} height={16} />
+                <Icon icon="iconamoon:cloud-download-bold" width={17} height={17} color="#ffffff" />
                 <span>Save to Device</span>
               </button>
             </div>
