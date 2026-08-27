@@ -1,9 +1,15 @@
-/* Full-Screen Page Container */
+/* Medora-Inspired Serene Blue Gradient & Grid Background */
 .lp-root {
   width: 100%;
   min-height: 100vh;
-  background-color: #ffffff;
-  color: #0f172a;
+  background: linear-gradient(180deg, #caeff5 0%, #e1f5f9 25%, #f2fafc 60%, #ffffff 100%);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(0, 180, 216, 0.18) 0px, transparent 50%),
+    radial-gradient(at 100% 20%, rgba(72, 202, 228, 0.15) 0px, transparent 50%),
+    linear-gradient(rgba(0, 119, 182, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 119, 182, 0.035) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+  color: #0b2447;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
@@ -39,12 +45,12 @@ section {
   right: 0 !important;
   width: 100% !important;
   height: 76px !important;
-  background: rgba(255, 255, 255, 0.98) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border-bottom: 1px solid #f1f5f9 !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(0, 180, 216, 0.15) !important;
   z-index: 999999 !important;
-  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px -5px rgba(0, 119, 182, 0.05);
 }
 
 .lp-nav-inner {
@@ -63,7 +69,7 @@ section {
   cursor: pointer;
   padding: 0;
   font-family: var(--font-serif);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   color: #0b2447;
   letter-spacing: -0.02em;
@@ -87,16 +93,16 @@ section {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 600;
-  color: #475569;
+  color: #334155;
   font-family: var(--font-sans);
   padding: 8px 0;
   transition: color 0.15s ease;
 }
 
 .lp-nav-link-btn:hover {
-  color: #00b4d8;
+  color: #0077b6;
 }
 
 .lp-nav-actions {
@@ -110,7 +116,7 @@ section {
   display: none;
   background: transparent;
   border: none;
-  color: #0f172a;
+  color: #0b2447;
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
@@ -126,9 +132,11 @@ section {
   left: 0;
   right: 0;
   width: 100%;
-  background: #ffffff;
-  border-bottom: 2px solid #e2e8f0;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 2px solid #e0f2fe;
+  box-shadow: 0 20px 40px rgba(0, 119, 182, 0.1);
   padding: 24px;
   flex-direction: column;
   gap: 18px;
@@ -146,14 +154,14 @@ section {
   text-align: left;
   font-size: 16px;
   font-weight: 700;
-  color: #1e293b;
+  color: #0b2447;
   font-family: var(--font-sans);
   padding: 10px 0;
-  border-bottom: 1px solid #f8fafc;
+  border-bottom: 1px solid #f0f9ff;
 }
 
 .lp-mobile-nav-link-btn:hover {
-  color: #00b4d8;
+  color: #0077b6;
 }
 
 .lp-mobile-panel-actions {
@@ -165,29 +173,29 @@ section {
 
 /* BUTTONS */
 .lp-btn-black {
-  background: #0f172a;
+  background: #0b2447;
   color: #ffffff;
   border-radius: 9999px;
   padding: 11px 24px;
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
-  border: 1px solid #0f172a;
+  border: 1px solid #0b2447;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   font-family: var(--font-sans);
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
 .lp-btn-black:hover {
-  background: #1e293b;
+  background: #19376d;
 }
 
 .lp-btn-cyan {
-  background: #00b4d8;
+  background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
   color: #ffffff;
   border-radius: 9999px;
   padding: 12px 28px;
@@ -201,19 +209,18 @@ section {
   justify-content: center;
   gap: 8px;
   font-family: var(--font-sans);
-  transition: background-color 0.15s ease;
+  box-shadow: 0 4px 14px rgba(0, 119, 182, 0.25);
+  transition: opacity 0.15s ease;
 }
 
 .lp-btn-cyan:hover {
-  background: #0096c7;
+  opacity: 0.92;
 }
 
-/* 2. RICH HERO SECTION (Medora Editorial Typography) */
+/* 2. RICH HERO SECTION */
 .lp-hero-section {
   width: 100%;
   padding: 60px 0 80px;
-  background: #ffffff;
-  border-bottom: 1px solid #f1f5f9;
 }
 
 .lp-hero-grid {
@@ -237,9 +244,9 @@ section {
   gap: 8px;
   padding: 6px 14px;
   border-radius: 9999px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #166534;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 180, 216, 0.3);
+  color: #0077b6;
   font-family: var(--font-mono);
   font-size: 11.5px;
   font-weight: 700;
@@ -251,7 +258,7 @@ section {
 .lp-hero-badge-dot {
   width: 7px;
   height: 7px;
-  background: #16a34a;
+  background: #0096c7;
   border-radius: 50%;
 }
 
@@ -269,13 +276,13 @@ section {
   font-family: var(--font-serif);
   font-style: italic;
   font-weight: 400;
-  color: #00b4d8;
+  color: #0096c7;
 }
 
 .lp-hero-desc {
   font-family: var(--font-sans);
   font-size: 16.5px;
-  color: #64748b;
+  color: #475569;
   line-height: 1.65;
   max-width: 560px;
 }
@@ -297,7 +304,7 @@ section {
 }
 
 .lp-hero-check-item svg {
-  color: #10b981;
+  color: #0096c7;
   flex-shrink: 0;
 }
 
@@ -315,7 +322,7 @@ section {
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   padding-top: 24px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid rgba(0, 180, 216, 0.2);
   margin-top: 8px;
 }
 
@@ -326,7 +333,7 @@ section {
 }
 
 .lp-hero-stat-val {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 800;
   color: #0b2447;
   font-family: var(--font-serif);
@@ -352,35 +359,38 @@ section {
   max-width: 520px;
   height: auto;
   object-fit: contain;
+  filter: drop-shadow(0 12px 24px rgba(0, 119, 182, 0.12));
 }
 
 .lp-hero-pills-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
 }
 
 .lp-tech-pill {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
-  color: #475569;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 5px 12px;
+  color: #0077b6;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 180, 216, 0.35);
+  padding: 6px 14px;
   border-radius: 9999px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  box-shadow: 0 2px 8px rgba(0, 119, 182, 0.05);
 }
 
 /* 3. ARCHITECTURE EXPERTISE SECTION */
 .lp-features-section {
   width: 100%;
   padding: 90px 0;
-  background: #fafcff;
-  border-bottom: 1px solid #f1f5f9;
+  background: rgba(255, 255, 255, 0.6);
+  border-top: 1px solid rgba(0, 180, 216, 0.15);
+  border-bottom: 1px solid rgba(0, 180, 216, 0.15);
 }
 
 .lp-section-header {
@@ -392,7 +402,7 @@ section {
   font-family: var(--font-mono);
   font-size: 11.5px;
   font-weight: 700;
-  color: #0284c7;
+  color: #0077b6;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   background: #e0f2fe;
@@ -433,7 +443,7 @@ section {
 .lp-item-num {
   font-size: 28px;
   font-weight: 800;
-  color: #0b2447;
+  color: #0096c7;
   font-family: var(--font-serif);
 }
 
@@ -446,7 +456,7 @@ section {
 
 .lp-item-desc {
   font-size: 14px;
-  color: #64748b;
+  color: #475569;
   line-height: 1.55;
 }
 
@@ -455,14 +465,14 @@ section {
   max-width: 480px;
   height: auto;
   object-fit: contain;
+  filter: drop-shadow(0 12px 24px rgba(0, 119, 182, 0.12));
 }
 
 /* 4. FILE TYPES SUPPORTED SECTION */
 .lp-filetypes-section {
   width: 100%;
   padding: 80px 0;
-  background: #ffffff;
-  border-bottom: 1px solid #f1f5f9;
+  background: transparent;
 }
 
 .lp-filetypes-grid {
@@ -473,14 +483,16 @@ section {
 }
 
 .lp-filetype-card {
-  background: #f8fafc;
-  border: 1px solid #edf2f7;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 180, 216, 0.2);
   border-radius: 20px;
   padding: 24px 20px;
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-shadow: 0 8px 20px rgba(0, 119, 182, 0.04);
 }
 
 .lp-filetype-icon {
@@ -501,7 +513,7 @@ section {
 
 .lp-filetype-desc {
   font-size: 13px;
-  color: #64748b;
+  color: #475569;
   line-height: 1.5;
 }
 
@@ -509,8 +521,9 @@ section {
 .lp-pricing-section {
   width: 100%;
   padding: 90px 0;
-  background: #fafcff;
-  border-bottom: 1px solid #f1f5f9;
+  background: rgba(255, 255, 255, 0.7);
+  border-top: 1px solid rgba(0, 180, 216, 0.15);
+  border-bottom: 1px solid rgba(0, 180, 216, 0.15);
 }
 
 .lp-pricing-grid {
@@ -522,7 +535,7 @@ section {
 
 .lp-price-card {
   background: #ffffff;
-  border: 1px solid #edf2f7;
+  border: 1px solid rgba(0, 180, 216, 0.2);
   border-radius: 24px;
   padding: 36px 30px;
   display: flex;
@@ -530,12 +543,13 @@ section {
   justify-content: space-between;
   gap: 28px;
   text-align: left;
+  box-shadow: 0 10px 30px rgba(0, 119, 182, 0.05);
 }
 
 .lp-price-card.featured {
   background: #f0f9ff;
-  border: 2px solid #38bdf8;
-  box-shadow: 0 16px 40px -10px rgba(56, 189, 248, 0.25);
+  border: 2px solid #0096c7;
+  box-shadow: 0 16px 40px -10px rgba(0, 150, 199, 0.25);
 }
 
 .lp-price-name {
@@ -582,7 +596,7 @@ section {
 }
 
 .lp-price-list li svg {
-  color: #0284c7;
+  color: #0096c7;
   flex-shrink: 0;
 }
 
@@ -658,18 +672,20 @@ section {
 .lp-creator-section {
   width: 100%;
   padding: 90px 0;
-  background: #ffffff;
+  background: transparent;
 }
 
 .lp-creator-card {
-  background: #fafcff;
-  border: 1px solid #edf2f7;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 180, 216, 0.25);
   border-radius: 28px;
   padding: 48px;
   display: flex;
   align-items: center;
   gap: 48px;
   text-align: left;
+  box-shadow: 0 16px 40px rgba(0, 119, 182, 0.06);
 }
 
 .lp-mascot-img {
@@ -677,6 +693,7 @@ section {
   height: 160px;
   object-fit: contain;
   flex-shrink: 0;
+  filter: drop-shadow(0 10px 20px rgba(0, 119, 182, 0.12));
 }
 
 .lp-creator-details {
@@ -694,7 +711,7 @@ section {
 
 .lp-creator-bio {
   font-size: 15px;
-  color: #64748b;
+  color: #475569;
   line-height: 1.65;
 }
 
