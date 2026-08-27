@@ -478,7 +478,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <div>
                   <h4 className="lp-price-name">Starter Vault</h4>
                   <p className="lp-price-desc">For personal files and documents</p>
-                  <div className="lp-price-val">$0 <span>/ testnet</span></div>
+                  <div className="lp-price-val">₹0 <span>/ testnet</span></div>
                 </div>
                 <ul className="lp-price-list">
                   <li><Check size={16} /> 5 GB Encrypted IPFS Storage</li>
@@ -496,7 +496,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <div>
                   <h4 className="lp-price-name" style={{ color: '#0284c7' }}>Pro Vault (Recommended)</h4>
                   <p className="lp-price-desc">For power creators and media archives</p>
-                  <div className="lp-price-val">$19 <span>/ year</span></div>
+                  <div className="lp-price-val">₹1,499 <span>/ year</span></div>
                 </div>
                 <ul className="lp-price-list">
                   <li><Check size={16} /> 100 GB High-Speed IPFS Pinning</li>
@@ -514,7 +514,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <div>
                   <h4 className="lp-price-name">Decentralized Lite</h4>
                   <p className="lp-price-desc">For self-hosted IPFS nodes</p>
-                  <div className="lp-price-val">$9 <span>/ year</span></div>
+                  <div className="lp-price-val">₹799 <span>/ year</span></div>
                 </div>
                 <ul className="lp-price-list">
                   <li><Check size={16} /> 25 GB Custom IPFS Gateway</li>
