@@ -1453,6 +1453,7 @@
 /* CONNECTED ACCOUNT & SESSION DETAILS MODAL */
 .vd-account-modal-card {
   max-width: 440px;
+  padding: 28px 28px 30px;
 }
 
 .vd-account-address-card {
@@ -1464,8 +1465,9 @@
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(2, 132, 199, 0.2);
   border-radius: 20px;
-  padding: 14px 18px;
-  margin-bottom: 14px;
+  padding: 16px 18px;
+  margin-top: 8px;
+  margin-bottom: 16px;
   box-shadow: 0 2px 10px rgba(11, 36, 71, 0.04);
 }
 
@@ -1501,7 +1503,7 @@
 .vd-account-info-col {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
   flex: 1;
 }
@@ -1510,14 +1512,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 4px;
+  width: 100%;
 }
 
 .vd-account-label {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   color: #0284c7;
+  display: inline-block;
 }
 
 .vd-account-active-tag {
@@ -1525,9 +1531,11 @@
   font-weight: 700;
   color: #15803d;
   background: #dcfce7;
-  padding: 2px 7px;
+  border: 1px solid #bbf7d0;
+  padding: 2px 8px;
   border-radius: 9999px;
   letter-spacing: 0.02em;
+  display: inline-block;
 }
 
 .vd-account-full-addr {
