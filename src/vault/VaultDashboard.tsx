@@ -270,7 +270,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             <div className="vd-brand">
               <img src={safeImages.logo} alt="DeStorage Logo" draggable={false} />
               <span>De<span className="vd-brand-accent">Storage</span></span>
-              <span className="vd-vault-badge">Vault</span>
             </div>
           </div>
 
