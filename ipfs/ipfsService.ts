@@ -301,31 +301,28 @@ export async function fetchFromIpfs(cid: string): Promise<ArrayBuffer> {
     ''
   ).trim();
 
-  const customGateway = process.env.REACT_APP_PINATA_GATEWAY || 'gateway.pinata.cloud';
+  const customGateway = (process.env.REACT_APP_PINATA_GATEWAY || '').trim();
 
   const gateways = [
-    `https://${customGateway}/ipfs/${cid}`,
+    ...(customGateway ? [`https://${customGateway}/ipfs/${cid}`] : []),
+    `https://copper-gigantic-cow-722.mypinata.cloud/ipfs/${cid}`,
     `https://gateway.pinata.cloud/ipfs/${cid}`,
     `https://cloudflare-ipfs.com/ipfs/${cid}`,
     `https://ipfs.io/ipfs/${cid}`,
     `https://dweb.link/ipfs/${cid}`,
+    `https://w3s.link/ipfs/${cid}`,
   ];
 
   for (const url of gateways) {
     try {
-      const headers: Record<string, string> = {};
-      if (activeJwt && url.includes('pinata.cloud')) {
-        headers['Authorization'] = `Bearer ${activeJwt}`;
-      }
-
-      const res = await fetch(url, { headers });
+      const res = await fetch(url);
       if (res.ok) {
         const buffer = await res.arrayBuffer();
         await saveToPersistentCache(cid, buffer);
         return buffer;
       }
     } catch (e) {
-      // Try next gateway
+      // Try next gateway fallback
     }
   }
 
