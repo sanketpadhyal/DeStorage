@@ -1,7 +1,84 @@
-.app-container {
+/* =========================================================
+   PARALLEL PARALLAX PUSH TRANSITION SYSTEM
+   ========================================================= */
+
+.app-viewport {
+  position: relative;
   width: 100%;
   min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  background-color: #ffffff;
+  overflow-x: hidden;
+  background-color: #e5f3f9;
+  background: #e5f3f9;
+}
+
+/* Base layer container */
+.app-page-layer {
+  width: 100%;
+  min-height: 100vh;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 1. Landing Page Layer (Pushes backwards with depth & parallax) */
+.lp-layer {
+  transition: 
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), 
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+    filter 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.65s ease;
+  will-change: transform, opacity, filter;
+}
+
+.lp-layer.active {
+  position: relative;
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  filter: blur(0px);
+  pointer-events: auto;
+  visibility: visible;
+  z-index: 10;
+}
+
+.lp-layer.pushed-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translateX(-24%) scale(0.95);
+  opacity: 0;
+  filter: blur(6px);
+  pointer-events: none;
+  visibility: hidden;
+  z-index: 5;
+}
+
+/* 2. Vault Dashboard Layer (Pushes forward from right side with parallax) */
+.vd-layer {
+  transition: 
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), 
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
+    filter 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.65s ease;
+  will-change: transform, opacity;
+}
+
+.vd-layer.active {
+  position: relative;
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  z-index: 20;
+}
+
+.vd-layer.pushed-out {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translateX(100%) scale(1.02);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  z-index: 20;
 }
