@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './LandingPage.css';
 import { safeImages } from '../etc/safeimages';
+import { Icon } from '@iconify/react';
 
 import { 
   Lock, 
@@ -324,23 +325,50 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 </a>
               </div>
 
-              {/* Hero Key Metrics Grid */}
+              {/* Hero Key Metrics Cards (Multi-Color Icon Suite) */}
               <div className="lp-hero-stats-grid lp-reveal lp-stagger-1">
-                <div className="lp-hero-stat-box">
-                  <span className="lp-hero-stat-val">256-Bit</span>
-                  <span className="lp-hero-stat-label">AES-GCM Encryption</span>
+                {/* Stat 1: AES-256 */}
+                <div className="lp-hero-stat-card lp-stat-blue">
+                  <div className="lp-hero-stat-icon lp-icon-blue">
+                    <Icon icon="iconamoon:shield-yes-bold" width={20} height={20} />
+                  </div>
+                  <div className="lp-hero-stat-body">
+                    <span className="lp-hero-stat-val">256-Bit</span>
+                    <span className="lp-hero-stat-label">AES-GCM Security</span>
+                  </div>
                 </div>
-                <div className="lp-hero-stat-box">
-                  <span className="lp-hero-stat-val">0 KB</span>
-                  <span className="lp-hero-stat-label">Server Plaintext</span>
+
+                {/* Stat 2: Zero Plaintext */}
+                <div className="lp-hero-stat-card lp-stat-emerald">
+                  <div className="lp-hero-stat-icon lp-icon-emerald">
+                    <Icon icon="iconamoon:lock-bold" width={20} height={20} />
+                  </div>
+                  <div className="lp-hero-stat-body">
+                    <span className="lp-hero-stat-val">0 KB</span>
+                    <span className="lp-hero-stat-label">Server Plaintext</span>
+                  </div>
                 </div>
-                <div className="lp-hero-stat-box">
-                  <span className="lp-hero-stat-val">100%</span>
-                  <span className="lp-hero-stat-label">IPFS Content Addressed</span>
+
+                {/* Stat 3: 100% IPFS */}
+                <div className="lp-hero-stat-card lp-stat-purple">
+                  <div className="lp-hero-stat-icon lp-icon-purple">
+                    <Icon icon="iconamoon:cloud-bold" width={20} height={20} />
+                  </div>
+                  <div className="lp-hero-stat-body">
+                    <span className="lp-hero-stat-val">100%</span>
+                    <span className="lp-hero-stat-label">IPFS Addressed</span>
+                  </div>
                 </div>
-                <div className="lp-hero-stat-box">
-                  <span className="lp-hero-stat-val">Base EVM</span>
-                  <span className="lp-hero-stat-label">Verified Ownership</span>
+
+                {/* Stat 4: Base EVM */}
+                <div className="lp-hero-stat-card lp-stat-amber">
+                  <div className="lp-hero-stat-icon lp-icon-amber">
+                    <Icon icon="iconamoon:apps-bold" width={20} height={20} />
+                  </div>
+                  <div className="lp-hero-stat-body">
+                    <span className="lp-hero-stat-val">Base EVM</span>
+                    <span className="lp-hero-stat-label">Verified Proofs</span>
+                  </div>
                 </div>
               </div>
             </div>

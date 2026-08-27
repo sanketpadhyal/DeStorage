@@ -462,54 +462,98 @@ section {
   margin-top: 4px;
 }
 
-/* Hero Key Stats Grid */
+/* Hero Key Stats Grid - 4 Distinct Multi-Colored Floating Cards */
 .lp-hero-stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(2, 132, 199, 0.16);
-  border-radius: 20px;
-  padding: 18px 22px;
-  margin-top: 16px;
-  box-shadow: 0 6px 24px rgba(2, 132, 199, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+  width: 100%;
 }
 
-.lp-hero-stat-box {
+@media (min-width: 640px) {
+  .lp-hero-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+}
+
+.lp-hero-stat-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(2, 132, 199, 0.15);
+  border-radius: 16px;
+  padding: 12px 14px;
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.05);
   position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.lp-hero-stat-box:not(:last-child)::after {
+.lp-hero-stat-card::before {
   content: '';
   position: absolute;
-  right: -7px;
-  top: 15%;
-  bottom: 15%;
-  width: 1px;
-  background: rgba(2, 132, 199, 0.12);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.lp-stat-blue::before { background: linear-gradient(90deg, #0284c7, #38bdf8); }
+.lp-stat-emerald::before { background: linear-gradient(90deg, #10b981, #34d399); }
+.lp-stat-purple::before { background: linear-gradient(90deg, #8b5cf6, #d946ef); }
+.lp-stat-amber::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+
+.lp-hero-stat-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
+  background: #ffffff;
+}
+
+.lp-hero-stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lp-icon-blue { background: #eff6ff; color: #0284c7; }
+.lp-icon-emerald { background: #f0fdf4; color: #10b981; }
+.lp-icon-purple { background: #faf5ff; color: #8b5cf6; }
+.lp-icon-amber { background: #fffbeb; color: #d97706; }
+
+.lp-hero-stat-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .lp-hero-stat-val {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 800;
-  background: linear-gradient(135deg, #0b2447 0%, #0284c7 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #0b2447;
   font-family: var(--font-sans);
   letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 .lp-hero-stat-label {
-  font-size: 12px;
+  font-size: 11px;
   color: #64748b;
   font-family: var(--font-sans);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Hero Right Visual */
