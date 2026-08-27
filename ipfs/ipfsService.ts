@@ -113,9 +113,10 @@ export async function uploadToIpfs(
   // If Pinata JWT is configured, upload to live IPFS network
   if (activeJwt.length > 0) {
     try {
+      const safeFileName = (fileName || 'file').replace(/[^a-zA-Z0-9._-]/g, '_');
       const blob = new Blob([encryptedBuffer], { type: 'application/octet-stream' });
       const formData = new FormData();
-      formData.append('file', blob, `${fileName}.encrypted`);
+      formData.append('file', blob, `${safeFileName}.encrypted`);
 
       const keyvalues: Record<string, string> = {
         app: 'DeStorage',
@@ -125,7 +126,7 @@ export async function uploadToIpfs(
 
       if (metadataObj) {
         keyvalues.owner = metadataObj.ownerAddress.toLowerCase();
-        keyvalues.originalName = fileName;
+        keyvalues.originalName = encodeURIComponent(fileName);
         keyvalues.mimeType = metadataObj.mimeType;
         keyvalues.originalSize = String(metadataObj.originalSize);
         keyvalues.keyHex = metadataObj.keyHex;
@@ -135,10 +136,11 @@ export async function uploadToIpfs(
       }
 
       const metadata = JSON.stringify({
-        name: `DeStorage_${fileName}_${Date.now()}`,
+        name: `DeStorage_${safeFileName}_${Date.now()}`.slice(0, 150),
         keyvalues,
       });
       formData.append('pinataMetadata', metadata);
+      formData.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
 
       const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
         method: 'POST',
@@ -152,6 +154,7 @@ export async function uploadToIpfs(
         const data = await response.json();
         const liveCid = data.IpfsHash;
         await saveToPersistentCache(liveCid, encryptedBuffer);
+        await saveToPersistentCache(fallbackCid, encryptedBuffer);
         return {
           cid: liveCid,
           gatewayUrl: `https://gateway.pinata.cloud/ipfs/${liveCid}`,
@@ -159,7 +162,8 @@ export async function uploadToIpfs(
           isPinned: true,
         };
       } else {
-        console.warn('Pinata responded with status:', response.status);
+        const errText = await response.text();
+        console.warn('Pinata responded with status:', response.status, errText);
       }
     } catch (err) {
       console.warn('Live IPFS Pinning fell back to local content addressing:', err);
@@ -211,9 +215,16 @@ export async function fetchWalletFilesFromPinata(
     for (const row of data.rows) {
       const kv = row.metadata?.keyvalues;
       if (kv && kv.app === 'DeStorage' && kv.owner === targetOwner && kv.keyHex && kv.ivHex) {
+        let originalName = 'Decrypted File';
+        try {
+          originalName = kv.originalName ? decodeURIComponent(kv.originalName) : (row.metadata?.name?.replace(/^DeStorage_/, '').replace(/_\d+$/, '') || 'Decrypted File');
+        } catch (e) {
+          originalName = kv.originalName || 'Decrypted File';
+        }
+
         recoveredFiles.push({
           id: `file_${row.id || row.ipfs_pin_hash}`,
-          name: kv.originalName || row.metadata?.name?.replace(/^DeStorage_/, '').replace(/_\d+$/, '') || 'Decrypted File',
+          name: originalName,
           size: Number(kv.originalSize) || row.size,
           mimeType: kv.mimeType || 'application/octet-stream',
           ipfsCid: row.ipfs_pin_hash,
