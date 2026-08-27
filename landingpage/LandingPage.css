@@ -127,7 +127,7 @@ section {
   border-bottom: none !important;
   z-index: 999999 !important;
   box-shadow: none !important;
-  transition: background-color 0.25s ease;
+  transition: background-color 0.25s ease, border-radius 0.3s ease, box-shadow 0.3s ease;
 }
 
 .lp-navbar.menu-open {
@@ -135,7 +135,10 @@ section {
   backdrop-filter: blur(32px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
   border-bottom: none !important;
-  box-shadow: 0 20px 50px rgba(11, 36, 71, 0.1) !important;
+  border-bottom-left-radius: 28px !important;
+  border-bottom-right-radius: 28px !important;
+  overflow: hidden !important;
+  box-shadow: 0 24px 48px -10px rgba(11, 36, 71, 0.18) !important;
 }
 
 .lp-nav-inner {
@@ -223,7 +226,7 @@ section {
   background: rgba(2, 132, 199, 0.1);
 }
 
-/* ANIMATED MOBILE DROPDOWN PANEL - TRANSLUCENT SERENE FROSTED GLASS */
+/* ANIMATED MOBILE DROPDOWN PANEL - CLEAN INTEGRATED CURVE */
 .lp-mobile-panel {
   display: block;
   max-height: 0;
@@ -238,14 +241,10 @@ section {
     opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
     transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
     visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  background: rgba(229, 243, 249, 0.88) !important;
-  backdrop-filter: blur(32px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
-  border-top: none !important;
-  border-bottom: none !important;
+  background: transparent !important;
+  border: none !important;
   border-bottom-left-radius: 28px !important;
   border-bottom-right-radius: 28px !important;
-  box-shadow: 0 20px 40px -10px rgba(11, 36, 71, 0.15) !important;
 }
 
 .lp-mobile-panel.open {
@@ -256,7 +255,6 @@ section {
   transform: translateY(0);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  box-shadow: 0 24px 48px -12px rgba(11, 36, 71, 0.18) !important;
 }
 
 .lp-mobile-panel-inner {
