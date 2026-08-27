@@ -36,7 +36,7 @@ export const UniversalHover: React.FC<UniversalHoverProps> = ({
       style={{
         ...style,
         transform: isPressed 
-          ? `scale(${scaleOnPress}) translateY(1.5px)` 
+          ? `scale(${scaleOnPress})` 
           : undefined,
       }}
       {...props}

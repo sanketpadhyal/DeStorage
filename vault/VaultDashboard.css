@@ -156,7 +156,7 @@
 }
 
 .vd-btn-connect:hover {
-  transform: translateY(-1px);
+  transform: scale(1.03);
   box-shadow: 0 6px 20px rgba(236, 72, 153, 0.45);
   opacity: 0.95;
 }
@@ -1018,7 +1018,7 @@
 .vd-connector-btn:hover {
   background: #eff6ff;
   border-color: #bfdbfe;
-  transform: translateY(-1px);
+  transform: scale(1.02);
 }
 
 .vd-connector-info {
@@ -1198,7 +1198,7 @@
 .vd-wallet-option-btn:hover {
   background: #eff6ff;
   border-color: #93c5fd;
-  transform: translateY(-1px);
+  transform: scale(1.03);
   box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);
 }
 
