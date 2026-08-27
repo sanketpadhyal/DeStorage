@@ -107,6 +107,23 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     localStorage.setItem('destorage_vault_files', JSON.stringify(metadataOnly));
   }, [files]);
 
+  // Update browser URL query params dynamically based on wallet state
+  useEffect(() => {
+    if (isConnected && address) {
+      window.history.replaceState(
+        { view: 'vault', auth: address },
+        'DeStorage Vault | Zero-Knowledge Session',
+        `/vault?network=base-sepolia&auth=${address.slice(0, 6)}...${address.slice(-4)}&cipher=aes-256-gcm&protocol=ipfs`
+      );
+    } else {
+      window.history.replaceState(
+        { view: 'vault' },
+        'DeStorage Vault | Decentralized Encrypted Storage',
+        '/vault?network=base-sepolia&cipher=aes-256-gcm&protocol=ipfs'
+      );
+    }
+  }, [isConnected, address]);
+
   // Handle Drag & Drop Upload
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
     let selectedFiles: FileList | null = null;
