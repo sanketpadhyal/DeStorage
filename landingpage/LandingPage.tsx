@@ -16,7 +16,8 @@ import {
   Video,
   Music,
   Box,
-  ChevronRight
+  ChevronRight,
+  Zap
 } from 'lucide-react';
 
 const GithubIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
@@ -329,7 +330,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   onClick={() => scrollToSection('crypto-demo')}
                   className="lp-btn-glass lp-btn-interactive"
                 >
-                  <Icon icon="iconamoon:lightning-bold" width={17} height={17} color="#0284c7" />
+                  <span className="lp-btn-icon-wrap">
+                    <Zap size={14} />
+                  </span>
                   <span>Live Sandbox</span>
                 </button>
               </div>

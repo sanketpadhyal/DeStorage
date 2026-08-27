@@ -373,7 +373,7 @@ section {
   -webkit-backdrop-filter: blur(12px);
   color: #0b2447;
   border-radius: 9999px;
-  padding: 11px 22px;
+  padding: 8px 18px 8px 12px;
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
@@ -388,10 +388,28 @@ section {
   transition: all 0.2s ease;
 }
 
+.lp-btn-icon-wrap {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
 .lp-btn-glass:hover {
   background: #ffffff;
   border-color: #0284c7;
   box-shadow: 0 6px 20px rgba(2, 132, 199, 0.16);
+}
+
+.lp-btn-glass:hover .lp-btn-icon-wrap {
+  background: #0284c7;
+  color: #ffffff;
 }
 
 /* 2. RICH HERO SECTION */
