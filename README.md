@@ -13,17 +13,17 @@
 
 ---
 
-## 🌟 Core Highlights
+## Core Highlights
 
-* 🔐 **Encrypt First, Upload Second:** Files are encrypted locally in your browser using standard AES-256-GCM via the Web Crypto API before anything leaves your device.
-* 📦 **Decentralized Storage:** Encrypted ciphertexts are stored on content-addressed IPFS infrastructure, producing unique cryptographic CIDs.
-* ⛓️ **Verifiable EVM Ownership:** File registration, cryptographic CIDs, timestamps, and ownership proofs are permanently verified on EVM networks (Base Sepolia).
-* 🛡️ **Zero-Knowledge to Storage & Backend:** No unencrypted data or private keys ever touch centralized servers or blockchain layers.
-* 🤝 **Decentralized Sharing:** Securely share encrypted files using public-key cryptography and key wrapping without exposing master keys.
+* **Encrypt First, Upload Second:** Files are encrypted locally in your browser using standard AES-256-GCM via the Web Crypto API before anything leaves your device.
+* **Decentralized Storage:** Encrypted ciphertexts are stored on content-addressed IPFS infrastructure, producing unique cryptographic CIDs.
+* **Verifiable EVM Ownership:** File registration, cryptographic CIDs, timestamps, and ownership proofs are permanently verified on EVM networks (Base Sepolia).
+* **Zero-Knowledge to Storage & Backend:** No unencrypted data or private keys ever touch centralized servers or blockchain layers.
+* **Decentralized Sharing:** Securely share encrypted files using public-key cryptography and key wrapping without exposing master keys.
 
 ---
 
-## 📐 Architecture & Flow
+## Architecture & Flow
 
 ```text
 User selects file
@@ -45,7 +45,7 @@ Decrypted locally in browser on retrieval
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Frontend:** React, Vite, TypeScript, Tailwind CSS, Lucide Icons
 * **Web3 Integration:** Wagmi, Viem, Base Sepolia EVM
@@ -55,7 +55,7 @@ Decrypted locally in browser on retrieval
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```text
 DeStorage/
@@ -75,7 +75,7 @@ DeStorage/
 
 ---
 
-## 🚀 Quickstart
+## Quickstart
 
 ### 1. Prerequisites
 - Node.js >= 18.x
@@ -90,6 +90,6 @@ npm run dev
 
 ---
 
-## 📜 License
+## License
 
 Distributed under the [MIT License](LICENSE).
