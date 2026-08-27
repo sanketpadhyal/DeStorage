@@ -71,6 +71,10 @@ section {
   letter-spacing: -0.03em;
 }
 
+.lp-brand-accent {
+  color: #0284c7;
+}
+
 .lp-brand-btn img {
   width: 38px;
   height: 38px;

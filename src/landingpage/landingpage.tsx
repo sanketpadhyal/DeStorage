@@ -131,7 +131,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             onClick={scrollToTop}
           >
             <img src={safeImages.logo} alt="DeStorage Logo" draggable={false} />
-            <span>DeStorage</span>
+            <span>De<span className="lp-brand-accent">Storage</span></span>
           </button>
 
           {/* Desktop Navigation Links */}
@@ -574,7 +574,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <footer className="lp-footer">
           <div className="lp-container lp-footer-inner">
             <div>
-              <strong>DeStorage</strong> • Privacy-First Decentralized Vault
+              <strong>De<span className="lp-brand-accent">Storage</span></strong> • Privacy-First Decentralized Vault
             </div>
             <div>
               Created by <a href="https://sanketpadhyal.in" target="_blank" rel="noopener noreferrer">Sanket Padhyal</a> • MIT License
