@@ -7,6 +7,7 @@
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  padding-top: 76px; /* Space for the persistent fixed navbar */
 }
 
 /* Global Content Container */
@@ -19,27 +20,30 @@
 
 /* Scroll Offset for all targeted sections */
 section {
-  scroll-margin-top: 84px;
+  scroll-margin-top: 90px;
 }
 
-/* 1. STICKY TOP NAVBAR (Full Bleed) */
+/* 1. PERSISTENT FIXED TOP NAVBAR */
 .lp-navbar {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid #f1f5f9;
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 76px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid #f1f5f9;
+  z-index: 999;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.04);
 }
 
 .lp-nav-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 76px;
+  height: 100%;
 }
 
 .lp-brand-btn {
@@ -121,17 +125,18 @@ section {
 /* MOBILE DROPDOWN PANEL */
 .lp-mobile-panel {
   display: none;
-  position: absolute;
+  position: fixed;
   top: 76px;
   left: 0;
+  right: 0;
   width: 100%;
   background: #ffffff;
   border-bottom: 2px solid #e2e8f0;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   padding: 24px;
   flex-direction: column;
   gap: 18px;
-  z-index: 99;
+  z-index: 998;
 }
 
 .lp-mobile-panel.open {
