@@ -2,50 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import './VaultDashboard.css';
 import { safeImages } from '../etc/safeimages';
 import { useWeb3 } from '../web3/Web3Context';
+import { Icon } from '@iconify/react';
 import { 
   encryptFile, 
   decryptFile, 
   EncryptedFilePayload 
 } from '../crypto/encryptionEngine';
 import { uploadToIpfs, IpfsUploadResult } from '../ipfs/ipfsService';
-
-import {
-  ShieldCheck,
-  Lock,
-  Unlock,
-  UploadCloud,
-  FileText,
-  Image as ImageIcon,
-  Video,
-  Music,
-  File,
-  Download,
-  Eye,
-  Trash2,
-  Copy,
-  Check,
-  Wallet,
-  ChevronLeft,
-  Search,
-  Key,
-  HardDrive,
-  Cpu,
-  Layers,
-  X
-} from 'lucide-react';
-
-export interface VaultFileItem {
-  id: string;
-  name: string;
-  size: number;
-  mimeType: string;
-  ipfsCid: string;
-  sha256Hash: string;
-  keyHex: string;
-  ivHex: string;
-  timestamp: number;
-  encryptedBuffer?: ArrayBuffer;
-}
+import { formatFileSize, truncateCid } from '../utils/formatters';
+import { VaultFileItem } from '../types';
 
 interface VaultDashboardProps {
   onBackToHome: () => void;
@@ -193,7 +158,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     try {
       let buffer = item.encryptedBuffer;
       if (!buffer) {
-        // If buffer was not kept in state, re-fetch via IPFS service cache
         const { fetchFromIpfs } = await import('../ipfs/ipfsService');
         buffer = await fetchFromIpfs(item.ipfsCid);
       }
@@ -205,7 +169,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         item.mimeType
       );
 
-      // Trigger standard browser download
       const downloadUrl = URL.createObjectURL(decryptedBlob);
       const a = document.createElement('a');
       a.href = downloadUrl;
@@ -263,22 +226,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     setTimeout(() => setCopiedCid(null), 2000);
   };
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
   const getFileIcon = (mime: string) => {
-    if (mime.startsWith('image/')) return <ImageIcon size={20} color="#0284c7" />;
-    if (mime.startsWith('video/')) return <Video size={20} color="#db2777" />;
-    if (mime.startsWith('audio/')) return <Music size={20} color="#7c3aed" />;
+    if (mime.startsWith('image/')) return <Icon icon="iconamoon:file-image-bold" width={22} height={22} color="#0284c7" />;
+    if (mime.startsWith('video/')) return <Icon icon="iconamoon:file-video-bold" width={22} height={22} color="#db2777" />;
+    if (mime.startsWith('audio/')) return <Icon icon="iconamoon:file-audio-bold" width={22} height={22} color="#7c3aed" />;
     if (mime.includes('pdf') || mime.includes('document') || mime.includes('text')) {
-      return <FileText size={20} color="#16a34a" />;
+      return <Icon icon="iconamoon:file-document-bold" width={22} height={22} color="#16a34a" />;
     }
-    return <File size={20} color="#475569" />;
+    return <Icon icon="iconamoon:file-bold" width={22} height={22} color="#475569" />;
   };
 
   // Filter files
@@ -309,7 +264,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               aria-label="Back to Landing Page"
               title="Back to Landing Page"
             >
-              <ChevronLeft size={24} />
+              <Icon icon="iconamoon:arrow-left-2-bold" width={24} height={24} />
             </button>
 
             <div className="vd-brand">
@@ -361,7 +316,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 disabled={isConnecting}
                 onClick={connectWallet}
               >
-                <Wallet size={16} />
+                <Icon icon="iconamoon:profile-bold" width={18} height={18} />
                 <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
               </button>
             )}
@@ -373,11 +328,11 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       <main className="vd-main-content">
         <div className="vd-container">
           
-          {/* STATS OVERVIEW CARDS */}
+          {/* STATS OVERVIEW CARDS (IconaMoon 1.1 Icon Set) */}
           <div className="vd-stats-grid">
             <div className="vd-stat-card">
               <div className="vd-stat-icon" style={{ background: '#eff6ff', color: '#0284c7' }}>
-                <Lock size={22} />
+                <Icon icon="iconamoon:lock-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
                 <span className="vd-stat-label">Encrypted Files</span>
@@ -387,7 +342,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
             <div className="vd-stat-card">
               <div className="vd-stat-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>
-                <HardDrive size={22} />
+                <Icon icon="iconamoon:folder-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
                 <span className="vd-stat-label">Storage Consumed</span>
@@ -397,7 +352,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
             <div className="vd-stat-card">
               <div className="vd-stat-icon" style={{ background: '#faf5ff', color: '#7c3aed' }}>
-                <Cpu size={22} />
+                <Icon icon="iconamoon:component-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
                 <span className="vd-stat-label">Encryption Standard</span>
@@ -407,7 +362,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
             <div className="vd-stat-card">
               <div className="vd-stat-icon" style={{ background: '#fef3c7', color: '#d97706' }}>
-                <Layers size={22} />
+                <Icon icon="iconamoon:apps-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
                 <span className="vd-stat-label">Storage Protocol</span>
@@ -431,7 +386,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
             <div className="vd-upload-inner">
               <div className="vd-upload-icon-box">
-                <UploadCloud size={38} color="#0284c7" />
+                <Icon icon="iconamoon:cloud-upload-bold" width={40} height={40} color="#0284c7" />
               </div>
 
               <div className="vd-upload-texts">
@@ -443,7 +398,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
               <div className="vd-passphrase-row">
                 <div className="vd-passphrase-input-wrap">
-                  <Key size={16} color="#64748b" />
+                  <Icon icon="iconamoon:shield-bold" width={17} height={17} color="#64748b" />
                   <input 
                     type="password" 
                     placeholder="Optional Custom Encryption Passphrase (PBKDF2)" 
@@ -459,7 +414,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                   disabled={isUploading}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <ShieldCheck size={17} />
+                  <Icon icon="iconamoon:shield-yes-bold" width={18} height={18} />
                   <span>{isUploading ? 'Encrypting...' : 'Select File to Encrypt'}</span>
                 </button>
               </div>
@@ -484,7 +439,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
               <div className="vd-files-controls">
                 <div className="vd-search-box">
-                  <Search size={15} color="#94a3b8" />
+                  <Icon icon="iconamoon:search-bold" width={16} height={16} color="#94a3b8" />
                   <input 
                     type="text" 
                     placeholder="Search by file name or CID..." 
@@ -529,7 +484,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             {/* FILES LIST */}
             {filteredFiles.length === 0 ? (
               <div className="vd-empty-state">
-                <ShieldCheck size={48} color="#94a3b8" />
+                <Icon icon="iconamoon:shield-yes-bold" width={48} height={48} color="#94a3b8" />
                 <h4>No encrypted files in this view</h4>
                 <p>Upload any file above to encrypt it with AES-256-GCM and pin to IPFS.</p>
               </div>
@@ -548,7 +503,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                           <span className="vd-file-size">{formatFileSize(file.size)}</span>
                           <span>•</span>
                           <span className="vd-file-lock-tag">
-                            <Lock size={12} /> AES-256-GCM
+                            <Icon icon="iconamoon:lock-bold" width={13} height={13} /> AES-256-GCM
                           </span>
                           <span>•</span>
                           <span className="vd-file-date">
@@ -561,12 +516,16 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                     <div className="vd-file-center">
                       <div className="vd-cid-chip" onClick={() => copyToClipboard(file.ipfsCid, file.id)}>
                         <span className="vd-cid-label">IPFS CID:</span>
-                        <span className="vd-cid-val">{`${file.ipfsCid.slice(0, 10)}...${file.ipfsCid.slice(-6)}`}</span>
-                        {copiedCid === file.id ? <Check size={13} color="#16a34a" /> : <Copy size={13} />}
+                        <span className="vd-cid-val">{truncateCid(file.ipfsCid)}</span>
+                        {copiedCid === file.id ? (
+                          <Icon icon="iconamoon:check-bold" width={14} height={14} color="#16a34a" />
+                        ) : (
+                          <Icon icon="iconamoon:copy-bold" width={14} height={14} />
+                        )}
                       </div>
 
                       <span className="vd-verified-badge" title={file.sha256Hash}>
-                        <Check size={13} /> Base EVM Verified
+                        <Icon icon="iconamoon:check-bold" width={13} height={13} /> Base EVM Verified
                       </span>
                     </div>
 
@@ -577,7 +536,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                         onClick={() => handlePreview(file)}
                         title="Decrypt & Preview in Browser"
                       >
-                        <Eye size={15} />
+                        <Icon icon="iconamoon:eye-bold" width={15} height={15} />
                         <span>Preview</span>
                       </button>
 
@@ -587,7 +546,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                         onClick={() => handleDecryptDownload(file)}
                         title="Decrypt & Download Plaintext"
                       >
-                        <Download size={15} />
+                        <Icon icon="iconamoon:cloud-download-bold" width={15} height={15} />
                         <span>Download</span>
                       </button>
 
@@ -597,7 +556,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                         onClick={() => handleDelete(file.id)}
                         title="Remove from Vault"
                       >
-                        <Trash2 size={15} />
+                        <Icon icon="iconamoon:trash-bold" width={15} height={15} />
                       </button>
                     </div>
                   </div>
@@ -614,11 +573,11 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
           <div className="vd-preview-modal" onClick={(e) => e.stopPropagation()}>
             <div className="vd-preview-header">
               <div className="vd-preview-title-box">
-                <Unlock size={18} color="#0284c7" />
+                <Icon icon="iconamoon:shield-yes-bold" width={20} height={20} color="#0284c7" />
                 <h4>{previewItem.file.name}</h4>
               </div>
               <button type="button" className="vd-modal-close" onClick={closePreview}>
-                <X size={20} />
+                <Icon icon="iconamoon:close-bold" width={20} height={20} />
               </button>
             </div>
 
@@ -638,14 +597,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 <audio controls src={previewItem.previewUrl} className="vd-preview-audio" />
               ) : (
                 <div className="vd-preview-unsupported">
-                  <FileText size={48} color="#0284c7" />
+                  <Icon icon="iconamoon:file-document-bold" width={48} height={48} color="#0284c7" />
                   <p>Encrypted file decrypted cleanly in memory buffer.</p>
                   <button 
                     type="button" 
                     className="vd-btn-select-file"
                     onClick={() => handleDecryptDownload(previewItem.file)}
                   >
-                    <Download size={16} />
+                    <Icon icon="iconamoon:cloud-download-bold" width={16} height={16} />
                     <span>Download Decrypted File</span>
                   </button>
                 </div>
@@ -663,7 +622,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 className="vd-btn-select-file" 
                 onClick={() => handleDecryptDownload(previewItem.file)}
               >
-                <Download size={16} />
+                <Icon icon="iconamoon:cloud-download-bold" width={16} height={16} />
                 <span>Save to Device</span>
               </button>
             </div>
