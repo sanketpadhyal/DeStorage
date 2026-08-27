@@ -23,12 +23,12 @@
   position: sticky;
   top: 0;
   width: 100%;
-  background: rgba(229, 243, 249, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(2, 132, 199, 0.15);
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: none;
   z-index: 1000;
-  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.04);
+  box-shadow: none;
 }
 
 .vd-nav-inner {

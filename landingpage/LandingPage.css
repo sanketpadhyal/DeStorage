@@ -124,16 +124,16 @@ section {
   background: rgba(255, 255, 255, 0.68) !important;
   backdrop-filter: blur(24px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
-  border-bottom: 1px solid rgba(2, 132, 199, 0.12) !important;
+  border-bottom: none !important;
   z-index: 999999 !important;
-  box-shadow: 0 4px 24px rgba(11, 36, 71, 0.05);
-  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: none !important;
+  transition: background-color 0.25s ease;
 }
 
 .lp-navbar.menu-open {
-  background: rgba(255, 255, 255, 0.95) !important;
-  box-shadow: 0 20px 40px rgba(11, 36, 71, 0.12) !important;
-  border-bottom: 1px solid rgba(2, 132, 199, 0.2) !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 20px 40px rgba(11, 36, 71, 0.08) !important;
+  border-bottom: none !important;
 }
 
 .lp-nav-inner {
