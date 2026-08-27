@@ -70,7 +70,9 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     connectWallet, 
     connectDemoWallet,
     disconnectWallet, 
-    switchToBaseSepolia 
+    switchToBaseSepolia,
+    masterKey,
+    unlockMasterKey 
   } = useWeb3();
 
   const [files, setFiles] = useState<VaultFileItem[]>([]);
