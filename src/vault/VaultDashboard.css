@@ -45,25 +45,28 @@
 }
 
 .vd-back-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(2, 132, 199, 0.15);
+  background: transparent;
+  border: none;
   color: #0b2447;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.18s ease;
+  padding: 6px;
+  border-radius: 8px;
+  transition: color 0.15s ease, transform 0.15s ease;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.04);
+  box-shadow: none;
 }
 
 .vd-back-btn:hover {
-  background: #ffffff;
+  background: transparent;
   color: #0284c7;
-  border-color: #0284c7;
+  border: none;
+}
+
+.vd-back-btn:active {
+  transform: translateX(-2px);
 }
 
 .vd-brand {

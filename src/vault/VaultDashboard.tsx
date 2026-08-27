@@ -25,7 +25,7 @@ import {
   Copy,
   Check,
   Wallet,
-  ArrowLeft,
+  ChevronLeft,
   Search,
   Key,
   HardDrive,
@@ -285,7 +285,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               aria-label="Back to Landing Page"
               title="Back to Landing Page"
             >
-              <ArrowLeft size={18} />
+              <ChevronLeft size={24} />
             </button>
 
             <div className="vd-brand">
