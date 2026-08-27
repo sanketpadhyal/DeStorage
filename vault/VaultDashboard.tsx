@@ -186,6 +186,56 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [isCloudSyncing, setIsCloudSyncing] = useState<boolean>(false);
+  const [cloudSyncStatus, setCloudSyncStatus] = useState<string>('');
+
+  // Handle Full Cross-Device Cloud Sync with Wallet Signature
+  const handleSyncToDevices = async () => {
+    if (!isConnected || !address) {
+      openWalletModal();
+      return;
+    }
+    try {
+      setIsCloudSyncing(true);
+      setCloudSyncStatus('Requesting Master Signature...');
+
+      const key = masterKey || (await unlockMasterKey(address));
+      if (!key) {
+        setIsCloudSyncing(false);
+        setCloudSyncStatus('');
+        return;
+      }
+
+      setCloudSyncStatus('Syncing Encrypted Vault to IPFS Cloud...');
+      const { syncVaultToCloud, fetchVaultFromCloud } = await import('../crypto/vaultSyncService');
+      
+      // 1. Check cloud for existing/newer files first
+      const cloudFiles = await fetchVaultFromCloud(address, key);
+      let mergedFiles = [...files];
+
+      if (cloudFiles && cloudFiles.length > 0) {
+        const existingIds = new Set(files.map(f => f.id));
+        const newFromCloud = cloudFiles.filter(f => !existingIds.has(f.id));
+        if (newFromCloud.length > 0) {
+          mergedFiles = [...newFromCloud, ...files];
+          setFiles(mergedFiles);
+        }
+      }
+
+      // 2. Upload latest merged registry to cloud
+      await syncVaultToCloud(address, mergedFiles, key);
+      setCloudSyncStatus('Synced & Ready on All Devices!');
+      setTimeout(() => {
+        setIsCloudSyncing(false);
+        setCloudSyncStatus('');
+      }, 2500);
+    } catch (e: any) {
+      console.warn('Sync failed:', e);
+      setIsCloudSyncing(false);
+      setCloudSyncStatus('');
+    }
+  };
+
   // Load files strictly scoped to the active connected wallet
   useEffect(() => {
     if (isConnected && address) {
@@ -220,7 +270,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     }
   }, [isConnected, address]);
 
-  // Persist files strictly scoped to active wallet
+  // Persist files strictly scoped to active wallet & background sync
   useEffect(() => {
     if (isConnected && address) {
       const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
@@ -229,8 +279,15 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         encryptedBuffer: undefined, // exclude buffer from JSON storage
       }));
       localStorage.setItem(walletKey, JSON.stringify(metadataOnly));
+
+      // If master key is already unlocked in memory, sync automatically in background
+      if (masterKey && files.length > 0) {
+        import('../crypto/vaultSyncService').then(({ syncVaultToCloud }) => {
+          syncVaultToCloud(address, files, masterKey);
+        }).catch(() => {});
+      }
     }
-  }, [files, isConnected, address]);
+  }, [files, isConnected, address, masterKey]);
 
   // Update browser URL query params dynamically based on wallet state
   useEffect(() => {
@@ -507,6 +564,17 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               <span className="vd-session-key">protocol:</span>
               <span className="vd-session-val">ipfs</span>
             </div>
+
+            <button 
+              type="button" 
+              className={`vd-session-pill vd-session-sync-btn ${isCloudSyncing ? 'vd-pill-linked-amber' : masterKey ? 'vd-pill-linked-yes' : ''}`}
+              onClick={handleSyncToDevices}
+              title="Click to sync your encrypted vault across Mac, iPhone & Android via Web3 Master Signature"
+            >
+              <span className={`vd-session-dot ${isCloudSyncing ? 'vd-dot-amber' : masterKey ? 'vd-dot-green' : 'vd-dot-cyan'}`} />
+              <span className="vd-session-key">sync:</span>
+              <span className="vd-session-val">{cloudSyncStatus || (masterKey ? 'cloud active' : 'sync devices ⚡')}</span>
+            </button>
           </div>
 
           {/* STATS OVERVIEW CARDS (Premium Multi-Color Gradient Suite) */}
@@ -1078,6 +1146,28 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                   <Icon icon="iconamoon:lightning-bold" width={16} height={16} color="#0284c7" />
                   <span>Need testnet gas? Get Free Base Sepolia ETH ➔</span>
                 </a>
+
+                {/* Zero-Knowledge Cross-Device Sync Card */}
+                <div className="vd-account-sync-card">
+                  <div className="vd-account-sync-info">
+                    <div className="vd-account-sync-title-row">
+                      <Icon icon="iconamoon:cloud-upload-bold" width={17} height={17} color="#0284c7" />
+                      <span className="vd-account-sync-title">Cross-Device Master Sync</span>
+                    </div>
+                    <span className="vd-account-sync-desc">
+                      {cloudSyncStatus || 'Sync your encrypted vault across Mac, iPhone, and Android via Web3 Master Signature.'}
+                    </span>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="vd-btn-sync-devices"
+                    disabled={isCloudSyncing}
+                    onClick={handleSyncToDevices}
+                  >
+                    <Icon icon={isCloudSyncing ? "iconamoon:synchronize-bold" : "iconamoon:lightning-bold"} width={15} height={15} className={isCloudSyncing ? "vd-spinning" : ""} />
+                    <span>{isCloudSyncing ? 'Syncing...' : 'Sync to Devices'}</span>
+                  </button>
+                </div>
 
                 {/* Disconnect & Logout Button */}
                 <div className="vd-account-logout-wrapper">

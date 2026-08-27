@@ -20,6 +20,8 @@ export interface Web3ContextType {
   disconnectWallet: () => Promise<void> | void;
   switchToBaseSepolia: () => Promise<void>;
   provider: BrowserProvider | null;
+  masterKey: CryptoKey | null;
+  unlockMasterKey: (customAddr?: string) => Promise<CryptoKey | null>;
 }
 
 const Web3Context = createContext<Web3ContextType>({
@@ -33,11 +35,13 @@ const Web3Context = createContext<Web3ContextType>({
   hasInjectedWallet: false,
   openWalletModal: () => {},
   closeWalletModal: () => {},
-  connectWallet: async () => {},
+  connectWallet: async () => false,
   connectDemoWallet: () => {},
   disconnectWallet: async () => {},
   switchToBaseSepolia: async () => {},
   provider: null,
+  masterKey: null,
+  unlockMasterKey: async () => null,
 });
 
 export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -53,6 +57,7 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [isWalletModalOpen, setIsWalletModalOpen] = useState<boolean>(false);
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [masterKey, setMasterKey] = useState<CryptoKey | null>(null);
 
   const hasInjectedWallet = typeof window !== 'undefined' && !!(window as any).ethereum;
   const isBaseSepolia = chainId === BASE_SEPOLIA_DECIMAL;
@@ -167,6 +172,7 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setChainId(null);
     setBalance('0.0000');
     setProvider(null);
+    setMasterKey(null);
 
     const ethereum = (window as any).ethereum;
     if (ethereum && ethereum.request) {
@@ -183,6 +189,29 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
         // Fallback for providers that don't support EIP-2255
         console.log('Permissions revoked locally.');
       }
+    }
+  };
+
+  // Derive and unlock Master Key via wallet signature
+  const unlockMasterKey = async (customAddr?: string): Promise<CryptoKey | null> => {
+    const targetAddr = customAddr || address;
+    if (!targetAddr) return null;
+
+    const ethereum = (window as any).ethereum;
+    if (!ethereum) return null;
+
+    try {
+      const browserProvider = provider || new BrowserProvider(ethereum);
+      const signer = await browserProvider.getSigner();
+      const { deriveMasterKeyFromSignature, VAULT_SYNC_SIGNATURE_MESSAGE } = await import('../crypto/vaultSyncService');
+      const message = VAULT_SYNC_SIGNATURE_MESSAGE(targetAddr);
+      const signature = await signer.signMessage(message);
+      const derived = await deriveMasterKeyFromSignature(signature, targetAddr);
+      setMasterKey(derived);
+      return derived;
+    } catch (e) {
+      console.warn('Master key unlock signature rejected or skipped:', e);
+      return null;
     }
   };
 
@@ -247,6 +276,8 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
         disconnectWallet,
         switchToBaseSepolia,
         provider,
+        masterKey,
+        unlockMasterKey,
       }}
     >
       {children}

@@ -2057,16 +2057,106 @@
   color: #ffffff !important;
 }
 
-.vd-btn-logout-wallet:hover {
-  background: linear-gradient(135deg, #ff2d60 0%, #ff3b3b 50%, #f43f5e 100%);
-  color: #ffffff !important;
-  border: none;
-  transform: scale(1.03);
-  filter: brightness(1.06);
-  box-shadow: 0 8px 26px rgba(255, 51, 102, 0.5);
-}
-
 .vd-btn-logout-wallet:active {
   transform: scale(0.96) !important;
   filter: brightness(0.94) !important;
 }
+
+/* CROSS-DEVICE SYNC CARD (CYBER GLASS) */
+.vd-account-sync-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(2, 132, 199, 0.22);
+  border-radius: 18px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.vd-account-sync-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+  min-width: 0;
+}
+
+.vd-account-sync-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vd-account-sync-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b2447;
+}
+
+.vd-account-sync-desc {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.vd-btn-sync-devices {
+  background: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+  color: #ffffff !important;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vd-btn-sync-devices:hover:not(:disabled) {
+  transform: scale(1.03);
+  filter: brightness(1.06);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
+}
+
+.vd-btn-sync-devices:active:not(:disabled) {
+  transform: scale(0.96) !important;
+  filter: brightness(0.94) !important;
+}
+
+.vd-btn-sync-devices:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.vd-session-sync-btn {
+  cursor: pointer;
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  transition: all 0.2s ease;
+}
+
+.vd-session-sync-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #0284c7;
+  transform: scale(1.03);
+}
+
+.vd-spinning {
+  animation: vdSpin 1s linear infinite;
+}
+
+@keyframes vdSpin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
