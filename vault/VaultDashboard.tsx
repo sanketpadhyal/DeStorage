@@ -103,13 +103,13 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       window.history.replaceState(
         { view: 'vault', auth: address },
         'DeStorage Vault | Zero-Knowledge Session',
-        `/vault?network=base-sepolia&auth=${address.slice(0, 6)}...${address.slice(-4)}&cipher=aes-256-gcm&protocol=ipfs`
+        `/vault?network=base-sepolia&auth=${address.slice(0, 6)}...${address.slice(-4)}&linked=yes&cipher=aes-256-gcm&protocol=ipfs`
       );
     } else {
       window.history.replaceState(
         { view: 'vault' },
         'DeStorage Vault | Decentralized Encrypted Storage',
-        '/vault?network=base-sepolia&cipher=aes-256-gcm&protocol=ipfs'
+        '/vault?network=base-sepolia&linked=no&cipher=aes-256-gcm&protocol=ipfs'
       );
     }
   }, [isConnected, address]);
@@ -352,6 +352,33 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       <main className="vd-main-content">
         <div className="vd-container">
           
+          {/* LIVE SESSION PARAMS BAR */}
+          <div className="vd-session-bar">
+            <div className="vd-session-pill">
+              <span className="vd-session-dot vd-dot-blue" />
+              <span className="vd-session-key">network:</span>
+              <span className="vd-session-val">base-sepolia</span>
+            </div>
+
+            <div className={`vd-session-pill ${isConnected ? 'vd-pill-linked-yes' : 'vd-pill-linked-no'}`}>
+              <span className={`vd-session-dot ${isConnected ? 'vd-dot-green' : 'vd-dot-amber'}`} />
+              <span className="vd-session-key">linked:</span>
+              <span className="vd-session-val">{isConnected ? `yes (${address?.slice(0, 6)}...${address?.slice(-4)})` : 'no'}</span>
+            </div>
+
+            <div className="vd-session-pill">
+              <span className="vd-session-dot vd-dot-purple" />
+              <span className="vd-session-key">cipher:</span>
+              <span className="vd-session-val">aes-256-gcm</span>
+            </div>
+
+            <div className="vd-session-pill">
+              <span className="vd-session-dot vd-dot-cyan" />
+              <span className="vd-session-key">protocol:</span>
+              <span className="vd-session-val">ipfs</span>
+            </div>
+          </div>
+
           {/* STATS OVERVIEW CARDS (Premium Multi-Color Gradient Suite) */}
           <div className="vd-stats-grid">
             <div className="vd-stat-card vd-card-blue">

@@ -215,8 +215,72 @@
 
 /* 2. MAIN VAULT CONTENT */
 .vd-main-content {
-  padding: 36px 0 60px;
+  padding: 28px 0 60px;
   flex: 1;
+}
+
+/* LIVE SESSION PARAMS BAR */
+.vd-session-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.vd-session-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(2, 132, 199, 0.16);
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: #334155;
+  box-shadow: 0 2px 8px rgba(11, 36, 71, 0.03);
+}
+
+.vd-session-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.vd-dot-blue { background: #0284c7; box-shadow: 0 0 6px rgba(2, 132, 199, 0.6); }
+.vd-dot-purple { background: #a855f7; box-shadow: 0 0 6px rgba(168, 85, 247, 0.6); }
+.vd-dot-cyan { background: #06b6d4; box-shadow: 0 0 6px rgba(6, 182, 212, 0.6); }
+.vd-dot-green { background: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.6); }
+.vd-dot-amber { background: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.6); }
+
+.vd-session-key {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.vd-session-val {
+  color: #0b2447;
+  font-weight: 700;
+}
+
+.vd-pill-linked-no {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(254, 243, 199, 0.65);
+}
+.vd-pill-linked-no .vd-session-val {
+  color: #b45309;
+}
+
+.vd-pill-linked-yes {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(209, 250, 229, 0.65);
+}
+.vd-pill-linked-yes .vd-session-val {
+  color: #047857;
 }
 
 /* STATS GRID */
