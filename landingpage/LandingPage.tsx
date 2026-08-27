@@ -272,32 +272,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <ChevronRight size={13} />
               </a>
             </div>
-
-            <div className="lp-mobile-panel-actions">
-              <button 
-                type="button"
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  if (onLaunchApp) onLaunchApp();
-                  else scrollToSection('crypto-demo');
-                }}
-                className="lp-btn-cyan"
-              >
-                <Box size={17} />
-                <span>Launch Vault</span>
-                <ArrowRight size={16} />
-              </button>
-
-              <a 
-                href="https://github.com/sanketpadhyal" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="lp-btn-black"
-              >
-                <GithubIcon size={16} />
-                <span>Developer GitHub</span>
-              </a>
-            </div>
           </div>
         </div>
       </header>

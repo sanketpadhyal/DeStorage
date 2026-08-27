@@ -247,7 +247,7 @@ section {
 
 .lp-mobile-panel.open {
   max-height: calc(100dvh - 76px);
-  height: calc(100dvh - 76px);
+  height: auto;
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -258,8 +258,8 @@ section {
 .lp-mobile-panel-inner {
   display: flex;
   flex-direction: column;
-  min-height: calc(100dvh - 100px);
-  padding: 16px 20px 32px;
+  min-height: auto;
+  padding: 12px 20px 24px;
 }
 
 .lp-mobile-nav-group {
