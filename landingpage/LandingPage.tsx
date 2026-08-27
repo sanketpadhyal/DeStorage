@@ -243,6 +243,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </button>
             </div>
 
+            {/* Open Source Watermark & Attribution Card */}
+            <div className="lp-mobile-watermark">
+              <div className="lp-mobile-watermark-icon">
+                <Icon icon="iconamoon:code-bold" width={18} height={18} color="#0284c7" />
+              </div>
+              <div className="lp-mobile-watermark-content">
+                <p className="lp-mobile-watermark-author">
+                  Engineered with 💙 by <strong>Sanket Padhyal</strong>
+                </p>
+                <p className="lp-mobile-watermark-license">
+                  100% Open Source under <strong>MIT License</strong>. Contributions & PRs welcome!
+                </p>
+              </div>
+              <a 
+                href="https://github.com/sanketpadhyal/DeStorage"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="lp-mobile-watermark-link"
+              >
+                <span>Contribute on GitHub</span>
+                <ChevronRight size={13} />
+              </a>
+            </div>
+
             <div className="lp-mobile-panel-actions">
               <button 
                 type="button"
