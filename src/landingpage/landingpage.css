@@ -1,9 +1,9 @@
-/* Clean Modern SaaS Theme (No distracting grid lines) */
+/* Clean Modern SaaS Theme */
 .lp-root {
   width: 100%;
   min-height: 100vh;
   background-color: #ffffff;
-  background: linear-gradient(180deg, #f0fdf4 0%, #f0f9ff 18%, #ffffff 40%);
+  background: linear-gradient(180deg, #f0f9ff 0%, #f8fafc 30%, #ffffff 60%);
   color: #0f172a;
   display: flex;
   flex-direction: column;
@@ -40,7 +40,7 @@ section {
   right: 0 !important;
   width: 100% !important;
   height: 76px !important;
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border-bottom: 1px solid #f1f5f9 !important;
@@ -66,7 +66,7 @@ section {
   font-family: var(--font-serif);
   font-size: 24px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
   letter-spacing: -0.02em;
 }
 
@@ -147,7 +147,7 @@ section {
   text-align: left;
   font-size: 16px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b2447;
   font-family: var(--font-sans);
   padding: 10px 0;
   border-bottom: 1px solid #f8fafc;
@@ -166,14 +166,14 @@ section {
 
 /* BUTTONS */
 .lp-btn-black {
-  background: #0f172a;
+  background: #0b2447;
   color: #ffffff;
   border-radius: 9999px;
   padding: 11px 24px;
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
-  border: 1px solid #0f172a;
+  border: 1px solid #0b2447;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -184,11 +184,11 @@ section {
 }
 
 .lp-btn-black:hover {
-  background: #1e293b;
+  background: #19376d;
 }
 
 .lp-btn-cyan {
-  background: #0284c7;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   color: #ffffff;
   border-radius: 9999px;
   padding: 12px 28px;
@@ -203,11 +203,11 @@ section {
   gap: 8px;
   font-family: var(--font-sans);
   box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
-  transition: background-color 0.15s ease;
+  transition: opacity 0.15s ease;
 }
 
 .lp-btn-cyan:hover {
-  background: #0369a1;
+  opacity: 0.92;
 }
 
 /* 2. RICH HERO SECTION */
@@ -227,40 +227,42 @@ section {
 .lp-hero-left {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
   text-align: left;
 }
 
+/* Medora-Style Elegant Badge */
 .lp-hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
-  border-radius: 9999px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #166534;
   font-family: var(--font-mono);
   font-size: 11.5px;
   font-weight: 700;
-  width: fit-content;
+  color: #0284c7;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  padding: 5px 14px;
+  border-radius: 6px;
+  width: fit-content;
 }
 
 .lp-hero-badge-dot {
   width: 7px;
   height: 7px;
-  background: #16a34a;
+  background: #0284c7;
   border-radius: 50%;
+  box-shadow: 0 0 6px rgba(2, 132, 199, 0.5);
 }
 
 /* Bold Serif + Italic Accent */
 .lp-hero-title {
   font-family: var(--font-serif);
-  font-size: 56px;
+  font-size: 58px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
   letter-spacing: -0.025em;
   line-height: 1.12;
 }
@@ -297,7 +299,7 @@ section {
 }
 
 .lp-hero-check-item svg {
-  color: #16a34a;
+  color: #0284c7;
   flex-shrink: 0;
 }
 
@@ -328,7 +330,7 @@ section {
 .lp-hero-stat-val {
   font-size: 24px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
   font-family: var(--font-serif);
 }
 
@@ -369,7 +371,7 @@ section {
   background: #f0f9ff;
   border: 1px solid #e0f2fe;
   padding: 6px 14px;
-  border-radius: 9999px;
+  border-radius: 6px;
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -395,8 +397,9 @@ section {
   font-weight: 700;
   color: #0284c7;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  background: #e0f2fe;
+  letter-spacing: 0.08em;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
   padding: 4px 12px;
   border-radius: 6px;
   display: inline-block;
@@ -407,7 +410,7 @@ section {
   font-family: var(--font-serif);
   font-size: 40px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
   letter-spacing: -0.02em;
 }
 
@@ -441,7 +444,7 @@ section {
 .lp-item-title {
   font-size: 18px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b2447;
   font-family: var(--font-sans);
 }
 
@@ -495,7 +498,7 @@ section {
 .lp-filetype-name {
   font-size: 16px;
   font-weight: 700;
-  color: #0f172a;
+  color: #0b2447;
   font-family: var(--font-sans);
 }
 
@@ -535,14 +538,14 @@ section {
 
 .lp-price-card.featured {
   background: #f0f9ff;
-  border: 2px solid #38bdf8;
-  box-shadow: 0 16px 40px -10px rgba(56, 189, 248, 0.25);
+  border: 2px solid #0284c7;
+  box-shadow: 0 16px 40px -10px rgba(2, 132, 199, 0.25);
 }
 
 .lp-price-name {
   font-size: 18px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
   font-family: var(--font-sans);
 }
 
@@ -555,7 +558,7 @@ section {
 .lp-price-val {
   font-size: 42px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
   font-family: var(--font-serif);
   margin: 16px 0 6px;
 }
@@ -591,9 +594,9 @@ section {
 .lp-sandbox-section {
   width: 100%;
   padding: 90px 0;
-  background: #0f172a;
+  background: #0b2447;
   color: #ffffff;
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid #19376d;
 }
 
 .lp-sandbox-header {
@@ -689,7 +692,7 @@ section {
 .lp-creator-name {
   font-size: 28px;
   font-weight: 800;
-  color: #0f172a;
+  color: #0b2447;
   font-family: var(--font-serif);
 }
 
@@ -708,10 +711,10 @@ section {
 /* 8. FOOTER */
 .lp-footer {
   width: 100%;
-  background: #0f172a;
+  background: #071933;
   color: #ffffff;
   padding: 40px 0;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid #0b2447;
 }
 
 .lp-footer-inner {
