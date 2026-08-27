@@ -775,8 +775,9 @@
   backdrop-filter: blur(16px);
   border: 1px solid rgba(2, 132, 199, 0.15);
   border-radius: 24px;
-  padding: 28px;
+  padding: 24px 20px;
   box-shadow: 0 8px 28px rgba(2, 132, 199, 0.04);
+  overflow: hidden;
 }
 
 .vd-files-header {
@@ -796,6 +797,7 @@
   gap: 10px;
   flex-wrap: nowrap;
   min-width: 0;
+  width: 100%;
 }
 
 .vd-section-title {
