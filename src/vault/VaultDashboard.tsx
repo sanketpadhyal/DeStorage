@@ -278,9 +278,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       <header className="vd-navbar">
         <div className="vd-container vd-nav-inner">
           <div className="vd-brand-group">
-            <button type="button" className="vd-back-btn" onClick={onBackToHome}>
-              <ArrowLeft size={16} />
-              <span>Back to Landing</span>
+            <button 
+              type="button" 
+              className="vd-back-btn" 
+              onClick={onBackToHome}
+              aria-label="Back to Landing Page"
+              title="Back to Landing Page"
+            >
+              <ArrowLeft size={18} />
             </button>
 
             <div className="vd-brand">
