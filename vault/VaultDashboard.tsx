@@ -352,7 +352,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
             <div className="vd-stat-card vd-card-purple">
               <div className="vd-stat-icon vd-icon-purple">
-                <Icon icon="iconamoon:component-bold" width={22} height={22} />
+                <Icon icon="iconamoon:lock-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
                 <span className="vd-stat-label">Encryption Standard</span>
@@ -362,7 +362,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
             <div className="vd-stat-card vd-card-amber">
               <div className="vd-stat-icon vd-icon-amber">
-                <Icon icon="iconamoon:apps-bold" width={22} height={22} />
+                <Icon icon="iconamoon:cloud-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
                 <span className="vd-stat-label">Storage Protocol</span>
