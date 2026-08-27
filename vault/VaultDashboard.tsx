@@ -1030,7 +1030,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                     className="vd-btn-logout-wallet"
                     onClick={handleInitiateDisconnect}
                   >
-                    <Icon icon="iconamoon:exit-bold" width={17} height={17} />
+                    <Icon icon="iconamoon:exit-bold" width={17} height={17} color="#ffffff" />
                     <span>Disconnect & Log Out</span>
                   </button>
                 </div>
