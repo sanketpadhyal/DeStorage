@@ -24,6 +24,39 @@ const BaseLogoIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
   </svg>
 );
 
+const MetaMaskIcon: React.FC<{ size?: number }> = ({ size = 26 }) => (
+  <svg width={size} height={size} viewBox="0 0 318.6 318.6">
+    <path fill="#E2761B" stroke="#E2761B" strokeMiterlimit="10" d="M274.1 35.5l-99.5 73.9L193 65.4z"/>
+    <path fill="#E4761B" stroke="#E4761B" strokeMiterlimit="10" d="M44.4 35.5l98.7 74.6-17.5-44.7z"/>
+    <path fill="#E4761B" stroke="#E4761B" strokeMiterlimit="10" d="M238.3 206.8l-29.6 45.4 67.9 18.7 19.5-63.4z"/>
+    <path fill="#E4761B" stroke="#E4761B" strokeMiterlimit="10" d="M22.6 207.4l19.4 63.4 67.9-18.7-29.6-45.4z"/>
+    <path fill="#D7C1B3" stroke="#D7C1B3" strokeMiterlimit="10" d="M198.3 179.6l-39 12.5-39-12.5 13.9-38.8 12.6 17.6h25l12.6-17.6z"/>
+    <path fill="#233447" stroke="#233447" strokeMiterlimit="10" d="M198.3 179.6l-13.9-21.2h-25l-13.9 21.2 39 12.5z"/>
+    <path fill="#CD6116" stroke="#CD6116" strokeMiterlimit="10" d="M110.1 233.5l29.6 45.4-30.8 14.5-28.4-41.2z"/>
+    <path fill="#CD6116" stroke="#CD6116" strokeMiterlimit="10" d="M208.5 233.5l29.6 18.7-28.4 41.2-30.8-14.5z"/>
+    <path fill="#E4751F" stroke="#E4751F" strokeMiterlimit="10" d="M149.3 278.9l-18.6-8.9 28.6-44.3 28.6 44.3-18.6 8.9z"/>
+    <path fill="#F6851B" stroke="#F6851B" strokeMiterlimit="10" d="M86.8 111.4l18.5 44.6-28.4 41.4-32.5-12.7z"/>
+    <path fill="#F6851B" stroke="#F6851B" strokeMiterlimit="10" d="M231.8 111.4l42.4 73.3-32.5 12.7-28.4-41.4z"/>
+    <path fill="#C0AD9E" stroke="#C0AD9E" strokeMiterlimit="10" d="M208.7 156l-12.6 17.6h-25l-12.6-17.6 12.6-26.6h25z"/>
+    <path fill="#161616" stroke="#161616" strokeMiterlimit="10" d="M134.2 147l-12.6 26.6 25 7.4 12.7-16.4z"/>
+    <path fill="#763D16" stroke="#763D16" strokeMiterlimit="10" d="M174.5 109.4l18.5-44-67.6 1.4 18.5 44z"/>
+    <path fill="#F6851B" stroke="#F6851B" strokeMiterlimit="10" d="M274.1 35.5l-29.6 74.6 29.6 84.7 20.3-64.8z"/>
+    <path fill="#F6851B" stroke="#F6851B" strokeMiterlimit="10" d="M44.4 35.5l-20.3 94.5 20.3 64.8 29.6-84.7z"/>
+  </svg>
+);
+
+const CoinbaseWalletIcon: React.FC<{ size?: number }> = ({ size = 26 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    <rect width="24" height="24" rx="6" fill="#0052FF" />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4ZM9.5 9.5H14.5C14.7761 9.5 15 9.72386 15 10V14C15 14.2761 14.7761 14.5 14.5 14.5H9.5C9.22386 14.5 9 14.2761 9 14V10C9 9.72386 9.22386 9.5 9.5 9.5Z"
+      fill="white"
+    />
+  </svg>
+);
+
 export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) => {
   const { 
     address, 
@@ -723,8 +756,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 }}
               >
                 <div className="vd-wallet-option-left">
-                  <div className="vd-wallet-logo-box" style={{ background: '#fff7ed', color: '#ea580c' }}>
-                    🦊
+                  <div className="vd-wallet-logo-box" style={{ background: '#fff7ed', padding: '6px' }}>
+                    <MetaMaskIcon size={28} />
                   </div>
                   <div className="vd-wallet-option-meta">
                     <span className="vd-wallet-name">MetaMask</span>
@@ -749,8 +782,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 }}
               >
                 <div className="vd-wallet-option-left">
-                  <div className="vd-wallet-logo-box" style={{ background: '#eff6ff', color: '#0052ff' }}>
-                    🔵
+                  <div className="vd-wallet-logo-box" style={{ background: '#eff6ff', padding: '6px' }}>
+                    <CoinbaseWalletIcon size={26} />
                   </div>
                   <div className="vd-wallet-option-meta">
                     <span className="vd-wallet-name">Coinbase Wallet</span>
@@ -768,14 +801,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               >
                 <div className="vd-wallet-option-left">
                   <div className="vd-wallet-logo-box" style={{ background: '#eff6ff', color: '#0284c7' }}>
-                    ⚡
+                    <Icon icon="iconamoon:lightning-bold" width={22} height={22} color="#0284c7" />
                   </div>
                   <div className="vd-wallet-option-meta">
                     <span className="vd-wallet-name">Instant Demo Wallet</span>
                     <span className="vd-wallet-status">No extension needed • 0.4500 ETH Base Testnet</span>
                   </div>
                 </div>
-                <span className="vd-wallet-pill-quick">1-Click Test</span>
+                <span className="vd-demo-badge">1-Click Test</span>
               </button>
             </div>
           </div>
