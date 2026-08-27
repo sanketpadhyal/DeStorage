@@ -11,33 +11,26 @@ function App() {
 
   const handleLaunchVault = () => {
     setViewMode('vault');
-    // Scroll top inside pane after transition starts
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' as any });
-    }, 50);
+    window.scrollTo(0, 0);
   };
 
   const handleBackToHome = () => {
     setViewMode('landing');
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' as any });
-    }, 50);
+    window.scrollTo(0, 0);
   };
 
   return (
     <Web3Provider>
       <div className="app-viewport">
-        <div className={`app-slide-track ${viewMode === 'vault' ? 'show-vault' : 'show-landing'}`}>
-          {/* Pane 1: Landing Page */}
-          <div className="app-page-pane lp-pane">
+        {viewMode === 'landing' ? (
+          <div key="landing-view" className="app-page-view app-fade-slide-left">
             <LandingPage onLaunchApp={handleLaunchVault} />
           </div>
-
-          {/* Pane 2: Vault Dashboard */}
-          <div className="app-page-pane vd-pane">
+        ) : (
+          <div key="vault-view" className="app-page-view app-fade-slide-right">
             <VaultDashboard onBackToHome={handleBackToHome} />
           </div>
-        </div>
+        )}
       </div>
     </Web3Provider>
   );

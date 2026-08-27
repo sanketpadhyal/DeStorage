@@ -1,68 +1,44 @@
-/* =========================================================
-   PURE HORIZONTAL SIDE-BY-SIDE PARALLAX PUSH SLIDER
-   Zero vertical shifts - Pages glide strictly horizontally
-   ========================================================= */
+/* App Container and View Transitions */
 
 .app-viewport {
-  position: relative;
   width: 100%;
   min-height: 100vh;
-  overflow-x: hidden;
   background-color: #e5f3f9;
   background: #e5f3f9;
 }
 
-/* 2-Pane Horizontal Slider Track */
-.app-slide-track {
-  display: flex;
-  width: 200%;
+.app-page-view {
+  width: 100%;
   min-height: 100vh;
-  transition: transform 0.82s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform;
 }
 
-.app-slide-track.show-landing {
-  transform: translateX(0%);
+/* Smooth Entrance when switching views without breaking fixed navbar containing block */
+@keyframes viewFadeSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(45px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-.app-slide-track.show-vault {
-  transform: translateX(-50%);
+@keyframes viewFadeSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-45px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-/* Individual Full-Width Page Panes */
-.app-page-pane {
-  width: 50%;
-  min-height: 100vh;
-  flex-shrink: 0;
-  box-sizing: border-box;
-  position: relative;
+.app-fade-slide-right {
+  animation: viewFadeSlideRight 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Parallax Depth Micro-Transitions */
-.lp-pane {
-  transition: opacity 0.75s ease;
-}
-
-.show-vault .lp-pane {
-  opacity: 0.25;
-  pointer-events: none;
-}
-
-.show-landing .lp-pane {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.vd-pane {
-  transition: opacity 0.75s ease;
-}
-
-.show-vault .vd-pane {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.show-landing .vd-pane {
-  opacity: 0.25;
-  pointer-events: none;
+.app-fade-slide-left {
+  animation: viewFadeSlideLeft 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
