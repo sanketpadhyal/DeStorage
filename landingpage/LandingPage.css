@@ -26,7 +26,7 @@
   z-index: 999990;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.75s cubic-bezier(0.19, 1, 0.22, 1), visibility 0.75s cubic-bezier(0.19, 1, 0.22, 1);
   pointer-events: none;
 }
 
@@ -127,7 +127,9 @@ section {
   border-bottom: none !important;
   z-index: 999999 !important;
   box-shadow: none !important;
-  transition: background-color 0.25s ease, border-radius 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.75s cubic-bezier(0.19, 1, 0.22, 1), 
+              border-radius 0.75s cubic-bezier(0.19, 1, 0.22, 1), 
+              box-shadow 0.75s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .lp-navbar.menu-open {
@@ -226,7 +228,7 @@ section {
   background: rgba(2, 132, 199, 0.1);
 }
 
-/* ANIMATED MOBILE DROPDOWN PANEL - CLEAN INTEGRATED CURVE */
+/* ANIMATED MOBILE DROPDOWN PANEL - BUTTERY LIQUID SMOOTH MOTION */
 .lp-mobile-panel {
   display: block;
   max-height: 0;
@@ -234,17 +236,18 @@ section {
   overflow: hidden;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-8px);
+  transform: translateY(-16px);
   transition: 
-    max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-    height 0.5s cubic-bezier(0.16, 1, 0.3, 1), 
-    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
-    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height 0.85s cubic-bezier(0.19, 1, 0.22, 1), 
+    height 0.85s cubic-bezier(0.19, 1, 0.22, 1), 
+    opacity 0.65s cubic-bezier(0.19, 1, 0.22, 1), 
+    transform 0.85s cubic-bezier(0.19, 1, 0.22, 1),
+    visibility 0.85s cubic-bezier(0.19, 1, 0.22, 1);
   background: transparent !important;
   border: none !important;
   border-bottom-left-radius: 28px !important;
   border-bottom-right-radius: 28px !important;
+  will-change: max-height, opacity, transform;
 }
 
 .lp-mobile-panel.open {
