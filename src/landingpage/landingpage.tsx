@@ -42,6 +42,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
     mockCid: ''
   });
 
+  // Always reset scroll to top on refresh/mount and clean URL hash
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+    if (window.location.hash) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, []);
+
   // Real-time client-side Web Crypto AES-256-GCM encryption
   useEffect(() => {
     async function runLiveEncryption() {
@@ -87,7 +98,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
     runLiveEncryption();
   }, [demoInput]);
 
-  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  const scrollToSection = (sectionId: string) => {
+    setIsMobileMenuOpen(false);
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const scrollToTop = () => {
+    setIsMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (window.location.hash) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  };
 
   return (
     <div className="lp-root animate-blur-in">
@@ -95,28 +120,43 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
       {/* 1. FULL-WIDTH STICKY NAVBAR */}
       <header className="lp-navbar">
         <div className="lp-container lp-nav-inner">
-          <a 
-            href="#hero" 
-            className="lp-brand" 
-            onClick={(e) => {
-              e.preventDefault();
-              closeMobileMenu();
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              window.history.pushState(null, '', '/');
-            }}
+          <button 
+            type="button"
+            className="lp-brand-btn" 
+            onClick={scrollToTop}
           >
             <img src={logoImg} alt="DeStorage Logo" />
             <span>DeStorage</span>
             <span className="lp-subdomain-chip">destorage.sanketpadhyal.in</span>
-          </a>
+          </button>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation Links (Smooth scroll without modifying URL hash) */}
           <ul className="lp-nav-links">
-            <li><a href="#features" className="lp-nav-link">Why us</a></li>
-            <li><a href="#features" className="lp-nav-link">Architecture</a></li>
-            <li><a href="#crypto-demo" className="lp-nav-link">Live Crypto Demo</a></li>
-            <li><a href="#pricing" className="lp-nav-link">Pricing</a></li>
-            <li><a href="#creator" className="lp-nav-link">Developer</a></li>
+            <li>
+              <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('features')}>
+                Why us
+              </button>
+            </li>
+            <li>
+              <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('features')}>
+                Architecture
+              </button>
+            </li>
+            <li>
+              <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>
+                Live Crypto Demo
+              </button>
+            </li>
+            <li>
+              <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('pricing')}>
+                Pricing
+              </button>
+            </li>
+            <li>
+              <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('creator')}>
+                Developer
+              </button>
+            </li>
           </ul>
 
           {/* Desktop Actions */}
@@ -134,6 +174,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
           {/* Mobile Menu Hamburger Toggle */}
           <button 
+            type="button"
             className="lp-mobile-menu-toggle"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle Navigation Menu"
@@ -144,21 +185,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
         {/* Mobile Dropdown Panel */}
         <div className={`lp-mobile-panel ${isMobileMenuOpen ? 'open' : ''}`}>
-          <a href="#hero" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Home</a>
-          <a href="#features" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Why us & Architecture</a>
-          <a href="#pricing" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Storage Packages</a>
-          <a href="#crypto-demo" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Live Crypto Demo</a>
-          <a href="#creator" className="lp-mobile-nav-link" onClick={closeMobileMenu}>Developer Profile</a>
+          <button type="button" className="lp-mobile-nav-link-btn" onClick={scrollToTop}>Home</button>
+          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('features')}>Why us & Architecture</button>
+          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('pricing')}>Storage Packages</button>
+          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>Live Crypto Demo</button>
+          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('creator')}>Developer Profile</button>
 
           <div className="lp-mobile-panel-actions">
             <button 
+              type="button"
               onClick={() => {
-                closeMobileMenu();
+                setIsMobileMenuOpen(false);
                 if (onLaunchApp) onLaunchApp();
-                else {
-                  const el = document.getElementById('crypto-demo');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }
+                else scrollToSection('crypto-demo');
               }}
               className="lp-btn-cyan"
             >
@@ -198,10 +237,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
             <div className="lp-hero-actions">
               <button 
-                onClick={onLaunchApp || (() => {
-                  const el = document.getElementById('crypto-demo');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                })}
+                type="button"
+                onClick={onLaunchApp || (() => scrollToSection('crypto-demo'))}
                 className="lp-btn-cyan"
               >
                 <span>Launch Vault</span>
@@ -307,7 +344,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <li><Check size={16} /> Base Sepolia EVM Records</li>
                 <li><Check size={16} /> In-Browser Local Decryption</li>
               </ul>
-              <button className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
+              <button type="button" className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
                 Get Started Free
               </button>
             </div>
@@ -325,7 +362,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <li><Check size={16} /> Multi-Wallet Access Control</li>
                 <li><Check size={16} /> Unlimited On-Chain Verification</li>
               </ul>
-              <button className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center', background: '#0284c7' }}>
+              <button type="button" className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center', background: '#0284c7' }}>
                 Launch Pro Vault
               </button>
             </div>
@@ -343,7 +380,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <li><Check size={16} /> Instant SHA-256 Integrity Checks</li>
                 <li><Check size={16} /> Wallet-to-Wallet File Sharing</li>
               </ul>
-              <button className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
+              <button type="button" className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
                 Choose Lite
               </button>
             </div>
