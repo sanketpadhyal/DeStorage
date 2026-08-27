@@ -824,10 +824,10 @@ section {
 /* 8. FOOTER */
 .lp-footer {
   width: 100%;
-  background: #071933;
+  background: #0d0f12; /* Modern Black Grayish */
   color: #ffffff;
   padding: 40px 0;
-  border-top: 1px solid #0b2447;
+  border-top: 1px solid #1c2026;
 }
 
 .lp-footer-inner {
