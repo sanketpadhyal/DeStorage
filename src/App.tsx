@@ -9,28 +9,34 @@ export type ViewMode = 'landing' | 'vault';
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('landing');
 
-  // Auto-scroll to top when switching views
   const handleLaunchVault = () => {
     setViewMode('vault');
-    window.scrollTo({ top: 0, behavior: 'instant' as any });
+    // Scroll top inside pane after transition starts
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' as any });
+    }, 50);
   };
 
   const handleBackToHome = () => {
     setViewMode('landing');
-    window.scrollTo({ top: 0, behavior: 'instant' as any });
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' as any });
+    }, 50);
   };
 
   return (
     <Web3Provider>
       <div className="app-viewport">
-        {/* Landing Page Layer (Parallax Background Push) */}
-        <div className={`app-page-layer lp-layer ${viewMode === 'landing' ? 'active' : 'pushed-back'}`}>
-          <LandingPage onLaunchApp={handleLaunchVault} />
-        </div>
+        <div className={`app-slide-track ${viewMode === 'vault' ? 'show-vault' : 'show-landing'}`}>
+          {/* Pane 1: Landing Page */}
+          <div className="app-page-pane lp-pane">
+            <LandingPage onLaunchApp={handleLaunchVault} />
+          </div>
 
-        {/* Vault Dashboard Layer (Parallax Foreground Slide & Push) */}
-        <div className={`app-page-layer vd-layer ${viewMode === 'vault' ? 'active' : 'pushed-out'}`}>
-          <VaultDashboard onBackToHome={handleBackToHome} />
+          {/* Pane 2: Vault Dashboard */}
+          <div className="app-page-pane vd-pane">
+            <VaultDashboard onBackToHome={handleBackToHome} />
+          </div>
         </div>
       </div>
     </Web3Provider>

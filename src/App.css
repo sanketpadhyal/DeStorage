@@ -1,5 +1,6 @@
 /* =========================================================
-   PARALLEL PARALLAX PUSH TRANSITION SYSTEM
+   PURE HORIZONTAL SIDE-BY-SIDE PARALLAX PUSH SLIDER
+   Zero vertical shifts - Pages glide strictly horizontally
    ========================================================= */
 
 .app-viewport {
@@ -11,74 +12,57 @@
   background: #e5f3f9;
 }
 
-/* Base layer container */
-.app-page-layer {
-  width: 100%;
+/* 2-Pane Horizontal Slider Track */
+.app-slide-track {
+  display: flex;
+  width: 200%;
   min-height: 100vh;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  transition: transform 0.82s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
-/* 1. Landing Page Layer (Pushes smoothly to the left with slow deep parallax) */
-.lp-layer {
-  transition: 
-    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), 
-    opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), 
-    filter 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0.85s ease;
-  will-change: transform, opacity, filter;
+.app-slide-track.show-landing {
+  transform: translateX(0%);
 }
 
-.lp-layer.active {
+.app-slide-track.show-vault {
+  transform: translateX(-50%);
+}
+
+/* Individual Full-Width Page Panes */
+.app-page-pane {
+  width: 50%;
+  min-height: 100vh;
+  flex-shrink: 0;
+  box-sizing: border-box;
   position: relative;
-  transform: translateX(0) scale(1);
-  opacity: 1;
-  filter: blur(0px);
-  pointer-events: auto;
-  visibility: visible;
-  z-index: 10;
 }
 
-.lp-layer.pushed-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  transform: translateX(-35%) scale(0.96);
-  opacity: 0;
-  filter: blur(4px);
+/* Parallax Depth Micro-Transitions */
+.lp-pane {
+  transition: opacity 0.75s ease;
+}
+
+.show-vault .lp-pane {
+  opacity: 0.25;
   pointer-events: none;
-  visibility: hidden;
-  z-index: 5;
 }
 
-/* 2. Vault Dashboard Layer (Foreground layer slides from right with responsive spring timing) */
-.vd-layer {
-  transition: 
-    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), 
-    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), 
-    filter 0.75s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0.75s ease;
-  will-change: transform, opacity;
-}
-
-.vd-layer.active {
-  position: relative;
-  transform: translateX(0) scale(1);
+.show-landing .lp-pane {
   opacity: 1;
   pointer-events: auto;
-  visibility: visible;
-  z-index: 20;
 }
 
-.vd-layer.pushed-out {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  transform: translateX(100%);
-  opacity: 0;
+.vd-pane {
+  transition: opacity 0.75s ease;
+}
+
+.show-vault .vd-pane {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.show-landing .vd-pane {
+  opacity: 0.25;
   pointer-events: none;
-  visibility: hidden;
-  z-index: 20;
 }
