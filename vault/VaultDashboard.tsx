@@ -840,8 +840,13 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 <span className="vd-account-online-dot" />
               </div>
               <div className="vd-account-info-col">
-                <span className="vd-account-label">Connected Wallet</span>
-                <span className="vd-account-full-addr">{address}</span>
+                <div className="vd-account-label-row">
+                  <span className="vd-account-label">Connected Wallet</span>
+                  <span className="vd-account-active-tag">Active</span>
+                </div>
+                <span className="vd-account-full-addr" title={address}>
+                  {`${address.slice(0, 12)}...${address.slice(-10)}`}
+                </span>
               </div>
             </div>
 
