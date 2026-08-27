@@ -80,9 +80,13 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadStage, setUploadStage] = useState<string>('');
   const [customPassphrase, setCustomPassphrase] = useState<string>('');
+  const [batchTotal, setBatchTotal] = useState<number>(0);
+  const [batchDone, setBatchDone] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [copiedCid, setCopiedCid] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isSelecting, setIsSelecting] = useState<boolean>(false);
 
   // Preview Modal State
   const [previewItem, setPreviewItem] = useState<{
@@ -338,27 +342,58 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
     if (!selectedFiles || selectedFiles.length === 0) return;
 
-    const fileToUpload = selectedFiles[0];
-    await processFileUpload(fileToUpload);
+    const allFiles = Array.from(selectedFiles);
+    const imageFiles = allFiles.filter(f => f.type.startsWith('image/'));
+    const nonImageFiles = allFiles.filter(f => !f.type.startsWith('image/'));
+
+    // Images: batch up to 10
+    if (imageFiles.length > 0) {
+      if (allFiles.length > imageFiles.length) {
+        alert('Batch upload is for photos only. Non-image files will be skipped.');
+      }
+      const batch = imageFiles.slice(0, 10);
+      if (imageFiles.length > 10) {
+        alert(`Only the first 10 photos will be uploaded (${imageFiles.length} selected).`);
+      }
+      setBatchTotal(batch.length);
+      setBatchDone(0);
+      setIsUploading(true);
+      for (let i = 0; i < batch.length; i++) {
+        setBatchDone(i);
+        await processFileUpload(batch[i], true);
+      }
+      setBatchDone(batch.length);
+      setUploadStage(`${batch.length} photo${batch.length > 1 ? 's' : ''} encrypted & stored!`);
+      setTimeout(() => {
+        setIsUploading(false);
+        setUploadStage('');
+        setBatchTotal(0);
+        setBatchDone(0);
+      }, 1500);
+      return;
+    }
+
+    // Non-image: single file upload
+    await processFileUpload(nonImageFiles[0]);
   };
 
-  const processFileUpload = async (file: File) => {
+  const processFileUpload = async (file: File, isBatch = false) => {
     if (!isConnected || !address) {
       openWalletModal();
       return;
     }
     try {
-      setIsUploading(true);
+      if (!isBatch) setIsUploading(true);
 
       // Step 1: Encrypt File locally in browser
       const encryptedData: EncryptedFilePayload = await encryptFile(
         file,
         customPassphrase,
-        (stage) => setUploadStage(stage)
+        (stage) => setUploadStage(isBatch ? `${file.name}: ${stage}` : stage)
       );
 
       // Step 2: Upload to decentralized IPFS with full sovereign cloud metadata
-      setUploadStage('Pinning encrypted payload to decentralized IPFS...');
+      setUploadStage(isBatch ? `${file.name}: Pinning to IPFS...` : 'Pinning encrypted payload to decentralized IPFS...');
       const ipfsResult: IpfsUploadResult = await uploadToIpfs(
         encryptedData.encryptedBuffer,
         file.name,
@@ -373,7 +408,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       );
 
       // Step 3: Register in Vault
-      setUploadStage('Registering cryptographic proof on Base Sepolia...');
       const newVaultItem: VaultFileItem = {
         id: `file_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
         name: file.name,
@@ -388,17 +422,23 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       };
 
       setFiles(prev => [newVaultItem, ...prev]);
-      setCustomPassphrase('');
-      setUploadStage('Upload & Encryption Complete!');
-      setTimeout(() => {
-        setIsUploading(false);
-        setUploadStage('');
-      }, 1000);
+      if (!isBatch) {
+        setCustomPassphrase('');
+        setUploadStage('Upload & Encryption Complete!');
+        setTimeout(() => {
+          setIsUploading(false);
+          setUploadStage('');
+        }, 1000);
+      }
     } catch (err: any) {
       console.error('File encryption & upload failed:', err);
-      alert(`Encryption error: ${err.message || 'Failed to process file'}`);
-      setIsUploading(false);
-      setUploadStage('');
+      if (!isBatch) {
+        alert(`Encryption error: ${err.message || 'Failed to process file'}`);
+        setIsUploading(false);
+        setUploadStage('');
+      } else {
+        console.warn(`Batch: skipping ${file.name} — ${err.message}`);
+      }
     }
   };
 
@@ -496,6 +536,47 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         }
       }
     }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    const toDelete = files.filter(f => selectedIds.has(f.id));
+    if (!window.confirm(`Permanently delete ${toDelete.length} file${toDelete.length > 1 ? 's' : ''} from your vault and IPFS cloud?`)) return;
+
+    const remaining = files.filter(f => !selectedIds.has(f.id));
+    setFiles(remaining);
+    setSelectedIds(new Set());
+    setIsSelecting(false);
+
+    if (address) {
+      const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
+      localStorage.setItem(walletKey, JSON.stringify(remaining));
+
+      const delKey = `destorage_deleted_${address.toLowerCase()}`;
+      try {
+        const delCids = JSON.parse(localStorage.getItem(delKey) || '[]');
+        for (const f of toDelete) {
+          if (!delCids.includes(f.ipfsCid)) delCids.push(f.ipfsCid);
+        }
+        localStorage.setItem(delKey, JSON.stringify(delCids));
+      } catch (e) {}
+    }
+
+    // Unpin all from Pinata IPFS Cloud
+    const { unpinFromIpfs } = await import('../ipfs/ipfsService');
+    for (const f of toDelete) {
+      if (f.ipfsCid) {
+        try { await unpinFromIpfs(f.ipfsCid); } catch (e) { console.warn('Unpin error:', e); }
+      }
+    }
+  };
+
+  const toggleSelectId = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
   };
 
   const copyToClipboard = (text: string, cid: string) => {
@@ -664,7 +745,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
           {/* UPLOAD & ENCRYPT DROPZONE */}
           <div 
-            className="vd-upload-card"
+            className={`vd-upload-card ${isUploading ? 'vd-upload-card-active' : ''}`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleFileSelect}
           >
@@ -672,41 +753,67 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               type="file" 
               ref={fileInputRef} 
               style={{ display: 'none' }} 
+              multiple
+              accept="image/*,*"
               onChange={handleFileSelect} 
             />
 
-            <div className="vd-upload-inner">
-              <div className="vd-upload-icon-box">
-                <Icon icon="iconamoon:cloud-upload-bold" width={40} height={40} color="#0284c7" />
-              </div>
-
-              <div className="vd-upload-texts">
-                <h3 className="vd-upload-title">Drag & drop files to encrypt and store</h3>
-                <p className="vd-upload-desc">
-                  Browser-native AES-256-GCM encryption runs locally before upload. Plaintext never leaves your machine.
-                </p>
-              </div>
-
-              <div className="vd-passphrase-row" style={{ justifyContent: 'center' }}>
-                <button 
-                  type="button" 
-                  className="vd-btn-select-file" 
-                  disabled={isUploading}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Icon icon="iconamoon:cloud-upload-bold" width={19} height={19} />
-                  <span>{isUploading ? 'Encrypting...' : 'Select File to Encrypt'}</span>
-                </button>
-              </div>
-
-              {/* Progress feedback bar */}
-              {isUploading && (
-                <div className="vd-progress-box">
-                  <div className="vd-progress-spinner"></div>
-                  <span className="vd-progress-text">{uploadStage}</span>
+            {isUploading ? (
+              /* ── FULL-PANEL UPLOADING STATE ── */
+              <div className="vd-uploading-panel">
+                <div className="vd-uploading-radar-box">
+                  <div className="vd-uploading-glow-bg" />
+                  <div className="vd-uploading-radar-ring" />
+                  <div className="vd-uploading-radar-core">
+                    <Icon icon="iconamoon:cloud-upload-bold" width={26} height={26} color="#0284c7" />
+                  </div>
                 </div>
-              )}
-            </div>
+
+                <div className="vd-uploading-info">
+                  <h3 className="vd-uploading-title">
+                    {batchTotal > 1 ? `Encrypting & Uploading ${batchDone + 1} of ${batchTotal}` : 'Encrypting & Uploading'}
+                  </h3>
+                  <p className="vd-uploading-stage">{uploadStage}</p>
+                </div>
+
+                {batchTotal > 1 && (
+                  <div className="vd-uploading-progress-wrap">
+                    <div className="vd-uploading-progress-track">
+                      <div 
+                        className="vd-uploading-progress-fill"
+                        style={{ width: `${Math.round((batchDone / batchTotal) * 100)}%` }}
+                      />
+                    </div>
+                    <span className="vd-uploading-counter">{batchDone} / {batchTotal} done</span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* ── IDLE DROPZONE ── */
+              <div className="vd-upload-inner">
+                <div className="vd-upload-icon-box">
+                  <Icon icon="iconamoon:cloud-upload-bold" width={40} height={40} color="#0284c7" />
+                </div>
+
+                <div className="vd-upload-texts">
+                  <h3 className="vd-upload-title">Drag & drop to encrypt and store</h3>
+                  <p className="vd-upload-desc">
+                    Upload up to <strong>10 photos at once</strong> — AES-256-GCM encrypted locally before IPFS storage. Plaintext never leaves your device.
+                  </p>
+                </div>
+
+                <div className="vd-passphrase-row" style={{ justifyContent: 'center' }}>
+                  <button 
+                    type="button" 
+                    className="vd-btn-select-file" 
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Icon icon="iconamoon:cloud-upload-bold" width={19} height={19} />
+                    <span>Select Photos to Encrypt</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* VAULT FILE EXPLORER */}
@@ -715,6 +822,15 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               <div className="vd-files-title-row">
                 <h3 className="vd-section-title">Encrypted Vault Storage</h3>
                 <span className="vd-files-count">{filteredFiles.length} files</span>
+                {filteredFiles.length > 0 && (
+                  <button
+                    type="button"
+                    className={`vd-select-toggle-btn ${isSelecting ? 'active' : ''}`}
+                    onClick={() => { setIsSelecting(v => !v); setSelectedIds(new Set()); }}
+                  >
+                    {isSelecting ? 'Cancel' : 'Select'}
+                  </button>
+                )}
               </div>
 
               <div className="vd-files-controls">
@@ -816,79 +932,127 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 )}
               </div>
             ) : (
-              <div className="vd-file-list">
-                {filteredFiles.map((file) => (
-                  <div key={file.id} className="vd-file-card">
-                    <div className="vd-file-left">
-                      <div className="vd-file-icon-box">
-                        {getFileIcon(file.mimeType)}
-                      </div>
-
-                      <div className="vd-file-details">
-                        <span className="vd-file-name" title={file.name}>{file.name}</span>
-                        <div className="vd-file-meta-row">
-                          <span className="vd-file-size">{formatFileSize(file.size)}</span>
-                          <span>•</span>
-                          <span className="vd-file-lock-tag">
-                            <Icon icon="iconamoon:lock-bold" width={13} height={13} /> AES-256-GCM
-                          </span>
-                          <span>•</span>
-                          <span className="vd-file-date">
-                            {new Date(file.timestamp).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="vd-file-center">
-                      <div className="vd-cid-chip" onClick={() => copyToClipboard(file.ipfsCid, file.id)}>
-                        <span className="vd-cid-label">IPFS CID:</span>
-                        <span className="vd-cid-val">{truncateCid(file.ipfsCid)}</span>
-                        {copiedCid === file.id ? (
-                          <Icon icon="iconamoon:check-bold" width={14} height={14} color="#16a34a" />
-                        ) : (
-                          <Icon icon="iconamoon:copy-bold" width={14} height={14} />
-                        )}
-                      </div>
-
-                      <span className="vd-verified-badge" title={file.sha256Hash}>
-                        <Icon icon="iconamoon:check-bold" width={13} height={13} /> Base EVM Verified
+              <>
+                {/* BULK DELETE ACTION BAR */}
+                {isSelecting && (
+                  <div className="vd-bulk-bar">
+                    <div className="vd-bulk-bar-left">
+                      <button
+                        type="button"
+                        className="vd-bulk-select-all"
+                        onClick={() => {
+                          if (selectedIds.size === filteredFiles.length) {
+                            setSelectedIds(new Set());
+                          } else {
+                            setSelectedIds(new Set(filteredFiles.map(f => f.id)));
+                          }
+                        }}
+                      >
+                        {selectedIds.size === filteredFiles.length ? 'Deselect All' : 'Select All'}
+                      </button>
+                      <span className="vd-bulk-count">
+                        {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Tap cards to select'}
                       </span>
                     </div>
-
-                    <div className="vd-file-actions">
-                      <button 
-                        type="button" 
-                        className="vd-action-btn vd-preview-btn" 
-                        onClick={() => handlePreview(file)}
-                        title="Decrypt & Preview in Browser"
-                      >
-                        <Icon icon="iconamoon:eye-bold" width={15} height={15} />
-                        <span>Preview</span>
-                      </button>
-
-                      <button 
-                        type="button" 
-                        className="vd-action-btn vd-download-btn" 
-                        onClick={() => handleDecryptDownload(file)}
-                        title="Decrypt & Download Plaintext"
-                      >
-                        <Icon icon="iconamoon:cloud-download-bold" width={15} height={15} />
-                        <span>Download</span>
-                      </button>
-
-                      <button 
-                        type="button" 
-                        className="vd-action-btn vd-delete-btn" 
-                        onClick={() => handleDelete(file.id)}
-                        title="Remove from Vault"
-                      >
-                        <Icon icon="iconamoon:trash-bold" width={15} height={15} />
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      className="vd-bulk-delete-btn"
+                      disabled={selectedIds.size === 0}
+                      onClick={handleBulkDelete}
+                    >
+                      <Icon icon="iconamoon:trash-bold" width={15} height={15} />
+                      <span>Delete {selectedIds.size > 0 ? `(${selectedIds.size})` : ''}</span>
+                    </button>
                   </div>
-                ))}
-              </div>
+                )}
+
+                <div className="vd-file-list">
+                  {filteredFiles.map((file) => (
+                    <div
+                      key={file.id}
+                      className={`vd-file-card ${isSelecting && selectedIds.has(file.id) ? 'vd-file-card-selected' : ''}`}
+                      onClick={isSelecting ? () => toggleSelectId(file.id) : undefined}
+                      style={isSelecting ? { cursor: 'pointer' } : undefined}
+                    >
+                      {isSelecting && (
+                        <div className="vd-file-checkbox">
+                          <div className={`vd-checkbox-circle ${selectedIds.has(file.id) ? 'checked' : ''}`}>
+                            {selectedIds.has(file.id) && (
+                              <Icon icon="iconamoon:check-bold" width={12} height={12} color="#ffffff" />
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="vd-file-left">
+                        <div className="vd-file-icon-box">
+                          {getFileIcon(file.mimeType)}
+                        </div>
+
+                        <div className="vd-file-details">
+                          <span className="vd-file-name" title={file.name}>{file.name}</span>
+                          <div className="vd-file-meta-row">
+                            <span className="vd-file-size">{formatFileSize(file.size)}</span>
+                            <span>•</span>
+                            <span className="vd-file-lock-tag">
+                              <Icon icon="iconamoon:lock-bold" width={13} height={13} /> AES-256-GCM
+                            </span>
+                            <span>•</span>
+                            <span className="vd-file-date">
+                              {new Date(file.timestamp).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="vd-file-center">
+                        <div className="vd-cid-chip" onClick={(e) => { e.stopPropagation(); copyToClipboard(file.ipfsCid, file.id); }}>
+                          <span className="vd-cid-label">IPFS CID:</span>
+                          <span className="vd-cid-val">{truncateCid(file.ipfsCid)}</span>
+                          {copiedCid === file.id ? (
+                            <Icon icon="iconamoon:check-bold" width={14} height={14} color="#16a34a" />
+                          ) : (
+                            <Icon icon="iconamoon:copy-bold" width={14} height={14} />
+                          )}
+                        </div>
+                      </div>
+
+                      {!isSelecting && (
+                        <div className="vd-file-actions">
+                          <button 
+                            type="button" 
+                            className="vd-action-btn vd-preview-btn" 
+                            onClick={() => handlePreview(file)}
+                            title="Decrypt & Preview in Browser"
+                          >
+                            <Icon icon="iconamoon:eye-bold" width={15} height={15} />
+                            <span>Preview</span>
+                          </button>
+
+                          <button 
+                            type="button" 
+                            className="vd-action-btn vd-download-btn" 
+                            onClick={() => handleDecryptDownload(file)}
+                            title="Decrypt & Download Plaintext"
+                          >
+                            <Icon icon="iconamoon:cloud-download-bold" width={15} height={15} />
+                            <span>Download</span>
+                          </button>
+
+                          <button 
+                            type="button" 
+                            className="vd-action-btn vd-delete-btn" 
+                            onClick={() => handleDelete(file.id)}
+                            title="Remove from Vault"
+                          >
+                            <Icon icon="iconamoon:trash-bold" width={15} height={15} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -924,9 +1088,36 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
             <div className="vd-preview-stage">
               {previewItem.isDecrypting ? (
-                <div className="vd-decrypting-state">
-                  <div className="vd-progress-spinner" />
-                  <p>Deriving PBKDF2 Key & Decrypting AES-GCM Buffer in Memory...</p>
+                <div className="vd-decrypt-stage">
+                  <div className="vd-decrypt-radar-box">
+                    <div className="vd-decrypt-glow-bg" />
+                    <div className="vd-decrypt-radar-ring" />
+                    <div className="vd-decrypt-radar-core">
+                      <Icon icon="iconamoon:shield-bold" width={26} height={26} color="#0284c7" />
+                    </div>
+                  </div>
+
+                  <div className="vd-decrypt-info-group">
+                    <h4 className="vd-decrypt-stage-title">Zero-Knowledge Decryption</h4>
+                    <p className="vd-decrypt-stage-sub">
+                      Streaming AES-256 cipher from IPFS & deciphering in local memory...
+                    </p>
+                  </div>
+
+                  <div className="vd-decrypt-tags-row">
+                    <span className="vd-decrypt-status-pill">
+                      <span className="vd-pulse-dot" style={{ background: '#0284c7' }} />
+                      IPFS Stream
+                    </span>
+                    <span className="vd-decrypt-status-pill">
+                      <span className="vd-pulse-dot" style={{ background: '#7c3aed' }} />
+                      AES-GCM Key
+                    </span>
+                    <span className="vd-decrypt-status-pill">
+                      <span className="vd-pulse-dot" style={{ background: '#16a34a' }} />
+                      SHA-256 Checksum
+                    </span>
+                  </div>
                 </div>
               ) : previewItem.file.mimeType.startsWith('image/') ? (
                 <div className="vd-preview-image-wrap">
@@ -955,10 +1146,20 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               <button 
                 type="button" 
                 className="vd-btn-save-device" 
+                disabled={previewItem.isDecrypting}
                 onClick={() => handleDecryptDownload(previewItem.file)}
               >
-                <Icon icon="iconamoon:cloud-download-bold" width={17} height={17} color="#ffffff" />
-                <span>Save to Device</span>
+                {previewItem.isDecrypting ? (
+                  <>
+                    <div className="vd-progress-spinner" style={{ width: '15px', height: '15px', borderWidth: '2px' }} />
+                    <span>Decrypting...</span>
+                  </>
+                ) : (
+                  <>
+                    <Icon icon="iconamoon:cloud-download-bold" width={17} height={17} color="#ffffff" />
+                    <span>Save to Device</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -1223,18 +1424,13 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                       <span className="vd-account-sync-title">Cross-Device Master Sync</span>
                     </div>
                     <span className="vd-account-sync-desc">
-                      {cloudSyncStatus || 'Sync your encrypted vault across Mac, iPhone, and Android via Web3 Master Signature.'}
+                      Your encrypted vault is automatically synced across all devices via Pinata IPFS Cloud — no manual sync needed.
                     </span>
                   </div>
-                  <button 
-                    type="button" 
-                    className="vd-btn-sync-devices"
-                    disabled={isCloudSyncing}
-                    onClick={handleSyncToDevices}
-                  >
-                    <Icon icon={isCloudSyncing ? "iconamoon:synchronize-bold" : "iconamoon:lightning-bold"} width={15} height={15} className={isCloudSyncing ? "vd-spinning" : ""} />
-                    <span>{isCloudSyncing ? 'Syncing...' : 'Sync to Devices'}</span>
-                  </button>
+                  <span className="vd-auto-sync-badge">
+                    <Icon icon="iconamoon:check-circle-1-bold" width={13} height={13} />
+                    Auto
+                  </span>
                 </div>
 
                 {/* Disconnect & Logout Button */}
