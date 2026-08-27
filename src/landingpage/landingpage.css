@@ -13,7 +13,7 @@
 /* Page Content Wrapper with top padding for fixed navbar */
 .lp-main-content {
   width: 100%;
-  padding-top: 76px; /* Exactly matches fixed navbar height */
+  padding-top: 76px;
   display: flex;
   flex-direction: column;
 }
@@ -180,8 +180,8 @@ section {
   background: #0f172a;
   color: #ffffff;
   border-radius: 9999px;
-  padding: 10px 22px;
-  font-size: 13.5px;
+  padding: 11px 24px;
+  font-size: 14px;
   font-weight: 700;
   text-decoration: none;
   border: 1px solid #0f172a;
@@ -220,13 +220,10 @@ section {
   background: #0096c7;
 }
 
-/* 2. HERO SECTION (Full Viewport Screen Fit) */
+/* 2. RICH HERO SECTION */
 .lp-hero-section {
   width: 100%;
-  min-height: calc(100vh - 76px);
-  display: flex;
-  align-items: center;
-  padding: 40px 0 60px;
+  padding: 60px 0 80px;
   background: #ffffff;
   border-bottom: 1px solid #f1f5f9;
 }
@@ -242,7 +239,7 @@ section {
 .lp-hero-left {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 24px;
   text-align: left;
 }
 
@@ -282,10 +279,31 @@ section {
 }
 
 .lp-hero-desc {
-  font-size: 17px;
+  font-size: 16.5px;
   color: #64748b;
   line-height: 1.65;
-  max-width: 540px;
+  max-width: 560px;
+}
+
+/* Hero Feature Checklist */
+.lp-hero-check-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.lp-hero-check-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lp-hero-check-item svg {
+  color: #10b981;
+  flex-shrink: 0;
 }
 
 .lp-hero-actions {
@@ -296,10 +314,41 @@ section {
   margin-top: 4px;
 }
 
+/* Hero Key Stats Grid */
+.lp-hero-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 8px;
+}
+
+.lp-hero-stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lp-hero-stat-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.lp-hero-stat-label {
+  font-size: 11.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Hero Right Visual & Badges */
 .lp-hero-right {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  gap: 20px;
 }
 
 .lp-hero-img {
@@ -309,10 +358,30 @@ section {
   object-fit: contain;
 }
 
-/* 3. ARCHITECTURE EXPERTISE SECTION (2x2 with illustration) */
+.lp-hero-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.lp-tech-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 3. ARCHITECTURE EXPERTISE SECTION */
 .lp-features-section {
   width: 100%;
-  padding: 100px 0;
+  padding: 90px 0;
   background: #fafcff;
   border-bottom: 1px solid #f1f5f9;
 }
@@ -389,11 +458,58 @@ section {
   object-fit: contain;
 }
 
-/* 4. PRICING & STORAGE TIERS */
+/* 4. FILE TYPES SUPPORTED SECTION */
+.lp-filetypes-section {
+  width: 100%;
+  padding: 80px 0;
+  background: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.lp-filetypes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 36px;
+}
+
+.lp-filetype-card {
+  background: #f8fafc;
+  border: 1px solid #edf2f7;
+  border-radius: 20px;
+  padding: 24px 20px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lp-filetype-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lp-filetype-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.lp-filetype-desc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* 5. PRICING & STORAGE TIERS */
 .lp-pricing-section {
   width: 100%;
-  padding: 100px 0;
-  background: #ffffff;
+  padding: 90px 0;
+  background: #fafcff;
   border-bottom: 1px solid #f1f5f9;
 }
 
@@ -405,7 +521,7 @@ section {
 }
 
 .lp-price-card {
-  background: #f8fafc;
+  background: #ffffff;
   border: 1px solid #edf2f7;
   border-radius: 24px;
   padding: 36px 30px;
@@ -467,10 +583,10 @@ section {
   flex-shrink: 0;
 }
 
-/* 5. INTERACTIVE WEB CRYPTO SANDBOX */
+/* 6. INTERACTIVE WEB CRYPTO SANDBOX */
 .lp-sandbox-section {
   width: 100%;
-  padding: 100px 0;
+  padding: 90px 0;
   background: #0f172a;
   color: #ffffff;
   border-bottom: 1px solid #1e293b;
@@ -535,10 +651,10 @@ section {
   word-break: break-all;
 }
 
-/* 6. CREATOR SECTION */
+/* 7. CREATOR SECTION */
 .lp-creator-section {
   width: 100%;
-  padding: 100px 0;
+  padding: 90px 0;
   background: #ffffff;
 }
 
@@ -584,7 +700,7 @@ section {
   margin-top: 6px;
 }
 
-/* 7. FOOTER (Full Bleed) */
+/* 8. FOOTER */
 .lp-footer {
   width: 100%;
   background: #0f172a;
@@ -606,7 +722,7 @@ section {
   text-decoration: underline;
 }
 
-/* RESPONSIVE & MOBILE OPTIMIZATIONS */
+/* RESPONSIVE */
 @media (max-width: 960px) {
   .lp-nav-links, .lp-nav-actions {
     display: none;
@@ -617,13 +733,16 @@ section {
   .lp-subdomain-chip {
     display: none;
   }
-  .lp-hero-section {
-    min-height: auto;
-    padding: 60px 0;
-  }
   .lp-hero-grid, .lp-features-grid, .lp-sandbox-layout {
     grid-template-columns: 1fr;
     gap: 36px;
+  }
+  .lp-hero-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .lp-filetypes-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
   .lp-pricing-grid {
     grid-template-columns: 1fr;
@@ -647,10 +766,7 @@ section {
     padding: 0 18px;
   }
   .lp-hero-section {
-    padding: 44px 0 50px;
-  }
-  .lp-features-section, .lp-pricing-section, .lp-sandbox-section, .lp-creator-section {
-    padding: 50px 0;
+    padding: 40px 0 50px;
   }
   .lp-hero-title {
     font-size: 32px;
@@ -659,6 +775,10 @@ section {
   .lp-hero-desc {
     font-size: 15px;
   }
+  .lp-hero-check-row {
+    flex-direction: column;
+    gap: 10px;
+  }
   .lp-hero-actions {
     width: 100%;
     flex-direction: column;
@@ -666,6 +786,13 @@ section {
   .lp-hero-actions button, .lp-hero-actions a {
     width: 100%;
     justify-content: center;
+  }
+  .lp-hero-stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .lp-filetypes-grid {
+    grid-template-columns: 1fr;
   }
   .lp-section-title {
     font-size: 26px;

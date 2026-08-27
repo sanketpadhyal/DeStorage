@@ -12,7 +12,14 @@ import {
   ArrowRight,
   User,
   Menu,
-  X
+  X,
+  ShieldCheck,
+  FileText,
+  Image,
+  Video,
+  Music,
+  Cpu,
+  Layers
 } from 'lucide-react';
 
 const GithubIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
@@ -143,6 +150,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </button>
             </li>
             <li>
+              <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('filetypes')}>
+                Supported Files
+              </button>
+            </li>
+            <li>
               <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>
                 Live Crypto Demo
               </button>
@@ -187,6 +199,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <div className={`lp-mobile-panel ${isMobileMenuOpen ? 'open' : ''}`}>
           <button type="button" className="lp-mobile-nav-link-btn" onClick={scrollToTop}>Home</button>
           <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('features')}>Why us & Architecture</button>
+          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('filetypes')}>Supported Files</button>
           <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('pricing')}>Storage Packages</button>
           <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>Live Crypto Demo</button>
           <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('creator')}>Developer Profile</button>
@@ -221,7 +234,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
       {/* 2. MAIN SCROLLABLE CONTENT AREA */}
       <main className="lp-main-content">
         
-        {/* HERO SECTION */}
+        {/* RICH HERO SECTION */}
         <section id="hero" className="lp-hero-section">
           <div className="lp-container lp-hero-grid">
             <div className="lp-hero-left">
@@ -235,9 +248,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </h1>
 
               <p className="lp-hero-desc">
-                We deliver browser-native AES-256-GCM encryption combined with IPFS content addressing and Base Sepolia EVM blockchain ownership records.
+                We deliver browser-native AES-256-GCM encryption combined with IPFS content addressing and Base Sepolia EVM blockchain ownership records. Your plaintext keys never touch any centralized servers.
               </p>
 
+              {/* Feature Checklist */}
+              <div className="lp-hero-check-row">
+                <div className="lp-hero-check-item">
+                  <Check size={16} />
+                  <span>Zero Plaintext Exposure</span>
+                </div>
+                <div className="lp-hero-check-item">
+                  <Check size={16} />
+                  <span>Non-Custodial Keys</span>
+                </div>
+                <div className="lp-hero-check-item">
+                  <Check size={16} />
+                  <span>Tamper-Proof SHA-256</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
               <div className="lp-hero-actions">
                 <button 
                   type="button"
@@ -258,6 +288,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   <span>View Source</span>
                 </a>
               </div>
+
+              {/* Hero Key Metrics Grid */}
+              <div className="lp-hero-stats-grid">
+                <div className="lp-hero-stat-box">
+                  <span className="lp-hero-stat-val">256-Bit</span>
+                  <span className="lp-hero-stat-label">AES-GCM Encryption</span>
+                </div>
+                <div className="lp-hero-stat-box">
+                  <span className="lp-hero-stat-val">0 KB</span>
+                  <span className="lp-hero-stat-label">Server Plaintext</span>
+                </div>
+                <div className="lp-hero-stat-box">
+                  <span className="lp-hero-stat-val">100%</span>
+                  <span className="lp-hero-stat-label">IPFS Content Addressed</span>
+                </div>
+                <div className="lp-hero-stat-box">
+                  <span className="lp-hero-stat-val">Base EVM</span>
+                  <span className="lp-hero-stat-label">Verified Ownership</span>
+                </div>
+              </div>
             </div>
 
             <div className="lp-hero-right">
@@ -266,6 +316,56 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 alt="DeStorage Cloud Vault Hero Illustration" 
                 className="lp-hero-img" 
               />
+              
+              <div className="lp-hero-pills-row">
+                <span className="lp-tech-pill"><ShieldCheck size={14} color="#00b4d8" /> Web Crypto API</span>
+                <span className="lp-tech-pill"><Layers size={14} color="#00b4d8" /> IPFS Decentralized</span>
+                <span className="lp-tech-pill"><Cpu size={14} color="#00b4d8" /> Base Sepolia EVM</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SUPPORTED FILE TYPES SECTION */}
+        <section id="filetypes" className="lp-filetypes-section">
+          <div className="lp-container">
+            <div className="lp-section-header">
+              <span className="lp-section-tag">Vault Compatibility</span>
+              <h2 className="lp-section-title">Built for any confidential file format</h2>
+            </div>
+
+            <div className="lp-filetypes-grid">
+              <div className="lp-filetype-card">
+                <div className="lp-filetype-icon" style={{ background: '#eff6ff', color: '#2563eb' }}>
+                  <Image size={22} />
+                </div>
+                <h4 className="lp-filetype-name">Pictures & Photos</h4>
+                <p className="lp-filetype-desc">Encrypted gallery view with local in-memory decryption and zero-knowledge previews.</p>
+              </div>
+
+              <div className="lp-filetype-card">
+                <div className="lp-filetype-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>
+                  <FileText size={22} />
+                </div>
+                <h4 className="lp-filetype-name">Documents & PDFs</h4>
+                <p className="lp-filetype-desc">Zero-knowledge storage for legal, confidential contracts, financial papers, and identity docs.</p>
+              </div>
+
+              <div className="lp-filetype-card">
+                <div className="lp-filetype-icon" style={{ background: '#fdf2f8', color: '#db2777' }}>
+                  <Video size={22} />
+                </div>
+                <h4 className="lp-filetype-name">Videos & Streaming</h4>
+                <p className="lp-filetype-desc">Chunked cryptographic pipeline enabling ultra-fast encryption on large video archives.</p>
+              </div>
+
+              <div className="lp-filetype-card">
+                <div className="lp-filetype-icon" style={{ background: '#faf5ff', color: '#7c3aed' }}>
+                  <Music size={22} />
+                </div>
+                <h4 className="lp-filetype-name">Audio & Music</h4>
+                <p className="lp-filetype-desc">Protected sound archives, audio recordings, and wallet-to-wallet decentralized sharing.</p>
+              </div>
             </div>
           </div>
         </section>
