@@ -56,6 +56,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
     }
   }, []);
 
+  // Premium Scroll-Reveal IntersectionObserver
+  useEffect(() => {
+    const observerCallback: IntersectionObserverCallback = (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('lp-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    const revealElements = document.querySelectorAll('.lp-reveal');
+    revealElements.forEach(el => observer.observe(el));
+
+    return () => {
+      revealElements.forEach(el => observer.unobserve(el));
+    };
+  }, []);
+
   // Real-time client-side Web Crypto AES-256-GCM encryption
   useEffect(() => {
     async function runLiveEncryption() {
@@ -261,7 +285,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* RICH HERO SECTION */}
         <section id="hero" className="lp-hero-section">
           <div className="lp-container lp-hero-grid">
-            <div className="lp-hero-left">
+            <div className="lp-hero-left lp-reveal lp-reveal-up">
               <h1 className="lp-hero-title">
                 Own your files with <span>proper decentralized</span> privacy.
               </h1>
@@ -291,7 +315,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <button 
                   type="button"
                   onClick={onLaunchApp || (() => scrollToSection('crypto-demo'))}
-                  className="lp-btn-cyan"
+                  className="lp-btn-cyan lp-btn-interactive"
                 >
                   <Box size={17} />
                   <span>Launch Vault</span>
@@ -302,7 +326,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   href="https://github.com/sanketpadhyal/DeStorage" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="lp-btn-black"
+                  className="lp-btn-black lp-btn-interactive"
                 >
                   <GithubIcon size={16} />
                   <span>View Source</span>
@@ -310,7 +334,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </div>
 
               {/* Hero Key Metrics Grid */}
-              <div className="lp-hero-stats-grid">
+              <div className="lp-hero-stats-grid lp-reveal lp-stagger-1">
                 <div className="lp-hero-stat-box">
                   <span className="lp-hero-stat-val">256-Bit</span>
                   <span className="lp-hero-stat-label">AES-GCM Encryption</span>
@@ -330,7 +354,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </div>
             </div>
 
-            <div className="lp-hero-right">
+            <div className="lp-hero-right lp-reveal lp-reveal-fade lp-floating-visual">
               <img 
                 src={safeImages.heroIllustration} 
                 alt="DeStorage Cloud Vault Hero Illustration" 
@@ -344,13 +368,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* SUPPORTED FILE TYPES SECTION */}
         <section id="filetypes" className="lp-filetypes-section">
           <div className="lp-container">
-            <div className="lp-section-header">
+            <div className="lp-section-header lp-reveal lp-reveal-up">
               <span className="lp-section-tag">Vault Compatibility</span>
               <h2 className="lp-section-title">Built for any confidential file format</h2>
             </div>
 
             <div className="lp-filetypes-grid">
-              <div className="lp-filetype-card">
+              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-1">
                 <div className="lp-filetype-icon" style={{ background: '#eff6ff', color: '#2563eb' }}>
                   <Image size={22} />
                 </div>
@@ -358,7 +382,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <p className="lp-filetype-desc">Encrypted gallery view with local in-memory decryption and zero-knowledge previews.</p>
               </div>
 
-              <div className="lp-filetype-card">
+              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-2">
                 <div className="lp-filetype-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>
                   <FileText size={22} />
                 </div>
@@ -366,7 +390,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <p className="lp-filetype-desc">Zero-knowledge storage for legal, confidential contracts, financial papers, and identity docs.</p>
               </div>
 
-              <div className="lp-filetype-card">
+              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-3">
                 <div className="lp-filetype-icon" style={{ background: '#fdf2f8', color: '#db2777' }}>
                   <Video size={22} />
                 </div>
@@ -374,7 +398,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <p className="lp-filetype-desc">Chunked cryptographic pipeline enabling ultra-fast encryption on large video archives.</p>
               </div>
 
-              <div className="lp-filetype-card">
+              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-4">
                 <div className="lp-filetype-icon" style={{ background: '#faf5ff', color: '#7c3aed' }}>
                   <Music size={22} />
                 </div>
@@ -388,14 +412,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* ARCHITECTURE & SECURITY */}
         <section id="features" className="lp-features-section">
           <div className="lp-container">
-            <div className="lp-section-header">
+            <div className="lp-section-header lp-reveal lp-reveal-up">
               <span className="lp-section-tag">Security Architecture</span>
               <h2 className="lp-section-title">Our deep decentralized security</h2>
             </div>
             
             <div className="lp-features-grid">
               <div className="lp-numbered-2x2">
-                <div className="lp-numbered-item">
+                <div className="lp-numbered-item lp-card-animated lp-reveal lp-stagger-1">
                   <span className="lp-item-num">1</span>
                   <h3 className="lp-item-title">Client-Side Web Crypto</h3>
                   <p className="lp-item-desc">
@@ -403,7 +427,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   </p>
                 </div>
 
-                <div className="lp-numbered-item">
+                <div className="lp-numbered-item lp-card-animated lp-reveal lp-stagger-2">
                   <span className="lp-item-num">2</span>
                   <h3 className="lp-item-title">IPFS Content Addressing</h3>
                   <p className="lp-item-desc">
@@ -411,7 +435,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   </p>
                 </div>
 
-                <div className="lp-numbered-item">
+                <div className="lp-numbered-item lp-card-animated lp-reveal lp-stagger-3">
                   <span className="lp-item-num">3</span>
                   <h3 className="lp-item-title">Base Sepolia Ownership</h3>
                   <p className="lp-item-desc">
@@ -419,7 +443,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   </p>
                 </div>
 
-                <div className="lp-numbered-item">
+                <div className="lp-numbered-item lp-card-animated lp-reveal lp-stagger-4">
                   <span className="lp-item-num">4</span>
                   <h3 className="lp-item-title">Zero-Knowledge Sharing</h3>
                   <p className="lp-item-desc">
@@ -428,7 +452,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 </div>
               </div>
 
-              <div>
+              <div className="lp-reveal lp-reveal-fade lp-floating-visual">
                 <img 
                   src={safeImages.featuresIllustration} 
                   alt="Cryptographic Integrity & Inspection Illustration" 
@@ -443,15 +467,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* VAULT TIERS & PRICING */}
         <section id="pricing" className="lp-pricing-section">
           <div className="lp-container" style={{ textAlign: 'center' }}>
-            <span className="lp-section-tag">Storage Packages</span>
-            <h2 className="lp-section-title">Vault storage pricing</h2>
-            <p style={{ color: '#64748b', fontSize: '15px', marginTop: '6px' }}>
-              Check the tiers and choose the right privacy package for your files
-            </p>
+            <div className="lp-reveal lp-reveal-up">
+              <span className="lp-section-tag">Storage Packages</span>
+              <h2 className="lp-section-title">Vault storage pricing</h2>
+              <p style={{ color: '#64748b', fontSize: '15px', marginTop: '6px' }}>
+                Check the tiers and choose the right privacy package for your files
+              </p>
+            </div>
 
             <div className="lp-pricing-grid">
               {/* Tier 1 */}
-              <div className="lp-price-card">
+              <div className="lp-price-card lp-card-animated lp-reveal lp-stagger-1">
                 <div>
                   <h4 className="lp-price-name">Starter Vault</h4>
                   <p className="lp-price-desc">For personal files and documents</p>
@@ -463,13 +489,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   <li><Check size={16} /> Base Sepolia EVM Records</li>
                   <li><Check size={16} /> In-Browser Local Decryption</li>
                 </ul>
-                <button type="button" className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
+                <button type="button" className="lp-btn-cyan lp-btn-interactive" style={{ width: '100%', justifyContent: 'center' }}>
                   Get Started Free
                 </button>
               </div>
 
               {/* Tier 2 (Featured) */}
-              <div className="lp-price-card featured">
+              <div className="lp-price-card featured lp-card-animated lp-reveal lp-stagger-2">
                 <div>
                   <h4 className="lp-price-name" style={{ color: '#0284c7' }}>Pro Vault (Recommended)</h4>
                   <p className="lp-price-desc">For power creators and media archives</p>
@@ -481,13 +507,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   <li><Check size={16} /> Multi-Wallet Access Control</li>
                   <li><Check size={16} /> Unlimited On-Chain Verification</li>
                 </ul>
-                <button type="button" className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center', background: '#0284c7' }}>
+                <button type="button" className="lp-btn-cyan lp-btn-interactive" style={{ width: '100%', justifyContent: 'center' }}>
                   Launch Pro Vault
                 </button>
               </div>
 
               {/* Tier 3 */}
-              <div className="lp-price-card">
+              <div className="lp-price-card lp-card-animated lp-stagger-3 lp-reveal">
                 <div>
                   <h4 className="lp-price-name">Decentralized Lite</h4>
                   <p className="lp-price-desc">For self-hosted IPFS nodes</p>
@@ -499,7 +525,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   <li><Check size={16} /> Instant SHA-256 Integrity Checks</li>
                   <li><Check size={16} /> Wallet-to-Wallet File Sharing</li>
                 </ul>
-                <button type="button" className="lp-btn-cyan" style={{ width: '100%', justifyContent: 'center' }}>
+                <button type="button" className="lp-btn-cyan lp-btn-interactive" style={{ width: '100%', justifyContent: 'center' }}>
                   Choose Lite
                 </button>
               </div>
@@ -510,7 +536,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* LIVE CRYPTO ENGINE SANDBOX */}
         <section id="crypto-demo" className="lp-sandbox-section">
           <div className="lp-container">
-            <div className="lp-sandbox-header">
+            <div className="lp-sandbox-header lp-reveal lp-reveal-up">
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <Lock size={20} color="#38bdf8" />
                 <span style={{ fontWeight: 700, fontSize: '16px' }}>Live Browser SubtleCrypto (AES-256-GCM) Sandbox</span>
@@ -519,7 +545,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             </div>
 
             <div className="lp-sandbox-layout">
-              <div className="lp-sandbox-input-box">
+              <div className="lp-sandbox-input-box lp-reveal lp-stagger-1">
                 <label style={{ fontSize: '12px', color: '#94a3b8' }}>Plaintext Memory Input (Type anything to test):</label>
                 <textarea 
                   value={demoInput} 
@@ -528,7 +554,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 />
               </div>
 
-              <div className="lp-sandbox-output-box">
+              <div className="lp-sandbox-output-box lp-reveal lp-stagger-2">
                 <div>
                   <div className="lp-sandbox-field-label">1. Random 12-Byte IV (Nonce):</div>
                   <div className="lp-sandbox-field-val">{demoOutput.iv}</div>
@@ -549,11 +575,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         {/* CREATOR & COMMUNITY */}
         <section id="creator" className="lp-creator-section">
           <div className="lp-container">
-            <div className="lp-creator-card">
+            <div className="lp-creator-card lp-card-animated lp-reveal lp-reveal-up">
               <img 
                 src={safeImages.mascotCharacter} 
                 alt="DeStorage Mascot Character" 
-                className="lp-mascot-img" 
+                className="lp-mascot-img lp-floating-visual" 
                 draggable={false}
               />
 

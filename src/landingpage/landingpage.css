@@ -57,6 +57,83 @@ section {
   scroll-margin-top: 90px;
 }
 
+/* =========================================================
+   PREMIUM ANIMATION SYSTEM (Scroll Reveal, Float, Card Lift)
+   ========================================================= */
+
+/* Scroll Reveal Base */
+.lp-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(4px);
+  transition: 
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+    filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+
+.lp-reveal.lp-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0px);
+}
+
+.lp-reveal-fade {
+  transform: scale(0.96);
+}
+
+.lp-reveal-fade.lp-visible {
+  transform: scale(1);
+}
+
+/* Stagger Delays */
+.lp-stagger-1 { transition-delay: 0.08s; }
+.lp-stagger-2 { transition-delay: 0.16s; }
+.lp-stagger-3 { transition-delay: 0.24s; }
+.lp-stagger-4 { transition-delay: 0.32s; }
+
+/* Subtle Floating Visual for Illustrations */
+@keyframes subtleFloatBobbing {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.lp-floating-visual img {
+  animation: subtleFloatBobbing 5s ease-in-out infinite;
+}
+
+/* Interactive Animated Cards */
+.lp-card-animated {
+  transition: 
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
+    box-shadow 0.25s ease, 
+    border-color 0.25s ease;
+}
+
+.lp-card-animated:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 36px -6px rgba(2, 132, 199, 0.14) !important;
+  border-color: rgba(2, 132, 199, 0.35) !important;
+}
+
+/* Interactive Animated Buttons */
+.lp-btn-interactive {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lp-btn-interactive:hover {
+  transform: translateY(-2px);
+}
+
+.lp-btn-interactive:active {
+  transform: translateY(1px);
+}
+
 /* 1. SEAMLESS EXTENDING NAVBAR & MOBILE PANEL */
 .lp-navbar {
   position: fixed !important;
