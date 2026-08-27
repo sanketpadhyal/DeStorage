@@ -196,13 +196,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           {/* Desktop Actions */}
           <div className="lp-nav-actions">
             <a 
-              href="https://github.com/sanketpadhyal/DeStorage" 
+              href="https://github.com/sanketpadhyal" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="lp-btn-black"
             >
               <GithubIcon size={16} />
-              <span>GitHub</span>
+              <span>Developer</span>
             </a>
           </div>
 
@@ -259,13 +259,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </button>
 
               <a 
-                href="https://github.com/sanketpadhyal/DeStorage" 
+                href="https://github.com/sanketpadhyal" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="lp-btn-black"
               >
                 <GithubIcon size={16} />
-                <span>GitHub Repository</span>
+                <span>Developer GitHub</span>
               </a>
             </div>
           </div>
