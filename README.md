@@ -1,70 +1,95 @@
-# Getting Started with Create React App
+# DeStorage
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> **Your files. Your keys. Your ownership.**
 
-## Available Scripts
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Encryption](https://img.shields.io/badge/Encryption-AES--256--GCM-green)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto)
+[![Storage](https://img.shields.io/badge/Storage-IPFS-teal)](https://ipfs.tech)
+[![Blockchain](https://img.shields.io/badge/Blockchain-Base%20Sepolia-blue)](https://base.org)
 
-In the project directory, you can run:
+**DeStorage** is a privacy-focused decentralized file vault that combines **client-side encryption**, **IPFS-compatible decentralized storage**, and **blockchain-based ownership & integrity records**.
 
-### `npm start`
+**Website:** [destorage.sanketpadhyal.in](https://destorage.sanketpadhyal.in)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🌟 Core Highlights
 
-### `npm test`
+* 🔐 **Encrypt First, Upload Second:** Files are encrypted locally in your browser using standard AES-256-GCM via the Web Crypto API before anything leaves your device.
+* 📦 **Decentralized Storage:** Encrypted ciphertexts are stored on content-addressed IPFS infrastructure, producing unique cryptographic CIDs.
+* ⛓️ **Verifiable EVM Ownership:** File registration, cryptographic CIDs, timestamps, and ownership proofs are permanently verified on EVM networks (Base Sepolia).
+* 🛡️ **Zero-Knowledge to Storage & Backend:** No unencrypted data or private keys ever touch centralized servers or blockchain layers.
+* 🤝 **Decentralized Sharing:** Securely share encrypted files using public-key cryptography and key wrapping without exposing master keys.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 📐 Architecture & Flow
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```text
+User selects file
+       ↓
+Validate file in browser
+       ↓
+Generate secure random AES-256 key (crypto.getRandomValues)
+       ↓
+Encrypt file locally (AES-256-GCM)
+       ↓
+Upload encrypted ciphertext to IPFS
+       ↓
+Receive IPFS CID (bafy...)
+       ↓
+Register file metadata & CID on Base Sepolia
+       ↓
+Decrypted locally in browser on retrieval
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🛠️ Tech Stack
 
-### `npm run eject`
+* **Frontend:** React, Vite, TypeScript, Tailwind CSS, Lucide Icons
+* **Web3 Integration:** Wagmi, Viem, Base Sepolia EVM
+* **Cryptography:** Native Browser Web Crypto API (SubtleCrypto, AES-256-GCM)
+* **Storage Layer:** IPFS Pinning Provider (pluggable `StorageService` abstraction)
+* **Smart Contracts:** Solidity (Hardhat / Foundry)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📂 Repository Structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```text
+DeStorage/
+├── frontend/              # React + Vite + TypeScript web application
+│   ├── src/
+│   │   ├── components/    # Reusable UI components & vault widgets
+│   │   ├── pages/         # Landing, Dashboard, Vault, Settings
+│   │   ├── services/      # Encryption, IPFS, and Blockchain services
+│   │   ├── hooks/         # Custom React hooks (wallet, vault, storage)
+│   │   ├── types/         # TypeScript type definitions
+│   │   └── utils/         # Helpers and cryptographic primitives
+├── contracts/             # Solidity smart contracts & test suites
+│   ├── src/               # DeStorageRegistry.sol
+│   └── test/              # Contract unit tests
+└── README.md
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## 🚀 Quickstart
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 1. Prerequisites
+- Node.js >= 18.x
+- npm, pnpm, or yarn
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 2. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📜 License
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Distributed under the [MIT License](LICENSE).
