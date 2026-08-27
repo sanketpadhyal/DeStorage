@@ -2,7 +2,7 @@
    UNIVERSAL TACTILE BUTTON & INTERACTION PHYSICS ENGINE
    ========================================================= */
 
-/* 1. Global Interactive Tap-and-Hold Compression on ALL Buttons */
+/* 1. Global Interactive Tap-and-Hold Compression on ALL Buttons & Panels */
 button,
 a.btn,
 .lp-btn-cyan,
@@ -11,12 +11,18 @@ a.btn,
 .vd-btn-wallet-active,
 .vd-btn-select-file,
 .vd-btn-action,
+.vd-action-btn,
+.vd-preview-btn,
+.vd-download-btn,
+.vd-delete-btn,
+.vd-cid-chip,
 .vd-account-action-pill,
 .vd-account-faucet-link,
 .vd-btn-logout-wallet,
 .vd-disconnect-btn,
 .vd-switch-net-btn,
 .vd-filter-tab,
+.vd-filter-btn,
 .vd-wallet-option-btn,
 .universal-btn {
   user-select: none;
@@ -39,13 +45,18 @@ a.btn:hover,
 .vd-btn-wallet-active:hover:not(:disabled),
 .vd-btn-select-file:hover:not(:disabled),
 .vd-btn-action:hover,
+.vd-action-btn:hover,
+.vd-preview-btn:hover,
+.vd-download-btn:hover,
+.vd-delete-btn:hover,
+.vd-cid-chip:hover,
 .vd-btn-save-device:hover,
 .vd-account-action-pill:hover,
 .vd-account-faucet-link:hover,
 .vd-btn-logout-wallet:hover,
 .universal-btn:hover:not(:disabled) {
-  transform: scale(1.03);
-  filter: brightness(1.04);
+  transform: scale(1.04);
+  filter: brightness(1.05);
 }
 
 /* Centered Active / Tap-and-Hold Compression Physics (Zero Up/Down Movement) */
@@ -57,17 +68,39 @@ a.btn:active,
 .vd-btn-wallet-active:active:not(:disabled),
 .vd-btn-select-file:active:not(:disabled),
 .vd-btn-action:active,
+.vd-action-btn:active,
+.vd-preview-btn:active,
+.vd-download-btn:active,
+.vd-delete-btn:active,
+.vd-cid-chip:active,
 .vd-btn-save-device:active,
 .vd-account-action-pill:active,
 .vd-account-faucet-link:active,
 .vd-btn-logout-wallet:active,
 .vd-filter-tab:active,
+.vd-filter-btn:active,
 .vd-wallet-option-btn:active,
 .universal-btn:active:not(:disabled),
 .universal-btn.is-pressed {
-  transform: scale(0.96) !important;
+  transform: scale(0.95) !important;
   filter: brightness(0.94) !important;
   transition: transform 0.08s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Universal File Card Panel Physics */
+.vd-file-card {
+  transform: translate3d(0, 0, 0);
+  transition: 
+    transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    border-color 0.22s ease,
+    box-shadow 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  will-change: transform, box-shadow;
+}
+
+.vd-file-card:hover {
+  transform: scale(1.012);
+  border-color: rgba(2, 132, 199, 0.45);
+  box-shadow: 0 10px 30px -4px rgba(2, 132, 199, 0.12), 0 0 1px rgba(2, 132, 199, 0.3);
 }
 
 /* Universal Button Variants */
