@@ -51,6 +51,13 @@ interface VaultDashboardProps {
   onBackToHome: () => void;
 }
 
+const BaseLogoIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
+  <svg width={size} height={size} viewBox="0 0 115 115" fill="none">
+    <circle cx="57.5" cy="57.5" r="57.5" fill="#0052FF"/>
+    <path d="M57.26 89.17c17.5 0 31.68-14.18 31.68-31.67 0-17.5-14.18-31.68-31.68-31.68-14.73 0-27.14 10.05-30.73 23.69h38.31c2.19 0 3.97 1.78 3.97 3.97v8.04c0 2.19-1.78 3.97-3.97 3.97H26.53c3.59 13.64 16 23.68 30.73 23.68z" fill="#fff"/>
+  </svg>
+);
+
 export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) => {
   const { 
     address, 
@@ -290,21 +297,23 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
             <div className="vd-brand">
               <img src={safeImages.logo} alt="DeStorage Logo" draggable={false} />
-              <span>De<span className="vd-brand-accent">Storage</span> Vault</span>
-              <span className="vd-network-chip">
-                <span className="vd-live-dot"></span>
-                Base Sepolia EVM
-              </span>
+              <span>De<span className="vd-brand-accent">Storage</span></span>
+              <span className="vd-vault-badge">Vault</span>
             </div>
           </div>
 
           <div className="vd-nav-actions">
+            {/* Base Sepolia Live Network Pill */}
+            <div className="vd-network-pill">
+              <BaseLogoIcon size={16} />
+              <span>Base Sepolia</span>
+              <span className="vd-live-dot" title="Live EVM Network"></span>
+            </div>
+
             {isConnected && address ? (
               <div className="vd-wallet-connected">
                 <div className="vd-wallet-badge">
-                  {isBaseSepolia ? (
-                    <span className="vd-chain-pill">Base Sepolia</span>
-                  ) : (
+                  {!isBaseSepolia && (
                     <button 
                       type="button" 
                       className="vd-switch-net-btn" 
