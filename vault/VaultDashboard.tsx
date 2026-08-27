@@ -111,6 +111,9 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   const [selectedWalletLogo, setSelectedWalletLogo] = useState<string>(safeImages.metamask);
   const [connectErrorMsg, setConnectErrorMsg] = useState<string>('');
 
+  // PhonePe-style animated disconnection state
+  const [disconnectStep, setDisconnectStep] = useState<'idle' | 'disconnecting' | 'success'>('idle');
+
   const handleInitiateConnect = async (
     walletName: string,
     logo: string,
@@ -141,6 +144,21 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     } catch (err: any) {
       setConnectStep('error');
       setConnectErrorMsg(err?.message || 'Connection request rejected or cancelled.');
+    }
+  };
+
+  const handleInitiateDisconnect = async () => {
+    setDisconnectStep('disconnecting');
+    try {
+      await disconnectWallet();
+      setDisconnectStep('success');
+      setTimeout(() => {
+        handleSmoothCloseAccount();
+        setTimeout(() => setDisconnectStep('idle'), 350);
+      }, 1500);
+    } catch (e) {
+      setDisconnectStep('idle');
+      handleSmoothCloseAccount();
     }
   };
 
@@ -914,109 +932,148 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       )}
 
       {/* 4. CONNECTED WALLET ACCOUNT & SESSION DETAILS MODAL */}
-      {isAccountModalOpen && isConnected && address && (
+      {isAccountModalOpen && (
         <div 
           className={`vd-modal-overlay ${isAccountClosing ? 'vd-closing' : ''}`} 
           onClick={handleSmoothCloseAccount}
         >
           <div className="vd-wallet-modal-card vd-account-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="vd-modal-header">
-              <div className="vd-modal-title-row">
-                <Wallet size={20} color="#0284c7" />
-                <h3 className="vd-modal-title">Wallet & Session Details</h3>
-              </div>
-              <button type="button" className="vd-modal-close" onClick={handleSmoothCloseAccount}>
-                <Icon icon="iconamoon:close-bold" width={20} height={20} />
-              </button>
-            </div>
-
-            {/* Address Banner Card */}
-            <div className="vd-account-address-card">
-              <div className="vd-account-avatar-ring">
-                <img 
-                  src={safeImages.mascotCharacter} 
-                  alt="Wallet Identicon" 
-                  className="vd-account-avatar-img"
-                />
-                <span className="vd-account-online-dot" />
-              </div>
-              <div className="vd-account-info-col">
-                <div className="vd-account-label-row">
-                  <span className="vd-account-label">Connected Wallet</span>
-                  <span className="vd-account-active-tag">Active</span>
+            {disconnectStep === 'idle' && (
+              <>
+                <div className="vd-modal-header">
+                  <div className="vd-modal-title-row">
+                    <Wallet size={20} color="#0284c7" />
+                    <h3 className="vd-modal-title">Wallet & Session Details</h3>
+                  </div>
+                  <button type="button" className="vd-modal-close" onClick={handleSmoothCloseAccount}>
+                    <Icon icon="iconamoon:close-bold" width={20} height={20} />
+                  </button>
                 </div>
-                <span className="vd-account-full-addr" title={address}>
-                  {`${address.slice(0, 12)}...${address.slice(-10)}`}
-                </span>
-              </div>
-            </div>
 
-            {/* Action Bar (Copy & Explorer) */}
-            <div className="vd-account-actions-row">
-              <button 
-                type="button" 
-                className="vd-account-action-pill"
-                onClick={handleCopyAddress}
-              >
-                <Icon icon={copiedAddress ? "iconamoon:check-bold" : "iconamoon:copy-bold"} width={15} height={15} />
-                <span>{copiedAddress ? 'Copied!' : 'Copy Address'}</span>
-              </button>
+                {/* Address Banner Card */}
+                <div className="vd-account-address-card">
+                  <div className="vd-account-avatar-ring">
+                    <img 
+                      src={safeImages.mascotCharacter} 
+                      alt="Wallet Identicon" 
+                      className="vd-account-avatar-img"
+                    />
+                    <span className="vd-account-online-dot" />
+                  </div>
+                  <div className="vd-account-info-col">
+                    <div className="vd-account-label-row">
+                      <span className="vd-account-label">Connected Wallet</span>
+                      <span className="vd-account-active-tag">Active</span>
+                    </div>
+                    <span className="vd-account-full-addr" title={address || ''}>
+                      {address ? `${address.slice(0, 12)}...${address.slice(-10)}` : '0x0000...0000'}
+                    </span>
+                  </div>
+                </div>
 
-              <a 
-                href={`https://sepolia.basescan.org/address/${address}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="vd-account-action-pill"
-              >
-                <Icon icon="iconamoon:external-link-bold" width={15} height={15} />
-                <span>View on BaseScan</span>
-              </a>
-            </div>
+                {/* Action Bar (Copy & Explorer) */}
+                <div className="vd-account-actions-row">
+                  <button 
+                    type="button" 
+                    className="vd-account-action-pill"
+                    onClick={handleCopyAddress}
+                  >
+                    <Icon icon={copiedAddress ? "iconamoon:check-bold" : "iconamoon:copy-bold"} width={15} height={15} />
+                    <span>{copiedAddress ? 'Copied!' : 'Copy Address'}</span>
+                  </button>
 
-            {/* Session Stats Grid */}
-            <div className="vd-account-stats-grid">
-              <div className="vd-account-stat-box">
-                <span className="vd-stat-box-title">Network</span>
-                <div className="vd-stat-box-val">
-                  <BaseLogoIcon size={15} />
-                  <span>Base Sepolia</span>
+                  <a 
+                    href={`https://sepolia.basescan.org/address/${address}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="vd-account-action-pill"
+                  >
+                    <Icon icon="iconamoon:external-link-bold" width={15} height={15} />
+                    <span>View on BaseScan</span>
+                  </a>
+                </div>
+
+                {/* Session Stats Grid */}
+                <div className="vd-account-stats-grid">
+                  <div className="vd-account-stat-box">
+                    <span className="vd-stat-box-title">Network</span>
+                    <div className="vd-stat-box-val">
+                      <BaseLogoIcon size={15} />
+                      <span>Base Sepolia</span>
+                    </div>
+                  </div>
+
+                  <div className="vd-account-stat-box">
+                    <span className="vd-stat-box-title">Balance</span>
+                    <div className="vd-stat-box-val">
+                      <span className="vd-stat-eth-symbol">Ξ</span>
+                      <span>{balance} ETH</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Faucet helper banner */}
+                <a 
+                  href="https://www.coinbase.com/faucets/base-ethereum-sepolia-faucet"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="vd-account-faucet-link"
+                >
+                  <Icon icon="iconamoon:lightning-bold" width={16} height={16} color="#0284c7" />
+                  <span>Need testnet gas? Get Free Base Sepolia ETH ➔</span>
+                </a>
+
+                {/* Disconnect & Logout Button */}
+                <div className="vd-account-logout-wrapper">
+                  <button 
+                    type="button" 
+                    className="vd-btn-logout-wallet"
+                    onClick={handleInitiateDisconnect}
+                  >
+                    <Icon icon="iconamoon:exit-bold" width={17} height={17} />
+                    <span>Disconnect & Log Out</span>
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* DISCONNECTING ANIMATION */}
+            {disconnectStep === 'disconnecting' && (
+              <div className="vd-connect-anim-box">
+                <div className="vd-disconnect-spinner-wrap">
+                  <div className="vd-disconnect-spinner-ring" />
+                  <div className="vd-disconnect-logo-center">
+                    <Icon icon="iconamoon:exit-bold" width={28} height={28} color="#e11d48" />
+                  </div>
+                </div>
+                <h3 className="vd-connect-status-title">Disconnecting Session...</h3>
+                <p className="vd-connect-status-desc">
+                  Revoking cryptographic permissions and unlinking sovereign keys.
+                </p>
+                <div className="vd-disconnect-step-indicator">
+                  <span className="vd-disconnect-pulse-dot" />
+                  <span>Terminating Web3 Session</span>
                 </div>
               </div>
+            )}
 
-              <div className="vd-account-stat-box">
-                <span className="vd-stat-box-title">Balance</span>
-                <div className="vd-stat-box-val">
-                  <span className="vd-stat-eth-symbol">Ξ</span>
-                  <span>{balance} ETH</span>
+            {/* PHONEPE-STYLE DISCONNECT SUCCESS ANIMATION */}
+            {disconnectStep === 'success' && (
+              <div className="vd-connect-anim-box vd-connect-success-box">
+                <div className="vd-phonepe-tick-wrapper">
+                  <div className="vd-phonepe-tick-circle">
+                    <svg className="vd-phonepe-tick-svg" viewBox="0 0 52 52">
+                      <circle className="vd-phonepe-tick-circle-bg" cx="26" cy="26" r="24" fill="none"/>
+                      <path className="vd-phonepe-tick-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                  </div>
                 </div>
+                <h3 className="vd-connect-success-title">Disconnected Successfully!</h3>
+                <p className="vd-connect-success-desc">
+                  Your wallet and session have been safely signed out.
+                </p>
               </div>
-            </div>
-
-            {/* Faucet helper banner */}
-            <a 
-              href="https://www.coinbase.com/faucets/base-ethereum-sepolia-faucet"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="vd-account-faucet-link"
-            >
-              <Icon icon="iconamoon:lightning-bold" width={16} height={16} color="#0284c7" />
-              <span>Need testnet gas? Get Free Base Sepolia ETH ➔</span>
-            </a>
-
-            {/* Disconnect & Logout Button */}
-            <div className="vd-account-logout-wrapper">
-              <button 
-                type="button" 
-                className="vd-btn-logout-wallet"
-                onClick={() => {
-                  disconnectWallet();
-                  handleSmoothCloseAccount();
-                }}
-              >
-                <Icon icon="iconamoon:exit-bold" width={17} height={17} />
-                <span>Disconnect & Log Out</span>
-              </button>
-            </div>
+            )}
           </div>
         </div>
       )}

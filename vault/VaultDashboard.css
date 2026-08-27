@@ -1570,6 +1570,63 @@
   animation: vdDotPulse 1.5s infinite;
 }
 
+/* DISCONNECT SPINNER & STEP INDICATOR */
+.vd-disconnect-spinner-wrap {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin: 8px auto 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vd-disconnect-spinner-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3.5px solid transparent;
+  border-top-color: #ef4444;
+  border-right-color: #f43f5e;
+  border-bottom-color: #fb7185;
+  animation: vdSpinRing 1s linear infinite;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.25);
+}
+
+.vd-disconnect-logo-center {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: rgba(254, 242, 242, 0.95);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.vd-disconnect-step-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #e11d48;
+}
+
+.vd-disconnect-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e11d48;
+  animation: vdDotPulse 1.5s infinite;
+}
+
 /* PHONEPE ICONIC TICK DRAW ANIMATION */
 .vd-phonepe-tick-wrapper {
   margin: 8px auto 20px;
