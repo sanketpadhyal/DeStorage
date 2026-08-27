@@ -5,10 +5,14 @@ import heroIllustration from '../src/assets/hero_illustration.png';
 import featuresIllustration from '../src/assets/features_illustration.png';
 import mascotCharacter from '../src/assets/mascot_character.png';
 import logo from '../src/assets/logo.png';
+import coinbase from '../src/assets/coinbase.png';
+import metamask from '../src/assets/metamask.png';
 
 export const safeImages = {
   heroIllustration: heroIllustration || '/assets/hero_illustration.png',
   featuresIllustration: featuresIllustration || '/assets/features_illustration.png',
   mascotCharacter: mascotCharacter || '/assets/mascot_character.png',
   logo: logo || '/assets/logo.png',
+  coinbase: coinbase || '/assets/coinbase.png',
+  metamask: metamask || '/assets/metamask.png',
 };

@@ -756,8 +756,12 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 }}
               >
                 <div className="vd-wallet-option-left">
-                  <div className="vd-wallet-logo-box" style={{ background: '#fff7ed', padding: '6px' }}>
-                    <MetaMaskIcon size={28} />
+                  <div className="vd-wallet-logo-box" style={{ background: '#ffffff', padding: '4px', border: '1px solid rgba(0,0,0,0.06)' }}>
+                    <img 
+                      src={safeImages.metamask} 
+                      alt="MetaMask" 
+                      style={{ width: '28px', height: '28px', objectFit: 'contain' }} 
+                    />
                   </div>
                   <div className="vd-wallet-option-meta">
                     <span className="vd-wallet-name">MetaMask</span>
@@ -782,8 +786,12 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 }}
               >
                 <div className="vd-wallet-option-left">
-                  <div className="vd-wallet-logo-box" style={{ background: '#eff6ff', padding: '6px' }}>
-                    <CoinbaseWalletIcon size={26} />
+                  <div className="vd-wallet-logo-box" style={{ background: '#ffffff', padding: '4px', border: '1px solid rgba(0,0,0,0.06)' }}>
+                    <img 
+                      src={safeImages.coinbase} 
+                      alt="Coinbase Wallet" 
+                      style={{ width: '28px', height: '28px', objectFit: 'contain', borderRadius: '6px' }} 
+                    />
                   </div>
                   <div className="vd-wallet-option-meta">
                     <span className="vd-wallet-name">Coinbase Wallet</span>
