@@ -369,7 +369,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <section id="filetypes" className="lp-filetypes-section">
           <div className="lp-container">
             <div className="lp-section-header lp-reveal lp-reveal-up">
-              <span className="lp-section-tag">Vault Compatibility</span>
               <h2 className="lp-section-title">Built for any confidential file format</h2>
             </div>
 
@@ -413,7 +412,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <section id="features" className="lp-features-section">
           <div className="lp-container">
             <div className="lp-section-header lp-reveal lp-reveal-up">
-              <span className="lp-section-tag">Security Architecture</span>
               <h2 className="lp-section-title">Our deep decentralized security</h2>
             </div>
             
@@ -468,7 +466,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <section id="pricing" className="lp-pricing-section">
           <div className="lp-container" style={{ textAlign: 'center' }}>
             <div className="lp-reveal lp-reveal-up">
-              <span className="lp-section-tag">Storage Packages</span>
               <h2 className="lp-section-title">Vault storage pricing</h2>
               <p style={{ color: '#64748b', fontSize: '15px', marginTop: '6px' }}>
                 Check the tiers and choose the right privacy package for your files
