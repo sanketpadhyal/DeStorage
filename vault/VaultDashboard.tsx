@@ -82,6 +82,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   const [customPassphrase, setCustomPassphrase] = useState<string>('');
   const [batchTotal, setBatchTotal] = useState<number>(0);
   const [batchDone, setBatchDone] = useState<number>(0);
+  const [uploadedBytes, setUploadedBytes] = useState<number>(0);
+  const [totalBytes, setTotalBytes] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [copiedCid, setCopiedCid] = useState<string | null>(null);
@@ -390,7 +392,9 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       );
 
       // Step 2: Upload to decentralized IPFS with full sovereign cloud metadata
-      setUploadStage(isBatch ? `${file.name}: Pinning to IPFS...` : 'Pinning encrypted payload to decentralized IPFS...');
+      setUploadStage(isBatch ? `${file.name}: Pinning to IPFS...` : 'Pinning to IPFS...');
+      setUploadedBytes(0);
+      setTotalBytes(encryptedData.encryptedBuffer.byteLength);
       const ipfsResult: IpfsUploadResult = await uploadToIpfs(
         encryptedData.encryptedBuffer,
         file.name,
@@ -401,6 +405,11 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
           keyHex: encryptedData.keyHex,
           ivHex: encryptedData.ivHex,
           sha256Hash: encryptedData.sha256Hash,
+        },
+        undefined,
+        (loaded, total) => {
+          setUploadedBytes(loaded);
+          setTotalBytes(total);
         }
       );
 
@@ -754,15 +763,26 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                   <p className="vd-uploading-stage">{uploadStage}</p>
                 </div>
 
-                {batchTotal > 1 && (
+                {/* Real-time byte progress bar */}
+                {totalBytes > 0 && (
                   <div className="vd-uploading-progress-wrap">
                     <div className="vd-uploading-progress-track">
                       <div 
                         className="vd-uploading-progress-fill"
-                        style={{ width: `${Math.round((batchDone / batchTotal) * 100)}%` }}
+                        style={{ width: `${Math.min(100, Math.round((uploadedBytes / totalBytes) * 100))}%` }}
                       />
                     </div>
-                    <span className="vd-uploading-counter">{batchDone} / {batchTotal} done</span>
+                    <div className="vd-uploading-progress-labels">
+                      <span className="vd-uploading-counter">
+                        {(uploadedBytes / 1048576).toFixed(2)} MB / {(totalBytes / 1048576).toFixed(2)} MB
+                      </span>
+                      <span className="vd-uploading-pct">
+                        {Math.min(100, Math.round((uploadedBytes / totalBytes) * 100))}%
+                      </span>
+                    </div>
+                    {batchTotal > 1 && (
+                      <span className="vd-uploading-batch-label">{batchDone} of {batchTotal} files done</span>
+                    )}
                   </div>
                 )}
               </div>

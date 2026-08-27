@@ -599,14 +599,37 @@
   height: 100%;
   background: linear-gradient(90deg, #0284c7 0%, #6366f1 100%);
   border-radius: 9999px;
-  transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.2s ease-out;
+}
+
+.vd-uploading-progress-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .vd-uploading-counter {
   font-size: 11.5px;
   font-weight: 700;
   color: #0284c7;
+  font-family: var(--font-mono);
+}
+
+.vd-uploading-pct {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #6366f1;
+  font-family: var(--font-mono);
+}
+
+.vd-uploading-batch-label {
+  font-size: 11px;
+  color: #94a3b8;
   font-family: var(--font-sans);
+  font-weight: 600;
+  text-align: center;
+  margin-top: 2px;
 }
 
 .vd-upload-card:hover {

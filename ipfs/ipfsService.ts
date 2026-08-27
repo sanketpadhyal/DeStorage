@@ -98,7 +98,8 @@ export async function uploadToIpfs(
   encryptedBuffer: ArrayBuffer,
   fileName: string,
   metadataObj?: FileUploadMetadata,
-  pinataJwt?: string
+  pinataJwt?: string,
+  onProgress?: (loaded: number, total: number) => void
 ): Promise<IpfsUploadResult> {
   const fallbackCid = await generateContentCid(encryptedBuffer);
 
@@ -139,29 +140,48 @@ export async function uploadToIpfs(
       formData.append('pinataMetadata', metadata);
       formData.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
 
-      const response = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${activeJwt}`,
-        },
-        body: formData,
+      // Use XHR for real-time upload progress
+      const result = await new Promise<IpfsUploadResult>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://api.pinata.cloud/pinning/pinFileToIPFS');
+        xhr.setRequestHeader('Authorization', `Bearer ${activeJwt}`);
+
+        if (onProgress) {
+          xhr.upload.onprogress = (ev) => {
+            if (ev.lengthComputable) onProgress(ev.loaded, ev.total);
+          };
+        }
+
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              const liveCid = data.IpfsHash;
+              Promise.all([
+                saveToPersistentCache(liveCid, encryptedBuffer),
+                saveToPersistentCache(fallbackCid, encryptedBuffer),
+              ]).then(() => {
+                resolve({
+                  cid: liveCid,
+                  gatewayUrl: `https://gateway.pinata.cloud/ipfs/${liveCid}`,
+                  sizeBytes: data.PinSize || encryptedBuffer.byteLength,
+                  isPinned: true,
+                });
+              });
+            } catch (e) {
+              reject(new Error('Failed to parse Pinata response'));
+            }
+          } else {
+            console.warn('Pinata responded with status:', xhr.status, xhr.responseText);
+            reject(new Error(`Pinata upload failed: ${xhr.status}`));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error('Network error during IPFS upload'));
+        xhr.send(formData);
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        const liveCid = data.IpfsHash;
-        await saveToPersistentCache(liveCid, encryptedBuffer);
-        await saveToPersistentCache(fallbackCid, encryptedBuffer);
-        return {
-          cid: liveCid,
-          gatewayUrl: `https://gateway.pinata.cloud/ipfs/${liveCid}`,
-          sizeBytes: data.PinSize || encryptedBuffer.byteLength,
-          isPinned: true,
-        };
-      } else {
-        const errText = await response.text();
-        console.warn('Pinata responded with status:', response.status, errText);
-      }
+      return result;
     } catch (err) {
       console.warn('Live IPFS Pinning fell back to local content addressing:', err);
     }
