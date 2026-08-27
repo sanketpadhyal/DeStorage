@@ -73,17 +73,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     switchToBaseSepolia 
   } = useWeb3();
 
-  const [files, setFiles] = useState<VaultFileItem[]>(() => {
-    const saved = localStorage.getItem('destorage_vault_files');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return [];
-      }
-    }
-    return [];
-  });
+  const [files, setFiles] = useState<VaultFileItem[]>([]);
 
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadStage, setUploadStage] = useState<string>('');
@@ -196,14 +186,51 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Persist files metadata to localStorage
+  // Load files strictly scoped to the active connected wallet
   useEffect(() => {
-    const metadataOnly = files.map(f => ({
-      ...f,
-      encryptedBuffer: undefined, // exclude buffer from JSON storage
-    }));
-    localStorage.setItem('destorage_vault_files', JSON.stringify(metadataOnly));
-  }, [files]);
+    if (isConnected && address) {
+      const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
+      const saved = localStorage.getItem(walletKey);
+      if (saved) {
+        try {
+          setFiles(JSON.parse(saved));
+          return;
+        } catch (e) {
+          setFiles([]);
+        }
+      } else {
+        // Migrate legacy unassigned files if present
+        const legacy = localStorage.getItem('destorage_vault_files');
+        if (legacy) {
+          try {
+            const legacyFiles = JSON.parse(legacy);
+            if (Array.isArray(legacyFiles) && legacyFiles.length > 0) {
+              setFiles(legacyFiles);
+              localStorage.setItem(walletKey, legacy);
+              localStorage.removeItem('destorage_vault_files');
+              return;
+            }
+          } catch (e) {}
+        }
+        setFiles([]);
+      }
+    } else {
+      // Wallet disconnected: clear active files for Zero-Knowledge privacy
+      setFiles([]);
+    }
+  }, [isConnected, address]);
+
+  // Persist files strictly scoped to active wallet
+  useEffect(() => {
+    if (isConnected && address) {
+      const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
+      const metadataOnly = files.map(f => ({
+        ...f,
+        encryptedBuffer: undefined, // exclude buffer from JSON storage
+      }));
+      localStorage.setItem(walletKey, JSON.stringify(metadataOnly));
+    }
+  }, [files, isConnected, address]);
 
   // Update browser URL query params dynamically based on wallet state
   useEffect(() => {
@@ -224,6 +251,10 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
   // Handle Drag & Drop Upload
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
+    if (!isConnected || !address) {
+      openWalletModal();
+      return;
+    }
     let selectedFiles: FileList | null = null;
     if ('dataTransfer' in e) {
       e.preventDefault();
@@ -239,6 +270,10 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   };
 
   const processFileUpload = async (file: File) => {
+    if (!isConnected || !address) {
+      openWalletModal();
+      return;
+    }
     try {
       setIsUploading(true);
 
@@ -630,9 +665,29 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             {/* FILES LIST */}
             {filteredFiles.length === 0 ? (
               <div className="vd-empty-state">
-                <Icon icon="iconamoon:shield-yes-bold" width={48} height={48} color="#94a3b8" />
-                <h4>No encrypted files in this view</h4>
-                <p>Upload any file above to encrypt it with AES-256-GCM and pin to IPFS.</p>
+                <Icon 
+                  icon={!isConnected ? "iconamoon:lock-bold" : "iconamoon:shield-yes-bold"} 
+                  width={48} 
+                  height={48} 
+                  color={!isConnected ? "#0284c7" : "#94a3b8"} 
+                />
+                <h4>{!isConnected ? 'Encrypted Vault Locked' : 'No encrypted files in this view'}</h4>
+                <p>
+                  {!isConnected 
+                    ? 'Connect your Web3 wallet (MetaMask / Coinbase) to unlock and decrypt your sovereign zero-knowledge files.'
+                    : 'Upload any file above to encrypt it with AES-256-GCM and pin to IPFS.'}
+                </p>
+                {!isConnected && (
+                  <button 
+                    type="button" 
+                    className="vd-btn-connect"
+                    style={{ marginTop: '8px' }}
+                    onClick={openWalletModal}
+                  >
+                    <Wallet size={17} />
+                    <span>Connect Wallet to Access Vault</span>
+                  </button>
+                )}
               </div>
             ) : (
               <div className="vd-file-list">
