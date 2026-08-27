@@ -120,19 +120,16 @@ export async function uploadToIpfs(
 
       const keyvalues: Record<string, string> = {
         app: 'DeStorage',
-        encrypted: 'true',
-        algorithm: 'AES-256-GCM',
       };
 
       if (metadataObj) {
         keyvalues.owner = metadataObj.ownerAddress.toLowerCase();
-        keyvalues.originalName = encodeURIComponent(fileName);
-        keyvalues.mimeType = metadataObj.mimeType;
-        keyvalues.originalSize = String(metadataObj.originalSize);
-        keyvalues.keyHex = metadataObj.keyHex;
-        keyvalues.ivHex = metadataObj.ivHex;
-        keyvalues.sha256Hash = metadataObj.sha256Hash;
-        keyvalues.timestamp = String(Date.now());
+        keyvalues.name = encodeURIComponent(fileName).slice(0, 100);
+        keyvalues.mime = metadataObj.mimeType;
+        keyvalues.size = String(metadataObj.originalSize);
+        keyvalues.key = metadataObj.keyHex;
+        keyvalues.iv = metadataObj.ivHex;
+        keyvalues.sha = metadataObj.sha256Hash;
       }
 
       const metadata = JSON.stringify({
@@ -214,23 +211,27 @@ export async function fetchWalletFilesFromPinata(
 
     for (const row of data.rows) {
       const kv = row.metadata?.keyvalues;
-      if (kv && kv.app === 'DeStorage' && kv.owner === targetOwner && kv.keyHex && kv.ivHex) {
+      const keyVal = kv?.key || kv?.keyHex;
+      const ivVal = kv?.iv || kv?.ivHex;
+
+      if (kv && kv.app === 'DeStorage' && kv.owner === targetOwner && keyVal && ivVal) {
         let originalName = 'Decrypted File';
+        const rawName = kv.name || kv.originalName;
         try {
-          originalName = kv.originalName ? decodeURIComponent(kv.originalName) : (row.metadata?.name?.replace(/^DeStorage_/, '').replace(/_\d+$/, '') || 'Decrypted File');
+          originalName = rawName ? decodeURIComponent(rawName) : (row.metadata?.name?.replace(/^DeStorage_/, '').replace(/_\d+$/, '') || 'Decrypted File');
         } catch (e) {
-          originalName = kv.originalName || 'Decrypted File';
+          originalName = rawName || 'Decrypted File';
         }
 
         recoveredFiles.push({
           id: `file_${row.id || row.ipfs_pin_hash}`,
           name: originalName,
-          size: Number(kv.originalSize) || row.size,
-          mimeType: kv.mimeType || 'application/octet-stream',
+          size: Number(kv.size || kv.originalSize) || row.size,
+          mimeType: kv.mime || kv.mimeType || 'application/octet-stream',
           ipfsCid: row.ipfs_pin_hash,
-          sha256Hash: kv.sha256Hash || '',
-          keyHex: kv.keyHex,
-          ivHex: kv.ivHex,
+          sha256Hash: kv.sha || kv.sha256Hash || '',
+          keyHex: keyVal,
+          ivHex: ivVal,
           timestamp: Number(kv.timestamp) || new Date(row.date_pinned).getTime(),
         });
       }
