@@ -161,6 +161,82 @@
   opacity: 0.95;
 }
 
+.vd-btn-wallet-active {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(236, 72, 153, 0.12) 50%, rgba(6, 182, 212, 0.15) 100%);
+  border: 1.5px solid rgba(236, 72, 153, 0.4);
+  border-radius: 9999px;
+  padding: 0 16px;
+  height: 40px;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 12px rgba(236, 72, 153, 0.12);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  white-space: nowrap;
+}
+
+.vd-btn-wallet-active:hover {
+  transform: scale(1.03);
+  border-color: #ec4899;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.2) 50%, rgba(6, 182, 212, 0.22) 100%);
+  box-shadow: 0 4px 16px rgba(236, 72, 153, 0.25);
+}
+
+.vd-wallet-dot-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: vdDotPulse 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes vdDotPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.vd-wallet-connected-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b2447;
+}
+
+.vd-wallet-status-label {
+  color: #0284c7;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.vd-wallet-addr-pill {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: #0b2447;
+}
+
+.vd-wallet-chevron {
+  color: #64748b;
+  margin-left: 2px;
+}
+
 .vd-wallet-connected {
   display: flex;
   align-items: center;
@@ -1177,11 +1253,18 @@
   .vd-network-pill span {
     display: none;
   }
-  .vd-btn-connect {
+  .vd-btn-connect,
+  .vd-btn-wallet-active {
     height: 36px;
-    padding: 0 12px;
-    font-size: 12.5px;
+    padding: 0 10px;
+    font-size: 12px;
     gap: 6px;
+  }
+  .vd-wallet-status-label {
+    display: none;
+  }
+  .vd-wallet-addr-pill {
+    font-size: 11.5px;
   }
   .vd-wallet-badge {
     height: 36px;
@@ -1364,4 +1447,198 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(22, 163, 74, 0.25);
+}
+
+/* CONNECTED ACCOUNT & SESSION DETAILS MODAL */
+.vd-account-modal-card {
+  max-width: 440px;
+}
+
+.vd-account-address-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(2, 132, 199, 0.18);
+  border-radius: 18px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 10px rgba(11, 36, 71, 0.04);
+}
+
+.vd-account-avatar-ring {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(2, 132, 199, 0.35);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
+  flex-shrink: 0;
+}
+
+.vd-account-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eff6ff;
+}
+
+.vd-account-online-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #10b981;
+  border: 2px solid #ffffff;
+}
+
+.vd-account-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vd-account-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #0284c7;
+}
+
+.vd-account-full-addr {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: #0b2447;
+  word-break: break-all;
+  line-height: 1.35;
+}
+
+.vd-account-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.vd-account-action-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  color: #0284c7;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.vd-account-action-pill:hover {
+  background: #eff6ff;
+  border-color: #0284c7;
+  transform: translateY(-1px);
+}
+
+.vd-account-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.vd-account-stat-box {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(2, 132, 199, 0.14);
+  border-radius: 16px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vd-stat-box-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.04em;
+}
+
+.vd-stat-box-val {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0b2447;
+  font-family: var(--font-sans);
+}
+
+.vd-stat-eth-symbol {
+  font-size: 15px;
+  color: #6366f1;
+  font-weight: 800;
+}
+
+.vd-account-faucet-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.22);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0284c7;
+  text-decoration: none;
+  margin-bottom: 20px;
+  transition: all 0.15s ease;
+}
+
+.vd-account-faucet-link:hover {
+  background: rgba(2, 132, 199, 0.15);
+  transform: translateX(2px);
+}
+
+.vd-account-logout-wrapper {
+  width: 100%;
+}
+
+.vd-btn-logout-wallet {
+  width: 100%;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #dc2626;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 12px 18px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
+}
+
+.vd-btn-logout-wallet:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
 }

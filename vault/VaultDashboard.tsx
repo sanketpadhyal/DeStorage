@@ -101,6 +101,9 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
   const [isWalletClosing, setIsWalletClosing] = useState<boolean>(false);
   const [isPreviewClosing, setIsPreviewClosing] = useState<boolean>(false);
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState<boolean>(false);
+  const [isAccountClosing, setIsAccountClosing] = useState<boolean>(false);
+  const [copiedAddress, setCopiedAddress] = useState<boolean>(false);
 
   const handleSmoothCloseWallet = () => {
     setIsWalletClosing(true);
@@ -108,6 +111,21 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       setIsWalletClosing(false);
       closeWalletModal();
     }, 300);
+  };
+
+  const handleSmoothCloseAccount = () => {
+    setIsAccountClosing(true);
+    setTimeout(() => {
+      setIsAccountClosing(false);
+      setIsAccountModalOpen(false);
+    }, 300);
+  };
+
+  const handleCopyAddress = () => {
+    if (!address) return;
+    navigator.clipboard.writeText(address);
+    setCopiedAddress(true);
+    setTimeout(() => setCopiedAddress(false), 2000);
   };
 
   const handleSmoothClosePreview = () => {
@@ -338,33 +356,20 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             </div>
 
             {isConnected && address ? (
-              <div className="vd-wallet-connected">
-                <div className="vd-wallet-badge">
-                  {!isBaseSepolia && (
-                    <button 
-                      type="button" 
-                      className="vd-switch-net-btn" 
-                      onClick={switchToBaseSepolia}
-                    >
-                      Switch to Base
-                    </button>
-                  )}
-                  <span className="vd-address">
-                    {`${address.slice(0, 6)}...${address.slice(-4)}`}
-                  </span>
-                  <span className="vd-balance">
-                    {balance} ETH
-                  </span>
-                </div>
-
-                <button 
-                  type="button" 
-                  className="vd-disconnect-btn" 
-                  onClick={disconnectWallet}
-                >
-                  Disconnect
-                </button>
-              </div>
+              <button 
+                type="button" 
+                className="vd-btn-wallet-active"
+                onClick={() => setIsAccountModalOpen(true)}
+                title="View Connected Account & Session Details"
+              >
+                <div className="vd-wallet-dot-pulse" />
+                <Wallet size={16} />
+                <span className="vd-wallet-connected-text">
+                  <span className="vd-wallet-status-label">Connected</span>
+                  <span className="vd-wallet-addr-pill">{`${address.slice(0, 6)}...${address.slice(-4)}`}</span>
+                </span>
+                <Icon icon="iconamoon:arrow-down-2-bold" width={14} height={14} className="vd-wallet-chevron" />
+              </button>
             ) : (
               <button 
                 type="button" 
@@ -801,6 +806,109 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                   </div>
                 </div>
                 <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. CONNECTED WALLET ACCOUNT & SESSION DETAILS MODAL */}
+      {isAccountModalOpen && isConnected && address && (
+        <div 
+          className={`vd-modal-overlay ${isAccountClosing ? 'vd-closing' : ''}`} 
+          onClick={handleSmoothCloseAccount}
+        >
+          <div className="vd-wallet-modal-card vd-account-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="vd-modal-header">
+              <div className="vd-modal-title-row">
+                <Wallet size={20} color="#0284c7" />
+                <h3 className="vd-modal-title">Wallet & Session Details</h3>
+              </div>
+              <button type="button" className="vd-modal-close" onClick={handleSmoothCloseAccount}>
+                <Icon icon="iconamoon:close-bold" width={20} height={20} />
+              </button>
+            </div>
+
+            {/* Address Banner Card */}
+            <div className="vd-account-address-card">
+              <div className="vd-account-avatar-ring">
+                <img 
+                  src={safeImages.mascotCharacter} 
+                  alt="Wallet Identicon" 
+                  className="vd-account-avatar-img"
+                />
+                <span className="vd-account-online-dot" />
+              </div>
+              <div className="vd-account-info-col">
+                <span className="vd-account-label">Connected Wallet</span>
+                <span className="vd-account-full-addr">{address}</span>
+              </div>
+            </div>
+
+            {/* Action Bar (Copy & Explorer) */}
+            <div className="vd-account-actions-row">
+              <button 
+                type="button" 
+                className="vd-account-action-pill"
+                onClick={handleCopyAddress}
+              >
+                <Icon icon={copiedAddress ? "iconamoon:check-bold" : "iconamoon:copy-bold"} width={15} height={15} />
+                <span>{copiedAddress ? 'Copied!' : 'Copy Address'}</span>
+              </button>
+
+              <a 
+                href={`https://sepolia.basescan.org/address/${address}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="vd-account-action-pill"
+              >
+                <Icon icon="iconamoon:external-link-bold" width={15} height={15} />
+                <span>View on BaseScan</span>
+              </a>
+            </div>
+
+            {/* Session Stats Grid */}
+            <div className="vd-account-stats-grid">
+              <div className="vd-account-stat-box">
+                <span className="vd-stat-box-title">Network</span>
+                <div className="vd-stat-box-val">
+                  <BaseLogoIcon size={15} />
+                  <span>Base Sepolia</span>
+                </div>
+              </div>
+
+              <div className="vd-account-stat-box">
+                <span className="vd-stat-box-title">Balance</span>
+                <div className="vd-stat-box-val">
+                  <span className="vd-stat-eth-symbol">Ξ</span>
+                  <span>{balance} ETH</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Faucet helper banner */}
+            <a 
+              href="https://www.coinbase.com/faucets/base-ethereum-sepolia-faucet"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="vd-account-faucet-link"
+            >
+              <Icon icon="iconamoon:lightning-bold" width={16} height={16} color="#0284c7" />
+              <span>Need testnet gas? Get Free Base Sepolia ETH ➔</span>
+            </a>
+
+            {/* Disconnect & Logout Button */}
+            <div className="vd-account-logout-wrapper">
+              <button 
+                type="button" 
+                className="vd-btn-logout-wallet"
+                onClick={() => {
+                  disconnectWallet();
+                  handleSmoothCloseAccount();
+                }}
+              >
+                <Icon icon="iconamoon:exit-bold" width={17} height={17} />
+                <span>Disconnect & Log Out</span>
               </button>
             </div>
           </div>
