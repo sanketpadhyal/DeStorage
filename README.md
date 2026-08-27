@@ -1,13 +1,22 @@
-# DeStorage
+<p align="center">
+  <img src="public/logo.png" alt="DeStorage Logo" width="110" height="110" style="border-radius: 22px;" />
+</p>
 
-> Sovereign Zero-Knowledge Decentralized Cloud Vault
+<h1 align="center">DeStorage</h1>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Cryptography](https://img.shields.io/badge/Cryptography-AES--256--GCM-059669)](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto)
-[![Storage](https://img.shields.io/badge/Storage-IPFS%20Network-0284C7?logo=ipfs&logoColor=white)](https://ipfs.tech)
-[![Blockchain](https://img.shields.io/badge/Network-Base%20EVM-0052FF?logo=coinbase&logoColor=white)](https://base.org)
+<p align="center">
+  <strong>Sovereign Web3 & Crypto Decentralized Storage Platform</strong><br>
+  <em>Zero-Knowledge Client-Side AES-256-GCM Encryption • IPFS P2P Content Addressing • Base EVM Verification</em>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black" alt="React" /></a>
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto"><img src="https://img.shields.io/badge/Cryptography-AES--256--GCM-059669" alt="Cryptography" /></a>
+  <a href="https://ipfs.tech"><img src="https://img.shields.io/badge/Storage-IPFS%20Network-0284C7?logo=ipfs&logoColor=white" alt="Storage" /></a>
+  <a href="https://base.org"><img src="https://img.shields.io/badge/Network-Base%20EVM-0052FF?logo=coinbase&logoColor=white" alt="Blockchain" /></a>
+</p>
 
 **DeStorage** is a high-performance, non-custodial decentralized storage platform. It bridges native client-side **AES-256-GCM** encryption with the **InterPlanetary File System (IPFS)** and **Base EVM** blockchain verification. All cryptographic operations execute strictly inside browser memory (`SubtleCrypto`), guaranteeing zero-knowledge privacy: plaintext data and encryption keys never touch any centralized server or storage node.
 
