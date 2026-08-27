@@ -413,24 +413,44 @@ section {
   max-width: 560px;
 }
 
-/* Hero Feature Checklist */
+/* Hero Feature Checklist - Boxy Glass Cards with Green Badges */
 .lp-hero-check-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #334155;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .lp-hero-check-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(2, 132, 199, 0.15);
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0b2447;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.04);
+  transition: all 0.2s ease;
+}
+
+.lp-hero-check-item:hover {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.08);
 }
 
 .lp-hero-check-item svg {
-  color: #0284c7;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 3px;
+  border-radius: 6px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
 }
 
