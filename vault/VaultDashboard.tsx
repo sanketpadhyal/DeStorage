@@ -31,7 +31,12 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     balance, 
     isBaseSepolia, 
     isConnecting, 
+    isWalletModalOpen,
+    hasInjectedWallet,
+    openWalletModal,
+    closeWalletModal,
     connectWallet, 
+    connectDemoWallet,
     disconnectWallet, 
     switchToBaseSepolia 
   } = useWeb3();
@@ -314,7 +319,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 type="button" 
                 className="vd-btn-connect" 
                 disabled={isConnecting}
-                onClick={connectWallet}
+                onClick={openWalletModal}
               >
                 <Wallet size={17} />
                 <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
@@ -624,6 +629,97 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               >
                 <Icon icon="iconamoon:cloud-download-bold" width={16} height={16} />
                 <span>Save to Device</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. CONNECT WALLET MODAL */}
+      {isWalletModalOpen && (
+        <div className="vd-modal-overlay" onClick={closeWalletModal}>
+          <div className="vd-wallet-modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="vd-modal-header">
+              <div className="vd-modal-title-row">
+                <Wallet size={20} color="#0284c7" />
+                <h3 className="vd-modal-title">Connect Web3 Wallet</h3>
+              </div>
+              <button type="button" className="vd-modal-close" onClick={closeWalletModal}>
+                <Icon icon="iconamoon:close-bold" width={20} height={20} />
+              </button>
+            </div>
+
+            <p className="vd-wallet-modal-subtitle">
+              Connect to Base Sepolia testnet to anchor your encrypted file proofs and cryptographic hashes on-chain.
+            </p>
+
+            <div className="vd-wallet-options-list">
+              {/* Option 1: MetaMask */}
+              <button 
+                type="button" 
+                className="vd-wallet-option-btn"
+                onClick={() => {
+                  if (hasInjectedWallet) {
+                    connectWallet();
+                  } else {
+                    window.open('https://metamask.io/download/', '_blank');
+                  }
+                }}
+              >
+                <div className="vd-wallet-option-left">
+                  <div className="vd-wallet-logo-box" style={{ background: '#fff7ed', color: '#ea580c' }}>
+                    🦊
+                  </div>
+                  <div className="vd-wallet-option-meta">
+                    <span className="vd-wallet-name">MetaMask</span>
+                    <span className="vd-wallet-status">
+                      {hasInjectedWallet ? 'Detected Browser Extension' : 'Install MetaMask Extension'}
+                    </span>
+                  </div>
+                </div>
+                <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
+              </button>
+
+              {/* Option 2: Coinbase Wallet */}
+              <button 
+                type="button" 
+                className="vd-wallet-option-btn"
+                onClick={() => {
+                  if (hasInjectedWallet) {
+                    connectWallet();
+                  } else {
+                    window.open('https://www.coinbase.com/wallet/downloads', '_blank');
+                  }
+                }}
+              >
+                <div className="vd-wallet-option-left">
+                  <div className="vd-wallet-logo-box" style={{ background: '#eff6ff', color: '#0052ff' }}>
+                    🔵
+                  </div>
+                  <div className="vd-wallet-option-meta">
+                    <span className="vd-wallet-name">Coinbase Wallet</span>
+                    <span className="vd-wallet-status">Smart Wallet & Injected</span>
+                  </div>
+                </div>
+                <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
+              </button>
+
+              {/* Option 3: Instant Demo Session */}
+              <button 
+                type="button" 
+                className="vd-wallet-option-btn vd-wallet-demo-option"
+                onClick={connectDemoWallet}
+              >
+                <div className="vd-wallet-option-left">
+                  <div className="vd-wallet-logo-box" style={{ background: '#eff6ff', color: '#0284c7' }}>
+                    ⚡
+                  </div>
+                  <div className="vd-wallet-option-meta">
+                    <span className="vd-wallet-name">Instant Demo Wallet</span>
+                    <span className="vd-wallet-status">No extension needed • 0.4500 ETH Base Testnet</span>
+                  </div>
+                </div>
+                <span className="vd-wallet-pill-quick">1-Click Test</span>
               </button>
             </div>
           </div>

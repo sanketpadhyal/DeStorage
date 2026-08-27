@@ -11,7 +11,12 @@ export interface Web3ContextType {
   balance: string;
   isConnecting: boolean;
   isConnected: boolean;
+  isWalletModalOpen: boolean;
+  hasInjectedWallet: boolean;
+  openWalletModal: () => void;
+  closeWalletModal: () => void;
   connectWallet: () => Promise<void>;
+  connectDemoWallet: () => void;
   disconnectWallet: () => void;
   switchToBaseSepolia: () => Promise<void>;
   provider: BrowserProvider | null;
@@ -24,27 +29,45 @@ const Web3Context = createContext<Web3ContextType>({
   balance: '0.0000',
   isConnecting: false,
   isConnected: false,
+  isWalletModalOpen: false,
+  hasInjectedWallet: false,
+  openWalletModal: () => {},
+  closeWalletModal: () => {},
   connectWallet: async () => {},
+  connectDemoWallet: () => {},
   disconnectWallet: () => {},
   switchToBaseSepolia: async () => {},
   provider: null,
 });
 
 export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [address, setAddress] = useState<string | null>(null);
-  const [chainId, setChainId] = useState<number | null>(null);
-  const [balance, setBalance] = useState<string>('0.0000');
+  const [address, setAddress] = useState<string | null>(() => {
+    return localStorage.getItem('destorage_wallet_addr') || null;
+  });
+  const [chainId, setChainId] = useState<number | null>(() => {
+    return address ? BASE_SEPOLIA_DECIMAL : null;
+  });
+  const [balance, setBalance] = useState<string>(() => {
+    return localStorage.getItem('destorage_wallet_bal') || '0.0000';
+  });
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState<boolean>(false);
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
 
+  const hasInjectedWallet = typeof window !== 'undefined' && !!(window as any).ethereum;
   const isBaseSepolia = chainId === BASE_SEPOLIA_DECIMAL;
   const isConnected = !!address;
+
+  const openWalletModal = () => setIsWalletModalOpen(true);
+  const closeWalletModal = () => setIsWalletModalOpen(false);
 
   // Refresh balance
   const updateBalance = useCallback(async (userAddr: string, prov: BrowserProvider) => {
     try {
       const bal = await prov.getBalance(userAddr);
-      setBalance(parseFloat(formatEther(bal)).toFixed(4));
+      const formatted = parseFloat(formatEther(bal)).toFixed(4);
+      setBalance(formatted);
+      localStorage.setItem('destorage_wallet_bal', formatted);
     } catch (e) {
       console.warn('Could not fetch balance:', e);
     }
@@ -61,7 +84,6 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
         params: [{ chainId: BASE_SEPOLIA_CHAIN_ID }],
       });
     } catch (switchError: any) {
-      // 4902 error code means the chain has not been added to MetaMask
       if (switchError.code === 4902) {
         try {
           await ethereum.request({
@@ -87,11 +109,11 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Connect Wallet
+  // Connect Injected (MetaMask / Coinbase / Rainbow)
   const connectWallet = async () => {
     const ethereum = (window as any).ethereum;
     if (!ethereum) {
-      alert('No Web3 wallet detected! Please install MetaMask or Coinbase Wallet extension.');
+      setIsWalletModalOpen(true);
       return;
     }
 
@@ -106,11 +128,13 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setAddress(userAddress);
         setChainId(Number(network.chainId));
         setProvider(browserProvider);
+        localStorage.setItem('destorage_wallet_addr', userAddress);
         await updateBalance(userAddress, browserProvider);
 
         if (Number(network.chainId) !== BASE_SEPOLIA_DECIMAL) {
           await switchToBaseSepolia();
         }
+        setIsWalletModalOpen(false);
       }
     } catch (err: any) {
       console.error('Wallet connection error:', err);
@@ -119,12 +143,25 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  // Connect Instant Demo / Testnet Session
+  const connectDemoWallet = () => {
+    const demoAddr = '0x71C2a8F0A795C48a43fA059B6d034C74fDa88b8e';
+    setAddress(demoAddr);
+    setChainId(BASE_SEPOLIA_DECIMAL);
+    setBalance('0.4500');
+    localStorage.setItem('destorage_wallet_addr', demoAddr);
+    localStorage.setItem('destorage_wallet_bal', '0.4500');
+    setIsWalletModalOpen(false);
+  };
+
   // Disconnect
   const disconnectWallet = () => {
     setAddress(null);
     setChainId(null);
     setBalance('0.0000');
     setProvider(null);
+    localStorage.removeItem('destorage_wallet_addr');
+    localStorage.removeItem('destorage_wallet_bal');
   };
 
   // Auto-listen to account and network changes
@@ -134,7 +171,6 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const browserProvider = new BrowserProvider(ethereum);
 
-    // Check if already authorized
     browserProvider.send('eth_accounts', []).then(async (accounts: string[]) => {
       if (accounts && accounts.length > 0) {
         const network = await browserProvider.getNetwork();
@@ -177,7 +213,12 @@ export const Web3Provider: React.FC<{ children: ReactNode }> = ({ children }) =>
         balance,
         isConnecting,
         isConnected,
+        isWalletModalOpen,
+        hasInjectedWallet,
+        openWalletModal,
+        closeWalletModal,
         connectWallet,
+        connectDemoWallet,
         disconnectWallet,
         switchToBaseSepolia,
         provider,
