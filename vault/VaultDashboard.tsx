@@ -858,7 +858,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             {/* File Meta Pill Bar */}
             <div className="vd-preview-meta-pill">
               <span className="vd-preview-filename">{previewItem.file.name}</span>
-              <span className="vd-preview-filesize">{formatBytes(previewItem.file.size)}</span>
+              <span className="vd-preview-filesize">{formatFileSize(previewItem.file.size)}</span>
               <span className="vd-preview-cipher-tag">AES-256-GCM</span>
             </div>
 
