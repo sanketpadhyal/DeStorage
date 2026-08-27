@@ -324,7 +324,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             <div className="vd-network-pill">
               <BaseLogoIcon size={16} />
               <span>Base Sepolia</span>
-              <span className="vd-live-dot" title="Live EVM Network"></span>
             </div>
 
             {isConnected && address ? (
