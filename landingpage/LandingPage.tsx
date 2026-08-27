@@ -186,11 +186,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 Live Crypto Demo
               </button>
             </li>
-            <li>
-              <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('creator')}>
-                Developer
-              </button>
-            </li>
           </ul>
 
           {/* Desktop Actions */}
