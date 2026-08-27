@@ -1,5 +1,6 @@
 /**
  * DeStorage IPFS Pinning & Decentralized Content Addressing Pipeline
+ * Supported by IndexedDB Persistent Local Cache & Pinata Cloud Gateway
  */
 
 import { computeSha256 } from '../crypto/encryptionEngine';
@@ -11,8 +12,66 @@ export interface IpfsUploadResult {
   isPinned: boolean;
 }
 
-// Local mock storage mapping for offline/testnet instant previews
+// In-Memory Fast Cache
 const localIpfsCache: Map<string, ArrayBuffer> = new Map();
+
+// IndexedDB Persistent Binary Cache for zero-loss page refreshes
+const DB_NAME = 'destorage_ipfs_db';
+const STORE_NAME = 'encrypted_payloads';
+
+function openDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    if (typeof window === 'undefined' || !window.indexedDB) {
+      return reject(new Error('IndexedDB not supported'));
+    }
+    const request = window.indexedDB.open(DB_NAME, 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+export async function saveToPersistentCache(cid: string, buffer: ArrayBuffer): Promise<void> {
+  localIpfsCache.set(cid, buffer);
+  try {
+    const db = await openDb();
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    store.put(buffer, cid);
+  } catch (e) {
+    console.warn('Could not cache payload in IndexedDB:', e);
+  }
+}
+
+export async function getFromPersistentCache(cid: string): Promise<ArrayBuffer | null> {
+  if (localIpfsCache.has(cid)) {
+    return localIpfsCache.get(cid)!;
+  }
+  try {
+    const db = await openDb();
+    return new Promise((resolve) => {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.get(cid);
+      req.onsuccess = () => {
+        if (req.result) {
+          localIpfsCache.set(cid, req.result);
+          resolve(req.result);
+        } else {
+          resolve(null);
+        }
+      };
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) {
+    return null;
+  }
+}
 
 /**
  * Generate a standard IPFS CIDv1 from buffer hash
@@ -24,17 +83,14 @@ export async function generateContentCid(buffer: ArrayBuffer): Promise<string> {
 }
 
 /**
- * Upload encrypted buffer to IPFS
+ * Upload encrypted buffer to IPFS (Pinata Cloud & Local IndexedDB)
  */
 export async function uploadToIpfs(
   encryptedBuffer: ArrayBuffer,
   fileName: string,
   pinataJwt?: string
 ): Promise<IpfsUploadResult> {
-  const cid = await generateContentCid(encryptedBuffer);
-
-  // Store in browser memory cache for zero-friction instant decryption & testing
-  localIpfsCache.set(cid, encryptedBuffer);
+  const fallbackCid = await generateContentCid(encryptedBuffer);
 
   // Auto-detect JWT from parameter, process.env or localStorage
   const activeJwt = (
@@ -71,45 +127,77 @@ export async function uploadToIpfs(
 
       if (response.ok) {
         const data = await response.json();
+        const liveCid = data.IpfsHash;
+        await saveToPersistentCache(liveCid, encryptedBuffer);
         return {
-          cid: data.IpfsHash,
-          gatewayUrl: `https://gateway.pinata.cloud/ipfs/${data.IpfsHash}`,
+          cid: liveCid,
+          gatewayUrl: `https://gateway.pinata.cloud/ipfs/${liveCid}`,
           sizeBytes: data.PinSize || encryptedBuffer.byteLength,
           isPinned: true,
         };
+      } else {
+        console.warn('Pinata responded with status:', response.status);
       }
     } catch (err) {
       console.warn('Live IPFS Pinning fell back to local content addressing:', err);
     }
   }
 
-  // Fallback to local decentralized address
+  // Fallback to local persistent cache
+  await saveToPersistentCache(fallbackCid, encryptedBuffer);
+
   return {
-    cid: cid,
-    gatewayUrl: `https://ipfs.io/ipfs/${cid}`,
+    cid: fallbackCid,
+    gatewayUrl: `https://ipfs.io/ipfs/${fallbackCid}`,
     sizeBytes: encryptedBuffer.byteLength,
     isPinned: true,
   };
 }
 
 /**
- * Retrieve encrypted buffer by CID
+ * Retrieve encrypted buffer by CID (IndexedDB -> Pinata Gateway -> Cloudflare/Public IPFS Gateways)
  */
 export async function fetchFromIpfs(cid: string): Promise<ArrayBuffer> {
-  // Check local cache first
-  if (localIpfsCache.has(cid)) {
-    return localIpfsCache.get(cid)!;
+  // 1. Check local persistent cache (Fastest, zero-latency across page refreshes)
+  const cached = await getFromPersistentCache(cid);
+  if (cached) {
+    return cached;
   }
 
-  // Fetch from public IPFS Gateway
-  try {
-    const res = await fetch(`https://ipfs.io/ipfs/${cid}`);
-    if (res.ok) {
-      return await res.arrayBuffer();
+  // 2. Multi-Gateway Fallback Fetch
+  const activeJwt = (
+    process.env.REACT_APP_PINATA_JWT || 
+    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
+    ''
+  ).trim();
+
+  const customGateway = process.env.REACT_APP_PINATA_GATEWAY || 'gateway.pinata.cloud';
+
+  const gateways = [
+    `https://${customGateway}/ipfs/${cid}`,
+    `https://gateway.pinata.cloud/ipfs/${cid}`,
+    `https://cloudflare-ipfs.com/ipfs/${cid}`,
+    `https://ipfs.io/ipfs/${cid}`,
+    `https://dweb.link/ipfs/${cid}`,
+  ];
+
+  for (const url of gateways) {
+    try {
+      const headers: Record<string, string> = {};
+      if (activeJwt && url.includes('pinata.cloud')) {
+        headers['Authorization'] = `Bearer ${activeJwt}`;
+      }
+
+      const res = await fetch(url, { headers });
+      if (res.ok) {
+        const buffer = await res.arrayBuffer();
+        await saveToPersistentCache(cid, buffer);
+        return buffer;
+      }
+    } catch (e) {
+      // Try next gateway
     }
-  } catch (e) {
-    console.warn(`Gateway fetch failed for ${cid}, checking fallback gateways...`, e);
   }
 
-  throw new Error(`Unable to resolve CID ${cid} from IPFS network.`);
+  throw new Error(`Unable to resolve CID ${cid} from IPFS network or local cache.`);
 }
