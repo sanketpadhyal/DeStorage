@@ -5,18 +5,27 @@
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  --theme-bg: #e5f3f9;
-  --navy: #0b2447;
-  --navy-light: #19376d;
-  --navy-dark: #071933;
-  --card-white: #ffffff;
-  --text-dark: #0b2447;
-  --text-gray: #475569;
-  --text-muted: #94a3b8;
-  --cyan: #0284c7;
-  --cyan-dark: #0369a1;
-  --blue: #2563eb;
-  --emerald: #10b981;
+  /* CYBER WEB3 DISTRIBUTED NETWORK PALETTE */
+  --theme-bg: #07090e;
+  --theme-bg-secondary: #0b0f17;
+  --theme-surface: rgba(13, 19, 33, 0.75);
+  --theme-surface-solid: #0d1321;
+  --theme-border: rgba(0, 240, 255, 0.16);
+  --theme-border-strong: rgba(0, 240, 255, 0.35);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --cyber-cyan: #00f0ff;
+  --cyber-cyan-dark: #00b4d8;
+  --cyber-blue: #0052ff;
+  --cyber-purple: #a855f7;
+  --cyber-emerald: #10b981;
+  --cyber-amber: #f59e0b;
+
+  --neon-glow-cyan: 0 0 24px rgba(0, 240, 255, 0.25);
+  --neon-glow-blue: 0 0 24px rgba(0, 82, 255, 0.3);
 }
 
 * {
@@ -41,8 +50,8 @@ img {
 html {
   width: 100%;
   min-height: 100%;
-  background: #e5f3f9;
-  background-color: #e5f3f9;
+  background: #07090e;
+  background-color: #07090e;
   scroll-padding-top: 84px;
 }
 
@@ -70,23 +79,32 @@ html.lenis, html.lenis body {
 body {
   width: 100%;
   min-height: 100vh;
-  background: #e5f3f9;
-  background-color: #e5f3f9;
-  color: var(--text-dark);
+  background: #07090e;
+  background-color: #07090e;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.07) 0%, transparent 60%),
+    radial-gradient(circle at 100% 50%, rgba(0, 82, 255, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 0% 80%, rgba(168, 85, 247, 0.04) 0%, transparent 50%);
+  background-attachment: fixed;
+  color: var(--text-primary);
   margin: 0;
   overflow-x: hidden;
 }
 
-/* Smooth entrance animation */
-@keyframes smoothFadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+/* Cyber Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
 }
 
-.animate-blur-in {
-  animation: smoothFadeIn 0.4s ease-out forwards;
+::-webkit-scrollbar-track {
+  background: #07090e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.2);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.4);
 }
