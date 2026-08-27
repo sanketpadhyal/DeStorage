@@ -722,25 +722,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               </div>
             </div>
 
-            <div className="vd-stat-card vd-card-purple">
-              <div className="vd-stat-icon vd-icon-purple">
-                <Icon icon="iconamoon:lock-bold" width={22} height={22} />
-              </div>
-              <div className="vd-stat-info">
-                <span className="vd-stat-label">Encryption Standard</span>
-                <span className="vd-stat-value">AES-256-GCM</span>
-              </div>
-            </div>
 
-            <div className="vd-stat-card vd-card-amber">
-              <div className="vd-stat-icon vd-icon-amber">
-                <Icon icon="iconamoon:cloud-bold" width={22} height={22} />
-              </div>
-              <div className="vd-stat-info">
-                <span className="vd-stat-label">Storage Protocol</span>
-                <span className="vd-stat-value">IPFS + Base EVM</span>
-              </div>
-            </div>
           </div>
 
           {/* UPLOAD & ENCRYPT DROPZONE */}
