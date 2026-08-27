@@ -19,7 +19,8 @@ import {
   Video,
   Music,
   Cpu,
-  Layers
+  Layers,
+  Box
 } from 'lucide-react';
 
 const GithubIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
@@ -213,6 +214,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               }}
               className="lp-btn-cyan"
             >
+              <Box size={17} />
               <span>Launch Vault</span>
               <ArrowRight size={16} />
             </button>
@@ -273,6 +275,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   onClick={onLaunchApp || (() => scrollToSection('crypto-demo'))}
                   className="lp-btn-cyan"
                 >
+                  <Box size={17} />
                   <span>Launch Vault</span>
                   <ArrowRight size={16} />
                 </button>
