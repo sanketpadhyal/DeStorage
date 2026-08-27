@@ -14,7 +14,8 @@ import {
   Image,
   Video,
   Music,
-  Box
+  Box,
+  ChevronRight
 } from 'lucide-react';
 
 const GithubIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
@@ -119,8 +120,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
   return (
     <div className="lp-root">
       
-      {/* 1. PERMANENTLY FIXED PERSISTENT NAVBAR */}
-      <header className="lp-navbar">
+      {/* Background Dim Backdrop on Mobile Open */}
+      <div 
+        className={`lp-mobile-backdrop ${isMobileMenuOpen ? 'open' : ''}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* 1. EXTENDING UNIFIED TOP NAVBAR & MOBILE PANEL */}
+      <header className={`lp-navbar ${isMobileMenuOpen ? 'menu-open' : ''}`}>
         <div className="lp-container lp-nav-inner">
           <button 
             type="button"
@@ -181,7 +188,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           {/* Mobile Menu Hamburger Toggle */}
           <button 
             type="button"
-            className="lp-mobile-menu-toggle"
+            className={`lp-mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle Navigation Menu"
           >
@@ -189,39 +196,59 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           </button>
         </div>
 
-        {/* Mobile Dropdown Panel */}
+        {/* Seamless Animated Mobile Extension Panel */}
         <div className={`lp-mobile-panel ${isMobileMenuOpen ? 'open' : ''}`}>
-          <button type="button" className="lp-mobile-nav-link-btn" onClick={scrollToTop}>Home</button>
-          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('features')}>Why us & Architecture</button>
-          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('filetypes')}>Supported Files</button>
-          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('pricing')}>Storage Packages</button>
-          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>Live Crypto Demo</button>
-          <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('creator')}>Developer Profile</button>
-
-          <div className="lp-mobile-panel-actions">
-            <button 
-              type="button"
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                if (onLaunchApp) onLaunchApp();
-                else scrollToSection('crypto-demo');
-              }}
-              className="lp-btn-cyan"
-            >
-              <Box size={17} />
-              <span>Launch Vault</span>
-              <ArrowRight size={16} />
+          <div className="lp-container lp-mobile-panel-inner">
+            <button type="button" className="lp-mobile-nav-link-btn" onClick={scrollToTop}>
+              <span>Home</span>
+              <ChevronRight size={16} className="lp-nav-chevron" />
+            </button>
+            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('features')}>
+              <span>Why us & Architecture</span>
+              <ChevronRight size={16} className="lp-nav-chevron" />
+            </button>
+            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('filetypes')}>
+              <span>Supported Files</span>
+              <ChevronRight size={16} className="lp-nav-chevron" />
+            </button>
+            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('pricing')}>
+              <span>Storage Packages</span>
+              <ChevronRight size={16} className="lp-nav-chevron" />
+            </button>
+            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>
+              <span>Live Crypto Demo</span>
+              <ChevronRight size={16} className="lp-nav-chevron" />
+            </button>
+            <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('creator')}>
+              <span>Developer Profile</span>
+              <ChevronRight size={16} className="lp-nav-chevron" />
             </button>
 
-            <a 
-              href="https://github.com/sanketpadhyal/DeStorage" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="lp-btn-black"
-            >
-              <GithubIcon size={16} />
-              <span>GitHub Repository</span>
-            </a>
+            <div className="lp-mobile-panel-actions">
+              <button 
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (onLaunchApp) onLaunchApp();
+                  else scrollToSection('crypto-demo');
+                }}
+                className="lp-btn-cyan"
+              >
+                <Box size={17} />
+                <span>Launch Vault</span>
+                <ArrowRight size={16} />
+              </button>
+
+              <a 
+                href="https://github.com/sanketpadhyal/DeStorage" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="lp-btn-black"
+              >
+                <GithubIcon size={16} />
+                <span>GitHub Repository</span>
+              </a>
+            </div>
           </div>
         </div>
       </header>
