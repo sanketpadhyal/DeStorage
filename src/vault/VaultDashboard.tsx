@@ -11,6 +11,7 @@ import {
 import { uploadToIpfs, IpfsUploadResult } from '../ipfs/ipfsService';
 import { formatFileSize, truncateCid } from '../utils/formatters';
 import { VaultFileItem } from '../types';
+import { Wallet } from 'lucide-react';
 
 interface VaultDashboardProps {
   onBackToHome: () => void;
@@ -315,7 +316,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 disabled={isConnecting}
                 onClick={connectWallet}
               >
-                <Icon icon="iconamoon:profile-bold" width={18} height={18} />
+                <Wallet size={17} />
                 <span>{isConnecting ? 'Connecting...' : 'Connect Wallet'}</span>
               </button>
             )}
