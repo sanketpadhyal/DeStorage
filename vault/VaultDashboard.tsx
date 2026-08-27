@@ -573,17 +573,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               <span className="vd-session-key">protocol:</span>
               <span className="vd-session-val">ipfs</span>
             </div>
-
-            <button 
-              type="button" 
-              className={`vd-session-pill vd-session-sync-btn ${isCloudSyncing ? 'vd-pill-linked-amber' : masterKey ? 'vd-pill-linked-yes' : ''}`}
-              onClick={handleSyncToDevices}
-              title="Click to sync your encrypted vault across Mac, iPhone & Android via Web3 Master Signature"
-            >
-              <span className={`vd-session-dot ${isCloudSyncing ? 'vd-dot-amber' : masterKey ? 'vd-dot-green' : 'vd-dot-cyan'}`} />
-              <span className="vd-session-key">sync:</span>
-              <span className="vd-session-val">{cloudSyncStatus || (masterKey ? 'cloud active' : 'sync devices ⚡')}</span>
-            </button>
           </div>
 
           {/* STATS OVERVIEW CARDS (Premium Multi-Color Gradient Suite) */}
