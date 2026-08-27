@@ -121,7 +121,7 @@ section {
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  background: rgba(255, 255, 255, 0.68) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
   backdrop-filter: blur(24px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   border-bottom: none !important;
@@ -131,9 +131,9 @@ section {
 }
 
 .lp-navbar.menu-open {
-  background: rgba(229, 243, 249, 0.75) !important;
-  backdrop-filter: blur(28px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   border-bottom: none !important;
   box-shadow: none !important;
 }
@@ -223,7 +223,7 @@ section {
   background: rgba(2, 132, 199, 0.1);
 }
 
-/* ANIMATED MOBILE DROPDOWN PANEL - TRANSLUCENT FROSTED GLASS */
+/* ANIMATED MOBILE DROPDOWN PANEL - IDENTICAL TRANSLUCENT FROSTED GLASS */
 .lp-mobile-panel {
   display: block;
   max-height: 0;
@@ -238,10 +238,11 @@ section {
     opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
     transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
     visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  background: rgba(229, 243, 249, 0.72);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border-top: none;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-top: none !important;
+  border-bottom: none !important;
 }
 
 .lp-mobile-panel.open {
