@@ -197,6 +197,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
   const [isCloudSyncing, setIsCloudSyncing] = useState<boolean>(false);
   const [cloudSyncStatus, setCloudSyncStatus] = useState<string>('');
+  const [isFetchingCloudFiles, setIsFetchingCloudFiles] = useState<boolean>(false);
 
   // Handle Full Cross-Device Cloud Sync with Wallet Signature
   const handleSyncToDevices = async () => {
@@ -250,13 +251,20 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     if (isConnected && address) {
       const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
       const saved = localStorage.getItem(walletKey);
+      let hasLocal = false;
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
             setFiles(parsed);
+            hasLocal = true;
           }
         } catch (e) {}
+      }
+
+      // Show skeleton loading if we don't have local cache
+      if (!hasLocal) {
+        setIsFetchingCloudFiles(true);
       }
 
       // Automatically query Pinata IPFS Cloud to restore files across cache clears and new devices
@@ -274,11 +282,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               return prev;
             });
           }
-        }).catch(() => {});
+        }).catch(() => {}).finally(() => {
+          setIsFetchingCloudFiles(false);
+        });
       });
     } else {
       // Wallet disconnected: clear active files for Zero-Knowledge privacy
       setFiles([]);
+      setIsFetchingCloudFiles(false);
     }
   }, [isConnected, address]);
 
@@ -721,8 +732,35 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               </div>
             </div>
 
-            {/* FILES LIST */}
-            {filteredFiles.length === 0 ? (
+            {/* FILES LIST & SKELETON LOADING */}
+            {isFetchingCloudFiles && files.length === 0 ? (
+              <div className="vd-skeleton-list">
+                <div className="vd-skeleton-banner">
+                  <div className="vd-progress-spinner" style={{ width: '16px', height: '16px', borderWidth: '2px' }} />
+                  <span>Restoring Encrypted Vault from IPFS Cloud...</span>
+                </div>
+                {[1, 2, 3].map((idx) => (
+                  <div key={idx} className="vd-file-card vd-skeleton-card">
+                    <div className="vd-file-left">
+                      <div className="vd-skeleton-shimmer vd-skeleton-icon" />
+                      <div className="vd-file-details">
+                        <div className="vd-skeleton-shimmer vd-skeleton-line vd-skeleton-title" />
+                        <div className="vd-skeleton-shimmer vd-skeleton-line vd-skeleton-meta" />
+                      </div>
+                    </div>
+                    <div className="vd-file-center">
+                      <div className="vd-skeleton-shimmer vd-skeleton-chip" />
+                      <div className="vd-skeleton-shimmer vd-skeleton-badge" />
+                    </div>
+                    <div className="vd-file-actions">
+                      <div className="vd-skeleton-shimmer vd-skeleton-btn" />
+                      <div className="vd-skeleton-shimmer vd-skeleton-btn" />
+                      <div className="vd-skeleton-shimmer vd-skeleton-btn-small" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filteredFiles.length === 0 ? (
               <div className="vd-empty-state">
                 <Icon 
                   icon={!isConnected ? "iconamoon:lock-bold" : "iconamoon:shield-yes-bold"} 

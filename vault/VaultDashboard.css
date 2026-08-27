@@ -2196,3 +2196,97 @@
   }
 }
 
+/* SKELETON LOADING VAULT CARDS */
+.vd-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vd-skeleton-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(2, 132, 199, 0.08);
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0284c7;
+  margin-bottom: 6px;
+}
+
+.vd-skeleton-card {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.vd-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(226, 232, 240, 0.7) 0%,
+    rgba(241, 245, 249, 0.95) 50%,
+    rgba(226, 232, 240, 0.7) 100%
+  );
+  background-size: 200% 100%;
+  animation: vdShimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+@keyframes vdShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.vd-skeleton-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.vd-skeleton-line {
+  height: 14px;
+  border-radius: 6px;
+}
+
+.vd-skeleton-title {
+  width: 180px;
+  margin-bottom: 6px;
+}
+
+.vd-skeleton-meta {
+  width: 110px;
+  height: 11px;
+}
+
+.vd-skeleton-chip {
+  width: 120px;
+  height: 28px;
+  border-radius: 9999px;
+}
+
+.vd-skeleton-badge {
+  width: 90px;
+  height: 20px;
+  border-radius: 9999px;
+}
+
+.vd-skeleton-btn {
+  width: 78px;
+  height: 34px;
+  border-radius: 9999px;
+}
+
+.vd-skeleton-btn-small {
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+}
+
+
