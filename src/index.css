@@ -43,8 +43,28 @@ html {
   min-height: 100%;
   background: #e5f3f9;
   background-color: #e5f3f9;
-  scroll-behavior: smooth;
   scroll-padding-top: 84px;
+}
+
+/* LENIS SMOOTH SCROLLING ENGINE */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 body {

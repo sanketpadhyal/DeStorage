@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Lenis from 'lenis';
 import { Web3Provider } from './web3/Web3Context';
 import { LandingPage } from './landingpage/LandingPage';
 import { VaultDashboard } from './vault/VaultDashboard';
@@ -15,6 +16,37 @@ function App() {
     }
     return 'landing';
   });
+
+  const lenisRef = useRef<Lenis | null>(null);
+
+  // Initialize Lenis Global Smooth Scroll Engine
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.8,
+      infinite: false,
+    });
+
+    lenisRef.current = lenis;
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    const rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
 
   // Listen to browser Back/Forward navigation buttons
   useEffect(() => {
@@ -39,7 +71,11 @@ function App() {
       'DeStorage Vault | Decentralized Encrypted Storage',
       '/vault?network=base-sepolia&cipher=aes-256-gcm&protocol=ipfs'
     );
-    window.scrollTo(0, 0);
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
   };
 
   const handleBackToHome = () => {
@@ -49,7 +85,11 @@ function App() {
       'DeStorage | Decentralized Zero-Knowledge Cloud Storage',
       '/'
     );
-    window.scrollTo(0, 0);
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
   };
 
   return (
