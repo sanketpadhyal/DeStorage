@@ -1,11 +1,17 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "DeStorage",
+  "name": "DeStorage - Zero-Knowledge Decentralized Cloud Vault",
+  "description": "Sovereign Zero-Knowledge encrypted file storage on IPFS and Base EVM.",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "64x64 32x32 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "type": "image/png",
+      "sizes": "32x32"
     },
     {
       "src": "logo192.png",
@@ -20,6 +26,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
+  "theme_color": "#0284c7",
   "background_color": "#ffffff"
 }

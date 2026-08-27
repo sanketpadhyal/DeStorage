@@ -48,6 +48,15 @@ function App() {
     };
   }, []);
 
+  // Dynamically update document title based on viewMode
+  useEffect(() => {
+    if (viewMode === 'landing') {
+      document.title = 'DeStorage | Decentralized Zero-Knowledge Encrypted Cloud Vault';
+    } else {
+      document.title = 'DeStorage Vault | Decentralized Encrypted Storage';
+    }
+  }, [viewMode]);
+
   // Listen to browser Back/Forward navigation buttons
   useEffect(() => {
     const handlePopState = () => {

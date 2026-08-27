@@ -313,6 +313,26 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     }
   }, [files, isConnected, address]);
 
+  // Dynamic document title reacting to vault activity (uploading, decrypting, files count)
+  useEffect(() => {
+    if (isUploading) {
+      if (batchTotal > 1) {
+        document.title = `(${batchDone + 1}/${batchTotal}) Uploading to IPFS... | DeStorage`;
+      } else if (totalBytes > 0) {
+        const pct = Math.min(100, Math.round((uploadedBytes / totalBytes) * 100));
+        document.title = `(${pct}%) Encrypting & Uploading... | DeStorage`;
+      } else {
+        document.title = 'Encrypting & Storing to IPFS... | DeStorage';
+      }
+    } else if (previewItem?.isDecrypting) {
+      document.title = `Decrypting ${previewItem.file.name}... | DeStorage`;
+    } else if (isConnected && address) {
+      document.title = `DeStorage Vault (${files.length} files) | Zero-Knowledge Cloud`;
+    } else {
+      document.title = 'DeStorage Vault | Decentralized Encrypted Storage';
+    }
+  }, [isUploading, batchTotal, batchDone, uploadedBytes, totalBytes, previewItem, files.length, isConnected, address]);
+
   // Update browser URL query params dynamically based on wallet state
   useEffect(() => {
     if (isConnected && address) {
