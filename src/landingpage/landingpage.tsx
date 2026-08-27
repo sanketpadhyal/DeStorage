@@ -7,7 +7,7 @@ import {
   Check, 
   ExternalLink,
   ArrowRight,
-  User,
+  Globe,
   Menu,
   X,
   FileText,
@@ -593,7 +593,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                     rel="noopener noreferrer" 
                     className="lp-btn-black"
                   >
-                    <User size={15} />
+                    <Globe size={15} />
                     <span>sanketpadhyal.in</span>
                     <ExternalLink size={13} />
                   </a>
