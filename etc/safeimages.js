@@ -1,10 +1,10 @@
 /**
  * Safe Image Imports pointing to src/assets/
  */
-import heroIllustration from '../assets/hero_illustration.png';
-import featuresIllustration from '../assets/features_illustration.png';
-import mascotCharacter from '../assets/mascot_character.png';
-import logo from '../assets/logo.png';
+import heroIllustration from '../src/assets/hero_illustration.png';
+import featuresIllustration from '../src/assets/features_illustration.png';
+import mascotCharacter from '../src/assets/mascot_character.png';
+import logo from '../src/assets/logo.png';
 
 export const safeImages = {
   heroIllustration: heroIllustration || '/assets/hero_illustration.png',
