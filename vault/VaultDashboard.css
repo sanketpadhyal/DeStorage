@@ -486,7 +486,7 @@
 }
 
 .vd-btn-select-file {
-  background: #0b2447;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
   color: #ffffff;
   border: none;
   border-radius: 9999px;
@@ -500,11 +500,14 @@
   gap: 8px;
   font-family: var(--font-sans);
   white-space: nowrap;
-  transition: background-color 0.15s ease;
+  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.38);
+  transition: all 0.2s ease;
 }
 
 .vd-btn-select-file:hover:not(:disabled) {
-  background: #19376d;
+  transform: scale(1.03);
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
+  opacity: 0.96;
 }
 
 .vd-btn-select-file:disabled {

@@ -465,7 +465,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                   disabled={isUploading}
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Icon icon="iconamoon:shield-yes-bold" width={18} height={18} />
+                  <Icon icon="iconamoon:cloud-upload-bold" width={19} height={19} />
                   <span>{isUploading ? 'Encrypting...' : 'Select File to Encrypt'}</span>
                 </button>
               </div>
