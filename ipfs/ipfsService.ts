@@ -82,12 +82,22 @@ export async function generateContentCid(buffer: ArrayBuffer): Promise<string> {
   return `bafybeig${cleanHex}7h9d4w7q`;
 }
 
+export interface FileUploadMetadata {
+  ownerAddress: string;
+  originalSize: number;
+  mimeType: string;
+  keyHex: string;
+  ivHex: string;
+  sha256Hash: string;
+}
+
 /**
  * Upload encrypted buffer to IPFS (Pinata Cloud & Local IndexedDB)
  */
 export async function uploadToIpfs(
   encryptedBuffer: ArrayBuffer,
   fileName: string,
+  metadataObj?: FileUploadMetadata,
   pinataJwt?: string
 ): Promise<IpfsUploadResult> {
   const fallbackCid = await generateContentCid(encryptedBuffer);
@@ -107,13 +117,26 @@ export async function uploadToIpfs(
       const formData = new FormData();
       formData.append('file', blob, `${fileName}.encrypted`);
 
+      const keyvalues: Record<string, string> = {
+        app: 'DeStorage',
+        encrypted: 'true',
+        algorithm: 'AES-256-GCM',
+      };
+
+      if (metadataObj) {
+        keyvalues.owner = metadataObj.ownerAddress.toLowerCase();
+        keyvalues.originalName = fileName;
+        keyvalues.mimeType = metadataObj.mimeType;
+        keyvalues.originalSize = String(metadataObj.originalSize);
+        keyvalues.keyHex = metadataObj.keyHex;
+        keyvalues.ivHex = metadataObj.ivHex;
+        keyvalues.sha256Hash = metadataObj.sha256Hash;
+        keyvalues.timestamp = String(Date.now());
+      }
+
       const metadata = JSON.stringify({
         name: `DeStorage_${fileName}_${Date.now()}`,
-        keyvalues: {
-          app: 'DeStorage',
-          encrypted: 'true',
-          algorithm: 'AES-256-GCM',
-        },
+        keyvalues,
       });
       formData.append('pinataMetadata', metadata);
 
@@ -152,6 +175,61 @@ export async function uploadToIpfs(
     sizeBytes: encryptedBuffer.byteLength,
     isPinned: true,
   };
+}
+
+/**
+ * Automatically recover all user files from Pinata IPFS Cloud by wallet address
+ */
+export async function fetchWalletFilesFromPinata(
+  walletAddress: string,
+  pinataJwt?: string
+): Promise<any[]> {
+  const activeJwt = (
+    pinataJwt || 
+    process.env.REACT_APP_PINATA_JWT || 
+    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
+    ''
+  ).trim();
+
+  if (!activeJwt || !walletAddress) return [];
+
+  try {
+    const res = await fetch('https://api.pinata.cloud/data/pinList?status=pinned&pageLimit=100', {
+      headers: {
+        Authorization: `Bearer ${activeJwt}`,
+      },
+    });
+
+    if (!res.ok) return [];
+
+    const data = await res.json();
+    if (!data.rows || data.rows.length === 0) return [];
+
+    const targetOwner = walletAddress.toLowerCase();
+    const recoveredFiles: any[] = [];
+
+    for (const row of data.rows) {
+      const kv = row.metadata?.keyvalues;
+      if (kv && kv.app === 'DeStorage' && kv.owner === targetOwner && kv.keyHex && kv.ivHex) {
+        recoveredFiles.push({
+          id: `file_${row.id || row.ipfs_pin_hash}`,
+          name: kv.originalName || row.metadata?.name?.replace(/^DeStorage_/, '').replace(/_\d+$/, '') || 'Decrypted File',
+          size: Number(kv.originalSize) || row.size,
+          mimeType: kv.mimeType || 'application/octet-stream',
+          ipfsCid: row.ipfs_pin_hash,
+          sha256Hash: kv.sha256Hash || '',
+          keyHex: kv.keyHex,
+          ivHex: kv.ivHex,
+          timestamp: Number(kv.timestamp) || new Date(row.date_pinned).getTime(),
+        });
+      }
+    }
+
+    return recoveredFiles;
+  } catch (err) {
+    console.warn('Could not recover files from Pinata:', err);
+    return [];
+  }
 }
 
 /**

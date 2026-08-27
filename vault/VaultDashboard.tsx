@@ -245,34 +245,37 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     }
   };
 
-  // Load files strictly scoped to the active connected wallet
+  // Load files strictly scoped to the active connected wallet & Auto-Restore from Pinata Cloud
   useEffect(() => {
     if (isConnected && address) {
       const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
       const saved = localStorage.getItem(walletKey);
       if (saved) {
         try {
-          setFiles(JSON.parse(saved));
-          return;
-        } catch (e) {
-          setFiles([]);
-        }
-      } else {
-        // Migrate legacy unassigned files if present
-        const legacy = localStorage.getItem('destorage_vault_files');
-        if (legacy) {
-          try {
-            const legacyFiles = JSON.parse(legacy);
-            if (Array.isArray(legacyFiles) && legacyFiles.length > 0) {
-              setFiles(legacyFiles);
-              localStorage.setItem(walletKey, legacy);
-              localStorage.removeItem('destorage_vault_files');
-              return;
-            }
-          } catch (e) {}
-        }
-        setFiles([]);
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setFiles(parsed);
+          }
+        } catch (e) {}
       }
+
+      // Automatically query Pinata IPFS Cloud to restore files across cache clears and new devices
+      import('../ipfs/ipfsService').then(({ fetchWalletFilesFromPinata }) => {
+        fetchWalletFilesFromPinata(address).then((cloudFiles) => {
+          if (cloudFiles && cloudFiles.length > 0) {
+            setFiles(prev => {
+              const existingCids = new Set(prev.map(f => f.ipfsCid));
+              const newFiles = cloudFiles.filter(f => !existingCids.has(f.ipfsCid));
+              if (newFiles.length > 0) {
+                const merged = [...newFiles, ...prev];
+                localStorage.setItem(walletKey, JSON.stringify(merged));
+                return merged;
+              }
+              return prev;
+            });
+          }
+        }).catch(() => {});
+      });
     } else {
       // Wallet disconnected: clear active files for Zero-Knowledge privacy
       setFiles([]);
@@ -281,22 +284,15 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
   // Persist files strictly scoped to active wallet & background sync
   useEffect(() => {
-    if (isConnected && address) {
+    if (isConnected && address && files.length > 0) {
       const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
       const metadataOnly = files.map(f => ({
         ...f,
         encryptedBuffer: undefined, // exclude buffer from JSON storage
       }));
       localStorage.setItem(walletKey, JSON.stringify(metadataOnly));
-
-      // If master key is already unlocked in memory, sync automatically in background
-      if (masterKey && files.length > 0) {
-        import('../crypto/vaultSyncService').then(({ syncVaultToCloud }) => {
-          syncVaultToCloud(address, files, masterKey);
-        }).catch(() => {});
-      }
     }
-  }, [files, isConnected, address, masterKey]);
+  }, [files, isConnected, address]);
 
   // Update browser URL query params dynamically based on wallet state
   useEffect(() => {
@@ -350,11 +346,19 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         (stage) => setUploadStage(stage)
       );
 
-      // Step 2: Upload to decentralized IPFS
+      // Step 2: Upload to decentralized IPFS with full sovereign cloud metadata
       setUploadStage('Pinning encrypted payload to decentralized IPFS...');
       const ipfsResult: IpfsUploadResult = await uploadToIpfs(
         encryptedData.encryptedBuffer,
-        file.name
+        file.name,
+        {
+          ownerAddress: address,
+          originalSize: file.size,
+          mimeType: file.type || 'application/octet-stream',
+          keyHex: encryptedData.keyHex,
+          ivHex: encryptedData.ivHex,
+          sha256Hash: encryptedData.sha256Hash,
+        }
       );
 
       // Step 3: Register in Vault
