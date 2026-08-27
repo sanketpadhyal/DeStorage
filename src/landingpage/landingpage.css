@@ -93,20 +93,6 @@ section {
 .lp-stagger-3 { transition-delay: 0.24s; }
 .lp-stagger-4 { transition-delay: 0.32s; }
 
-/* Subtle Floating Visual for Illustrations */
-@keyframes subtleFloatBobbing {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-.lp-floating-visual img {
-  animation: subtleFloatBobbing 5s ease-in-out infinite;
-}
-
 /* Interactive Animated Cards */
 .lp-card-animated {
   transition: 

@@ -354,7 +354,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </div>
             </div>
 
-            <div className="lp-hero-right lp-reveal lp-reveal-fade lp-floating-visual">
+            <div className="lp-hero-right lp-reveal lp-reveal-fade">
               <img 
                 src={safeImages.heroIllustration} 
                 alt="DeStorage Cloud Vault Hero Illustration" 
@@ -452,7 +452,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 </div>
               </div>
 
-              <div className="lp-reveal lp-reveal-fade lp-floating-visual">
+              <div className="lp-reveal lp-reveal-fade">
                 <img 
                   src={safeImages.featuresIllustration} 
                   alt="Cryptographic Integrity & Inspection Illustration" 
@@ -579,7 +579,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               <img 
                 src={safeImages.mascotCharacter} 
                 alt="DeStorage Mascot Character" 
-                className="lp-mascot-img lp-floating-visual" 
+                className="lp-mascot-img" 
                 draggable={false}
               />
 
