@@ -135,7 +135,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       }
     } catch (err: any) {
       setConnectStep('error');
-      setConnectErrorMsg(err?.message || 'Connection request rejected or cancelled.');
+      const rawMsg = String(err?.message || '');
+      if (err?.code === -32002 || rawMsg.includes('-32002') || rawMsg.includes('already pending')) {
+        setConnectErrorMsg('A connection request is already pending in your wallet. Please click your MetaMask extension popup to approve or cancel it.');
+      } else if (err?.code === 4001 || rawMsg.includes('4001') || rawMsg.includes('ACTION_REJECTED') || rawMsg.toLowerCase().includes('user rejected')) {
+        setConnectErrorMsg('Connection request was cancelled by user.');
+      } else {
+        setConnectErrorMsg('Connection request could not be completed. Please try again.');
+      }
     }
   };
 
@@ -998,6 +1005,11 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             {/* WAITING FOR WALLET SIGNATURE / APPROVAL ANIMATION */}
             {connectStep === 'waiting' && (
               <div className="vd-connect-anim-box">
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '-10px' }}>
+                  <button type="button" className="vd-modal-close" onClick={handleSmoothCloseWallet}>
+                    <Icon icon="iconamoon:close-bold" width={18} height={18} />
+                  </button>
+                </div>
                 <div className="vd-connect-spinner-wrap">
                   <div className="vd-connect-spinner-ring" />
                   <div className="vd-connect-logo-center">
@@ -1036,6 +1048,11 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             {/* ERROR / REJECTED VIEW */}
             {connectStep === 'error' && (
               <div className="vd-connect-anim-box">
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '-10px' }}>
+                  <button type="button" className="vd-modal-close" onClick={handleSmoothCloseWallet}>
+                    <Icon icon="iconamoon:close-bold" width={18} height={18} />
+                  </button>
+                </div>
                 <div className="vd-connect-error-icon">
                   <Icon icon="iconamoon:close-circle-bold" width={56} height={56} color="#ef4444" />
                 </div>
