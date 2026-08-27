@@ -618,90 +618,7 @@ section {
   line-height: 1.5;
 }
 
-/* 5. PRICING & STORAGE TIERS */
-.lp-pricing-section {
-  width: 100%;
-  padding: 90px 0;
-  background: rgba(255, 255, 255, 0.7);
-  border-top: 1px solid rgba(2, 132, 199, 0.15);
-  border-bottom: 1px solid rgba(2, 132, 199, 0.15);
-}
-
-.lp-pricing-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-  margin-top: 40px;
-}
-
-.lp-price-card {
-  background: #ffffff;
-  border: 1px solid rgba(2, 132, 199, 0.15);
-  border-radius: 24px;
-  padding: 36px 30px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 28px;
-  text-align: left;
-  box-shadow: 0 6px 24px rgba(2, 132, 199, 0.05);
-}
-
-.lp-price-card.featured {
-  background: #f0f9ff;
-  border: 2px solid #0284c7;
-  box-shadow: 0 16px 40px -10px rgba(2, 132, 199, 0.25);
-}
-
-.lp-price-name {
-  font-size: 18px;
-  font-weight: 800;
-  color: #0b2447;
-  font-family: var(--font-sans);
-}
-
-.lp-price-desc {
-  font-size: 13px;
-  color: #64748b;
-  margin-top: 4px;
-}
-
-.lp-price-val {
-  font-size: 42px;
-  font-weight: 800;
-  color: #0b2447;
-  font-family: var(--font-serif);
-  margin: 16px 0 6px;
-}
-
-.lp-price-val span {
-  font-size: 14px;
-  font-weight: 500;
-  color: #64748b;
-  font-family: var(--font-sans);
-}
-
-.lp-price-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  font-size: 13.5px;
-  color: #334155;
-  list-style: none;
-}
-
-.lp-price-list li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.lp-price-list li svg {
-  color: #0284c7;
-  flex-shrink: 0;
-}
-
-/* 6. INTERACTIVE WEB CRYPTO SANDBOX */
+/* 5. INTERACTIVE WEB CRYPTO SANDBOX */
 .lp-sandbox-section {
   width: 100%;
   padding: 90px 0;
@@ -865,9 +782,6 @@ section {
   .lp-filetypes-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .lp-pricing-grid {
-    grid-template-columns: 1fr;
-  }
   .lp-hero-title {
     font-size: 42px;
   }
@@ -921,9 +835,6 @@ section {
   .lp-numbered-2x2 {
     grid-template-columns: 1fr;
     gap: 24px;
-  }
-  .lp-price-card {
-    padding: 28px 20px;
   }
   .lp-sandbox-header {
     flex-direction: column;

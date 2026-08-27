@@ -185,11 +185,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </button>
             </li>
             <li>
-              <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('pricing')}>
-                Pricing
-              </button>
-            </li>
-            <li>
               <button type="button" className="lp-nav-link-btn" onClick={() => scrollToSection('creator')}>
                 Developer
               </button>
@@ -234,10 +229,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               </button>
               <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('filetypes')}>
                 <span>Supported Files</span>
-                <ChevronRight size={16} className="lp-nav-chevron" />
-              </button>
-              <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('pricing')}>
-                <span>Storage Packages</span>
                 <ChevronRight size={16} className="lp-nav-chevron" />
               </button>
               <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('crypto-demo')}>
@@ -457,74 +448,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   className="lp-features-img" 
                   draggable={false}
                 />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* VAULT TIERS & PRICING */}
-        <section id="pricing" className="lp-pricing-section">
-          <div className="lp-container" style={{ textAlign: 'center' }}>
-            <div className="lp-reveal lp-reveal-up">
-              <h2 className="lp-section-title">Vault storage pricing</h2>
-              <p style={{ color: '#64748b', fontSize: '15px', marginTop: '6px' }}>
-                Check the tiers and choose the right privacy package for your files
-              </p>
-            </div>
-
-            <div className="lp-pricing-grid">
-              {/* Tier 1 */}
-              <div className="lp-price-card lp-card-animated lp-reveal lp-stagger-1">
-                <div>
-                  <h4 className="lp-price-name">Starter Vault</h4>
-                  <p className="lp-price-desc">For personal files and documents</p>
-                  <div className="lp-price-val">₹0 <span>/ testnet</span></div>
-                </div>
-                <ul className="lp-price-list">
-                  <li><Check size={16} /> 5 GB Encrypted IPFS Storage</li>
-                  <li><Check size={16} /> Client-Side AES-256-GCM</li>
-                  <li><Check size={16} /> Base Sepolia EVM Records</li>
-                  <li><Check size={16} /> In-Browser Local Decryption</li>
-                </ul>
-                <button type="button" className="lp-btn-cyan lp-btn-interactive" style={{ width: '100%', justifyContent: 'center' }}>
-                  Get Started Free
-                </button>
-              </div>
-
-              {/* Tier 2 (Featured) */}
-              <div className="lp-price-card featured lp-card-animated lp-reveal lp-stagger-2">
-                <div>
-                  <h4 className="lp-price-name" style={{ color: '#0284c7' }}>Pro Vault (Recommended)</h4>
-                  <p className="lp-price-desc">For power creators and media archives</p>
-                  <div className="lp-price-val">₹1,499 <span>/ year</span></div>
-                </div>
-                <ul className="lp-price-list">
-                  <li><Check size={16} /> 100 GB High-Speed IPFS Pinning</li>
-                  <li><Check size={16} /> Zero-Knowledge Key Wrapping</li>
-                  <li><Check size={16} /> Multi-Wallet Access Control</li>
-                  <li><Check size={16} /> Unlimited On-Chain Verification</li>
-                </ul>
-                <button type="button" className="lp-btn-cyan lp-btn-interactive" style={{ width: '100%', justifyContent: 'center' }}>
-                  Launch Pro Vault
-                </button>
-              </div>
-
-              {/* Tier 3 */}
-              <div className="lp-price-card lp-card-animated lp-stagger-3 lp-reveal">
-                <div>
-                  <h4 className="lp-price-name">Decentralized Lite</h4>
-                  <p className="lp-price-desc">For self-hosted IPFS nodes</p>
-                  <div className="lp-price-val">₹799 <span>/ year</span></div>
-                </div>
-                <ul className="lp-price-list">
-                  <li><Check size={16} /> 25 GB Custom IPFS Gateway</li>
-                  <li><Check size={16} /> Dedicated Smart Contract Registry</li>
-                  <li><Check size={16} /> Instant SHA-256 Integrity Checks</li>
-                  <li><Check size={16} /> Wallet-to-Wallet File Sharing</li>
-                </ul>
-                <button type="button" className="lp-btn-cyan lp-btn-interactive" style={{ width: '100%', justifyContent: 'center' }}>
-                  Choose Lite
-                </button>
               </div>
             </div>
           </div>
