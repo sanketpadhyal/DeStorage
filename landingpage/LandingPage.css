@@ -121,9 +121,9 @@ section {
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  background: rgba(255, 255, 255, 0.72) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  background: rgba(229, 243, 249, 0.78) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
   border-bottom: none !important;
   z-index: 999999 !important;
   box-shadow: none !important;
@@ -131,11 +131,11 @@ section {
 }
 
 .lp-navbar.menu-open {
-  background: rgba(255, 255, 255, 0.72) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  background: rgba(229, 243, 249, 0.88) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
   border-bottom: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 20px 50px rgba(11, 36, 71, 0.1) !important;
 }
 
 .lp-nav-inner {
@@ -223,7 +223,7 @@ section {
   background: rgba(2, 132, 199, 0.1);
 }
 
-/* ANIMATED MOBILE DROPDOWN PANEL - IDENTICAL TRANSLUCENT FROSTED GLASS */
+/* ANIMATED MOBILE DROPDOWN PANEL - TRANSLUCENT SERENE FROSTED GLASS */
 .lp-mobile-panel {
   display: block;
   max-height: 0;
@@ -238,9 +238,9 @@ section {
     opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
     transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
     visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  background: rgba(255, 255, 255, 0.72) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  background: rgba(229, 243, 249, 0.88) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
   border-top: none !important;
   border-bottom: none !important;
 }
@@ -265,16 +265,16 @@ section {
 .lp-mobile-nav-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
   margin-top: 16px;
 }
 
 .lp-mobile-nav-link-btn {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(2, 132, 199, 0.14);
+  border: 1px solid rgba(2, 132, 199, 0.16);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -286,7 +286,7 @@ section {
   font-family: var(--font-sans);
   padding: 14px 18px;
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.04);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.05);
   transition: all 0.2s ease;
 }
 
@@ -295,7 +295,7 @@ section {
   background: #ffffff;
   color: #0284c7;
   border-color: rgba(2, 132, 199, 0.35);
-  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.1);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.12);
   transform: scale(1.01);
 }
 
