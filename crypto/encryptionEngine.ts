@@ -164,3 +164,52 @@ export async function decryptFile(
 
   return { decryptedBlob, objectUrl };
 }
+
+/**
+ * Envelope Encryption: Wrap (Encrypt) a Raw File Key with Master Key (AES-256-GCM)
+ */
+export async function wrapKeyWithMasterKey(
+  rawKeyHex: string,
+  masterKey: CryptoKey
+): Promise<{ wrappedKeyHex: string; wrapIvHex: string }> {
+  const rawKeyBytes = hexToBytes(rawKeyHex);
+  const wrapIv = window.crypto.getRandomValues(new Uint8Array(12));
+
+  const encryptedKeyBuffer = await window.crypto.subtle.encrypt(
+    {
+      name: 'AES-GCM',
+      iv: wrapIv as any,
+    },
+    masterKey,
+    rawKeyBytes as any
+  );
+
+  return {
+    wrappedKeyHex: '0x' + bufToHex(encryptedKeyBuffer),
+    wrapIvHex: '0x' + bufToHex(wrapIv),
+  };
+}
+
+/**
+ * Envelope Encryption: Unwrap (Decrypt) a Wrapped Key with Master Key (AES-256-GCM)
+ */
+export async function unwrapKeyWithMasterKey(
+  wrappedKeyHex: string,
+  wrapIvHex: string,
+  masterKey: CryptoKey
+): Promise<string> {
+  const wrappedKeyBytes = hexToBytes(wrappedKeyHex);
+  const wrapIv = hexToBytes(wrapIvHex);
+
+  const decryptedKeyBuffer = await window.crypto.subtle.decrypt(
+    {
+      name: 'AES-GCM',
+      iv: wrapIv as any,
+    },
+    masterKey,
+    wrappedKeyBytes as any
+  );
+
+  return '0x' + bufToHex(decryptedKeyBuffer);
+}
+

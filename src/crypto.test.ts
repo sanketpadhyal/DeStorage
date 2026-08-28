@@ -69,6 +69,29 @@ describe('DeStorage Cryptographic Engine Tests', () => {
     const hex = await exportKeyToHex(key);
     expect(hex.length).toBe(66);
   });
+
+  test('Envelope Encryption: wrapKeyWithMasterKey and unwrapKeyWithMasterKey roundtrip', async () => {
+    const { wrapKeyWithMasterKey, unwrapKeyWithMasterKey } = await import('../crypto/encryptionEngine');
+    const masterKey = await generateAesKey();
+    const fileKey = await generateAesKey();
+    const rawKeyHex = await exportKeyToHex(fileKey);
+
+    // 1. Wrap the file key with master key
+    const { wrappedKeyHex, wrapIvHex } = await wrapKeyWithMasterKey(rawKeyHex, masterKey);
+    
+    // The wrapped key must NOT equal the raw key (it is encrypted ciphertext)
+    expect(wrappedKeyHex).not.toBe(rawKeyHex);
+    expect(wrappedKeyHex.startsWith('0x')).toBe(true);
+    expect(wrapIvHex.startsWith('0x')).toBe(true);
+
+    // 2. Unwrap the wrapped key with master key
+    const unwrappedRawKeyHex = await unwrapKeyWithMasterKey(wrappedKeyHex, wrapIvHex, masterKey);
+    expect(unwrappedRawKeyHex).toBe(rawKeyHex);
+
+    // 3. Attempting to unwrap with a different master key must fail
+    const wrongMasterKey = await generateAesKey();
+    await expect(unwrapKeyWithMasterKey(wrappedKeyHex, wrapIvHex, wrongMasterKey)).rejects.toThrow();
+  });
 });
 
 describe('DeStorage Formatters Tests', () => {

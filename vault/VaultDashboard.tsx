@@ -296,7 +296,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
       // Automatically query Pinata IPFS Cloud to restore files across cache clears and new devices
       import('../ipfs/ipfsService').then(({ fetchWalletFilesFromPinata }) => {
-        fetchWalletFilesFromPinata(address).then((cloudFiles) => {
+        fetchWalletFilesFromPinata(address, undefined, masterKey).then((cloudFiles) => {
           if (cloudFiles && cloudFiles.length > 0) {
             setFiles(prev => {
               const existingCids = new Set(prev.map(f => f.ipfsCid));
@@ -318,7 +318,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       setFiles([]);
       setIsFetchingCloudFiles(false);
     }
-  }, [isConnected, address]);
+  }, [isConnected, address, masterKey]);
 
   // Persist files strictly scoped to active wallet & background sync
   useEffect(() => {
@@ -425,14 +425,31 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     try {
       if (!isBatch) setIsUploading(true);
 
-      // Step 1: Encrypt File locally in browser
+      // Step 1: Encrypt File locally in browser memory
       const encryptedData: EncryptedFilePayload = await encryptFile(
         file,
         customPassphrase,
         (stage) => setUploadStage(isBatch ? `${file.name}: ${stage}` : stage)
       );
 
+      // Step 1.5: Envelope Encryption: Wrap the File Key with the user's Master Key (if available)
+      let activeMasterKey = masterKey;
+      if (!activeMasterKey && isConnected && address && hasInjectedWallet && !customPassphrase) {
+        try {
+          activeMasterKey = await unlockMasterKey(address);
+        } catch (e) {
+          console.warn('Master key unlock skipped:', e);
+        }
+      }
+
+      let wrappedInfo: { wrappedKeyHex: string; wrapIvHex: string } | null = null;
+      if (activeMasterKey && !customPassphrase) {
+        const { wrapKeyWithMasterKey } = await import('../crypto/encryptionEngine');
+        wrappedInfo = await wrapKeyWithMasterKey(encryptedData.keyHex, activeMasterKey);
+      }
+
       // Step 2: Upload to decentralized IPFS with full sovereign cloud metadata
+      // Notice: if wrappedInfo exists, we send wrappedKeyHex and wrapIvHex to Pinata, NEVER raw key!
       setUploadStage(isBatch ? `${file.name}: Pinning to IPFS...` : 'Pinning to IPFS...');
       setUploadedBytes(0);
       setTotalBytes(encryptedData.encryptedBuffer.byteLength);
@@ -446,9 +463,11 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
           ownerAddress: address,
           originalSize: file.size,
           mimeType: file.type || 'application/octet-stream',
-          keyHex: encryptedData.keyHex,
+          keyHex: wrappedInfo ? wrappedInfo.wrappedKeyHex : encryptedData.keyHex,
           ivHex: encryptedData.ivHex,
           sha256Hash: encryptedData.sha256Hash,
+          isKeyWrapped: !!wrappedInfo,
+          wrapIvHex: wrappedInfo ? wrappedInfo.wrapIvHex : undefined,
         },
         undefined,
         (loaded, total) => {
@@ -480,6 +499,9 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         sha256Hash: encryptedData.sha256Hash,
         keyHex: encryptedData.keyHex,
         ivHex: encryptedData.ivHex,
+        wrappedKeyHex: wrappedInfo ? wrappedInfo.wrappedKeyHex : undefined,
+        wrapIvHex: wrappedInfo ? wrappedInfo.wrapIvHex : undefined,
+        isKeyWrapped: false, // already unwrapped in local memory
         timestamp: Date.now(),
         encryptedBuffer: encryptedData.encryptedBuffer,
       };
@@ -508,6 +530,23 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   // Decrypt and Download file
   const handleDecryptDownload = async (item: VaultFileItem) => {
     try {
+      let rawKeyHex = item.keyHex;
+
+      // If the key is still wrapped (e.g. freshly recovered on a new device)
+      if (item.isKeyWrapped && item.wrappedKeyHex && item.wrapIvHex) {
+        let activeMasterKey = masterKey;
+        if (!activeMasterKey && address) {
+          activeMasterKey = await unlockMasterKey(address);
+        }
+        if (!activeMasterKey) {
+          alert('Please approve the signature in your wallet to unlock and decrypt your files.');
+          return;
+        }
+        const { unwrapKeyWithMasterKey } = await import('../crypto/encryptionEngine');
+        rawKeyHex = await unwrapKeyWithMasterKey(item.wrappedKeyHex, item.wrapIvHex, activeMasterKey);
+        setFiles(prev => prev.map(f => f.id === item.id ? { ...f, keyHex: rawKeyHex, isKeyWrapped: false } : f));
+      }
+
       let buffer = item.encryptedBuffer;
       if (!buffer) {
         const { fetchFromIpfs } = await import('../ipfs/ipfsService');
@@ -516,7 +555,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
       const { decryptedBlob } = await decryptFile(
         buffer,
-        item.keyHex,
+        rawKeyHex,
         item.ivHex,
         item.mimeType
       );
@@ -537,7 +576,26 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   // Decrypt and Preview file in-memory
   const handlePreview = async (item: VaultFileItem) => {
     try {
-      setPreviewItem({ file: item, previewUrl: '', isDecrypting: true });
+      let rawKeyHex = item.keyHex;
+
+      // If key is wrapped, unwrap with masterKey
+      if (item.isKeyWrapped && item.wrappedKeyHex && item.wrapIvHex) {
+        let activeMasterKey = masterKey;
+        if (!activeMasterKey && address) {
+          activeMasterKey = await unlockMasterKey(address);
+        }
+        if (activeMasterKey) {
+          const { unwrapKeyWithMasterKey } = await import('../crypto/encryptionEngine');
+          try {
+            rawKeyHex = await unwrapKeyWithMasterKey(item.wrappedKeyHex, item.wrapIvHex, activeMasterKey);
+            setFiles(prev => prev.map(f => f.id === item.id ? { ...f, keyHex: rawKeyHex, isKeyWrapped: false } : f));
+          } catch (e) {
+            console.warn('Could not unwrap key:', e);
+          }
+        }
+      }
+
+      setPreviewItem({ file: { ...item, keyHex: rawKeyHex }, previewUrl: '', isDecrypting: true });
 
       let buffer = item.encryptedBuffer;
       if (!buffer) {
@@ -547,12 +605,12 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
       const { objectUrl } = await decryptFile(
         buffer,
-        item.keyHex,
+        rawKeyHex,
         item.ivHex,
         item.mimeType
       );
 
-      setPreviewItem({ file: item, previewUrl: objectUrl, isDecrypting: false });
+      setPreviewItem({ file: { ...item, keyHex: rawKeyHex }, previewUrl: objectUrl, isDecrypting: false });
     } catch (err: any) {
       alert(`Decryption preview failed: ${err.message || 'Could not decrypt file'}`);
       setPreviewItem(null);

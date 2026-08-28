@@ -15,6 +15,9 @@ export interface VaultFileItem {
   sha256Hash: string;
   keyHex: string;
   ivHex: string;
+  wrappedKeyHex?: string;
+  wrapIvHex?: string;
+  isKeyWrapped?: boolean;
   timestamp: number;
   encryptedBuffer?: ArrayBuffer;
 }

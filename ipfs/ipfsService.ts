@@ -3,7 +3,7 @@
  * Supported by IndexedDB Persistent Local Cache & Pinata Cloud Gateway
  */
 
-import { computeSha256 } from '../crypto/encryptionEngine';
+import { computeSha256, unwrapKeyWithMasterKey } from '../crypto/encryptionEngine';
 
 export interface IpfsUploadResult {
   cid: string;
@@ -86,9 +86,11 @@ export interface FileUploadMetadata {
   ownerAddress: string;
   originalSize: number;
   mimeType: string;
-  keyHex: string;
+  keyHex: string; // The wrapped ciphertext key (if wrapped) or raw key (if legacy/demo)
   ivHex: string;
   sha256Hash: string;
+  isKeyWrapped?: boolean;
+  wrapIvHex?: string;
 }
 
 /**
@@ -131,6 +133,12 @@ export async function uploadToIpfs(
         keyvalues.key = metadataObj.keyHex;
         keyvalues.iv = metadataObj.ivHex;
         keyvalues.sha = metadataObj.sha256Hash;
+        if (metadataObj.wrapIvHex) {
+          keyvalues.kiv = metadataObj.wrapIvHex;
+        }
+        if (metadataObj.isKeyWrapped) {
+          keyvalues.wrp = '1';
+        }
       }
 
       const metadata = JSON.stringify({
@@ -203,7 +211,8 @@ export async function uploadToIpfs(
  */
 export async function fetchWalletFilesFromPinata(
   walletAddress: string,
-  pinataJwt?: string
+  pinataJwt?: string,
+  masterKey?: CryptoKey | null
 ): Promise<any[]> {
   const activeJwt = (
     pinataJwt || 
@@ -233,6 +242,8 @@ export async function fetchWalletFilesFromPinata(
       const kv = row.metadata?.keyvalues;
       const keyVal = kv?.key || kv?.keyHex;
       const ivVal = kv?.iv || kv?.ivHex;
+      const wrapIv = kv?.kiv;
+      const isWrapped = kv?.wrp === '1' || !!wrapIv;
 
       if (kv && kv.app === 'DeStorage' && kv.owner === targetOwner && keyVal && ivVal) {
         let originalName = 'Decrypted File';
@@ -243,6 +254,18 @@ export async function fetchWalletFilesFromPinata(
           originalName = rawName || 'Decrypted File';
         }
 
+        let unwrappedKey = keyVal;
+        let unwrappedSuccessfully = !isWrapped;
+
+        if (isWrapped && wrapIv && masterKey) {
+          try {
+            unwrappedKey = await unwrapKeyWithMasterKey(keyVal, wrapIv, masterKey);
+            unwrappedSuccessfully = true;
+          } catch (e) {
+            console.warn('Could not unwrap key with master key:', e);
+          }
+        }
+
         recoveredFiles.push({
           id: `file_${row.id || row.ipfs_pin_hash}`,
           name: originalName,
@@ -250,8 +273,11 @@ export async function fetchWalletFilesFromPinata(
           mimeType: kv.mime || kv.mimeType || 'application/octet-stream',
           ipfsCid: row.ipfs_pin_hash,
           sha256Hash: kv.sha || kv.sha256Hash || '',
-          keyHex: keyVal,
+          keyHex: unwrappedKey,
           ivHex: ivVal,
+          wrappedKeyHex: isWrapped ? keyVal : undefined,
+          wrapIvHex: wrapIv,
+          isKeyWrapped: !unwrappedSuccessfully,
           timestamp: Number(kv.timestamp) || new Date(row.date_pinned).getTime(),
         });
       }
