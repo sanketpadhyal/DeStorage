@@ -323,22 +323,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           <div className="lp-container lp-hero-grid">
             <div className="lp-hero-left lp-reveal lp-reveal-up">
               <h1 className="lp-hero-title">
-                Own your files with <span>proper decentralized</span> privacy.
+                Own your files with <span>true zero-knowledge</span> privacy.
               </h1>
 
               <p className="lp-hero-desc">
-                We deliver browser-native AES-256-GCM encryption combined with IPFS content addressing and Base Sepolia EVM blockchain ownership records. Your plaintext keys never touch any centralized servers.
+                Bank-grade client-side AES-256-GCM encryption with Web3 wallet-derived Master Key wrapping (PBKDF2 120k iterations), decentralized IPFS storage, and Base Sepolia EVM ownership verification. Zero server keys. 100% sovereign.
               </p>
 
               {/* Feature Checklist */}
               <div className="lp-hero-check-row">
                 <div className="lp-hero-check-item">
                   <Check size={16} />
-                  <span>Zero Plaintext Exposure</span>
+                  <span>Envelope Encryption (Key Wrapping)</span>
                 </div>
                 <div className="lp-hero-check-item">
                   <Check size={16} />
-                  <span>Non-Custodial Keys</span>
+                  <span>Non-Custodial Keys (120k PBKDF2)</span>
                 </div>
                 <div className="lp-hero-check-item">
                   <Check size={16} />
@@ -503,31 +503,31 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   <span className="lp-item-num">1</span>
                   <h3 className="lp-item-title">Client-Side Web Crypto</h3>
                   <p className="lp-item-desc">
-                    Files are encrypted locally in your browser with AES-256-GCM before upload. Plaintext never touches any server.
+                    Files are encrypted locally in browser memory with AES-256-GCM before upload. Plaintext never leaves your machine.
                   </p>
                 </div>
 
                 <div className="lp-numbered-item lp-card-animated lp-reveal lp-stagger-2">
                   <span className="lp-item-num">2</span>
-                  <h3 className="lp-item-title">IPFS Content Addressing</h3>
+                  <h3 className="lp-item-title">Envelope Key Wrapping</h3>
                   <p className="lp-item-desc">
-                    Encrypted ciphertexts are pinned across decentralized IPFS nodes, generating verifiable content-addressed CIDs.
+                    Master key derived via PBKDF2 (120,000 SHA-256 iterations) from your wallet signature. Raw keys are double-encrypted.
                   </p>
                 </div>
 
                 <div className="lp-numbered-item lp-card-animated lp-reveal lp-stagger-3">
                   <span className="lp-item-num">3</span>
-                  <h3 className="lp-item-title">Base Sepolia Ownership</h3>
+                  <h3 className="lp-item-title">IPFS Content Addressing</h3>
                   <p className="lp-item-desc">
-                    File registration, immutable ownership records, and SHA-256 integrity proofs are verified permanently on-chain.
+                    Encrypted ciphertexts are pinned across decentralized IPFS nodes, generating immutable, tamper-proof CIDv1 hashes.
                   </p>
                 </div>
 
                 <div className="lp-numbered-item lp-card-animated lp-reveal lp-stagger-4">
                   <span className="lp-item-num">4</span>
-                  <h3 className="lp-item-title">Zero-Knowledge Sharing</h3>
+                  <h3 className="lp-item-title">Zero-Knowledge Verification</h3>
                   <p className="lp-item-desc">
-                    Share files directly with wallet addresses using public-key wrapped encryption without ever exposing master keys.
+                    Sovereign cryptographic ownership: No central database, no AI scanning, and no server-side keys.
                   </p>
                 </div>
               </div>
@@ -585,7 +585,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                     placeholder="Type sensitive data here to watch real-time encryption..."
                     className="lp-sandbox-textarea"
                   />
-                  <span className="lp-sandbox-hint">🔒 Encrypted instantly in WebAssembly / SubtleCrypto memory before network transmission.</span>
+                  <span className="lp-sandbox-hint">Encrypted strictly inside native browser SubtleCrypto memory before network transmission.</span>
                 </div>
 
                 {/* Output Terminal */}
