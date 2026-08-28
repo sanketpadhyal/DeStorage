@@ -121,6 +121,24 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     isInstalled: boolean,
     downloadUrl: string
   ) => {
+    const isMobileDevice = typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+
+    // Mobile deep-linking to native wallet apps
+    if (!isInstalled && isMobileDevice) {
+      if (walletName.toLowerCase().includes('metamask')) {
+        // Direct deep-link into MetaMask app's built-in Web3 browser
+        const currentPath = `${window.location.host}${window.location.pathname}${window.location.search}`;
+        window.location.href = `https://metamask.app.link/dapp/${currentPath}`;
+        return;
+      }
+      if (walletName.toLowerCase().includes('coinbase')) {
+        // Direct deep-link into Coinbase Wallet app
+        const fullUrl = encodeURIComponent(window.location.href);
+        window.location.href = `https://go.cb-w.com/dapp?cb_url=${fullUrl}`;
+        return;
+      }
+    }
+
     if (!isInstalled) {
       window.open(downloadUrl, '_blank');
       return;
@@ -1251,12 +1269,16 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                         />
                       </div>
                       <div className="vd-wallet-option-meta">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div className="vd-wallet-title-row">
                           <span className="vd-wallet-name">MetaMask</span>
                           <span className="vd-wallet-recommended-badge">Recommended</span>
                         </div>
                         <span className="vd-wallet-status">
-                          {hasInjectedWallet ? 'Detected Browser Extension' : 'Install MetaMask Extension'}
+                          {hasInjectedWallet 
+                            ? 'Detected Browser Wallet' 
+                            : ((typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '')) 
+                              ? 'Open in MetaMask App' 
+                              : 'Install MetaMask Extension')}
                         </span>
                       </div>
                     </div>
@@ -1283,8 +1305,16 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                         />
                       </div>
                       <div className="vd-wallet-option-meta">
-                        <span className="vd-wallet-name">Coinbase Wallet</span>
-                        <span className="vd-wallet-status">Smart Wallet & Injected</span>
+                        <div className="vd-wallet-title-row">
+                          <span className="vd-wallet-name">Coinbase Wallet</span>
+                        </div>
+                        <span className="vd-wallet-status">
+                          {hasInjectedWallet 
+                            ? 'Detected Browser Wallet' 
+                            : ((typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '')) 
+                              ? 'Open in Coinbase App' 
+                              : 'Smart Wallet & Injected')}
+                        </span>
                       </div>
                     </div>
                     <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
