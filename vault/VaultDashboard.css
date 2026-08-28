@@ -1841,26 +1841,49 @@
     display: flex;
     align-items: center;
     gap: 0;
+    flex-shrink: 0;
   }
   .vd-network-pill {
     display: none;
   }
-  .vd-btn-connect,
-  .vd-btn-wallet-active {
-    height: 38px;
+  .vd-btn-connect {
+    height: 34px;
     padding: 0 12px;
     font-size: 12px;
-    gap: 7px;
+    gap: 6px;
     border-radius: 9999px;
+  }
+  .vd-btn-wallet-active {
+    height: 32px;
+    padding: 0 8px 0 10px;
+    font-size: 11.5px;
+    gap: 5px;
+    border-radius: 9999px;
+    flex-shrink: 0;
+    max-width: fit-content;
+    box-shadow: 0 2px 10px rgba(236, 72, 153, 0.3);
+  }
+  .vd-wallet-icon-wrap {
+    display: none;
   }
   .vd-wallet-status-label {
     display: none;
   }
   .vd-wallet-addr-pill {
-    font-size: 12px;
-    padding: 2px 7px;
-    background: rgba(255, 255, 255, 0.22);
-    border-radius: 6px;
+    font-size: 11px;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    font-weight: 700;
+  }
+  .vd-wallet-dot-pulse {
+    width: 6px;
+    height: 6px;
+  }
+  .vd-wallet-chevron {
+    width: 12px;
+    height: 12px;
+    margin-left: 0;
   }
   .vd-wallet-badge {
     height: 36px;

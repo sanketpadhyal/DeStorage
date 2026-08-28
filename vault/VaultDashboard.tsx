@@ -710,12 +710,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 title="View Connected Account & Session Details"
               >
                 <div className="vd-wallet-dot-pulse" />
-                <Wallet size={16} />
+                <span className="vd-wallet-icon-wrap">
+                  <Wallet size={15} />
+                </span>
                 <span className="vd-wallet-connected-text">
                   <span className="vd-wallet-status-label">Connected</span>
-                  <span className="vd-wallet-addr-pill">{`${address.slice(0, 6)}...${address.slice(-4)}`}</span>
+                  <span className="vd-wallet-addr-pill">{`${address.slice(0, 4)}...${address.slice(-4)}`}</span>
                 </span>
-                <Icon icon="iconamoon:arrow-down-2-bold" width={14} height={14} className="vd-wallet-chevron" />
+                <Icon icon="iconamoon:arrow-down-2-bold" width={13} height={13} className="vd-wallet-chevron" />
               </button>
             ) : (
               <button 
