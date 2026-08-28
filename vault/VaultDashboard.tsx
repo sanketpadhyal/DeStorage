@@ -64,31 +64,6 @@ const TrustWalletIcon: React.FC<{ size?: number }> = ({ size = 26 }) => (
   </svg>
 );
 
-const RainbowWalletIcon: React.FC<{ size?: number }> = ({ size = 26 }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
-    <rect width="100" height="100" rx="22" fill="#0E1117" />
-    <path d="M22 68C22 52.5 34.5 40 50 40C65.5 40 78 52.5 78 68" stroke="#FF4000" strokeWidth="6.5" strokeLinecap="round"/>
-    <path d="M30 68C30 57 39 48 50 48C61 48 70 57 70 68" stroke="#FFD000" strokeWidth="6.5" strokeLinecap="round"/>
-    <path d="M38 68C38 61.4 43.4 56 50 56C56.6 56 62 61.4 62 68" stroke="#00E599" strokeWidth="6.5" strokeLinecap="round"/>
-    <path d="M46 68C46 65.8 47.8 64 50 64C52.2 64 54 65.8 54 68" stroke="#0080FF" strokeWidth="6.5" strokeLinecap="round"/>
-  </svg>
-);
-
-const BrowserInjectedIcon: React.FC<{ size?: number }> = ({ size = 26 }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
-    <rect width="100" height="100" rx="22" fill="#181A20" />
-    <path d="M32 34L48 50L32 66" stroke="#06B6D4" strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M68 34L52 50L68 66" stroke="#A855F7" strokeWidth="6.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const DemoVaultIcon: React.FC<{ size?: number }> = ({ size = 26 }) => (
-  <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
-    <rect width="100" height="100" rx="22" fill="#16A34A" />
-    <path d="M54 20L28 54H48L44 80L72 46H52L54 20Z" fill="white" stroke="white" strokeWidth="2" strokeLinejoin="round"/>
-  </svg>
-);
-
 export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) => {
   const { 
     address, 
@@ -1449,90 +1424,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                     </div>
                     <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
                   </button>
-
-                  {/* Option 4: Rainbow Wallet */}
-                  <button 
-                    type="button" 
-                    className="vd-wallet-option-btn"
-                    onClick={() => handleInitiateConnect(
-                      'Rainbow Wallet', 
-                      '', 
-                      hasInjectedWallet, 
-                      'https://rainbow.me/download'
-                    )}
-                  >
-                    <div className="vd-wallet-option-left">
-                      <div className="vd-wallet-logo-box" style={{ background: '#ffffff', padding: '4px', border: '1px solid rgba(0,0,0,0.06)' }}>
-                        <RainbowWalletIcon size={28} />
-                      </div>
-                      <div className="vd-wallet-option-meta">
-                        <div className="vd-wallet-title-row">
-                          <span className="vd-wallet-name">Rainbow Wallet</span>
-                        </div>
-                        <span className="vd-wallet-status">
-                          {hasInjectedWallet 
-                            ? 'Detected Browser Wallet' 
-                            : ((typeof navigator !== 'undefined' && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '')) 
-                              ? 'Open in Rainbow App' 
-                              : 'Fast & Mobile Optimized')}
-                        </span>
-                      </div>
-                    </div>
-                    <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
-                  </button>
-
-                  {/* Option 5: Browser Injected (Rabby, Phantom, Zerion, OKX, Brave) */}
-                  <button 
-                    type="button" 
-                    className="vd-wallet-option-btn"
-                    onClick={() => handleInitiateConnect(
-                      'Browser Extension', 
-                      '', 
-                      hasInjectedWallet, 
-                      'https://metamask.io/download/'
-                    )}
-                  >
-                    <div className="vd-wallet-option-left">
-                      <div className="vd-wallet-logo-box" style={{ background: '#ffffff', padding: '4px', border: '1px solid rgba(0,0,0,0.06)' }}>
-                        <BrowserInjectedIcon size={28} />
-                      </div>
-                      <div className="vd-wallet-option-meta">
-                        <div className="vd-wallet-title-row">
-                          <span className="vd-wallet-name">Browser Extension</span>
-                        </div>
-                        <span className="vd-wallet-status">
-                          {hasInjectedWallet ? 'Rabby, Phantom, Zerion, OKX, Brave' : 'Any EVM Browser Extension'}
-                        </span>
-                      </div>
-                    </div>
-                    <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} />
-                  </button>
-
-                  {/* Option 6: Instant Demo Vault (No App Needed) */}
-                  <button 
-                    type="button" 
-                    className="vd-wallet-option-btn vd-wallet-demo-option"
-                    onClick={() => {
-                      connectDemoWallet();
-                      handleSmoothCloseWallet();
-                    }}
-                  >
-                    <div className="vd-wallet-option-left">
-                      <div className="vd-wallet-logo-box" style={{ background: '#ffffff', padding: '4px', border: '1px solid rgba(0,0,0,0.06)' }}>
-                        <DemoVaultIcon size={28} />
-                      </div>
-                      <div className="vd-wallet-option-meta">
-                        <div className="vd-wallet-title-row">
-                          <span className="vd-wallet-name">Instant Demo Vault</span>
-                          <span className="vd-demo-badge">1-Click Fast Access</span>
-                        </div>
-                        <span className="vd-wallet-status" style={{ color: '#16a34a', fontWeight: 600 }}>
-                          Test Sandbox Vault — No Wallet App Needed
-                        </span>
-                      </div>
-                    </div>
-                    <Icon icon="iconamoon:arrow-right-2-bold" width={18} height={18} color="#16a34a" />
-                  </button>
                 </div>
               </>
             )}
@@ -1552,10 +1443,6 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                       <img src={selectedWalletLogo} alt={selectedWalletName} />
                     ) : selectedWalletName.includes('Trust') ? (
                       <TrustWalletIcon size={36} />
-                    ) : selectedWalletName.includes('Rainbow') ? (
-                      <RainbowWalletIcon size={36} />
-                    ) : selectedWalletName.includes('Browser') ? (
-                      <BrowserInjectedIcon size={36} />
                     ) : (
                       <Wallet size={32} color="#0284c7" />
                     )}
