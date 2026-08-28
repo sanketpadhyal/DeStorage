@@ -432,12 +432,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
               <div className="lp-hero-img-wrapper">
                 {!isHeroLoaded && (
                   <div className="lp-hero-skeleton">
-                    <div className="lp-hero-skeleton-glow" />
-                    <div className="lp-hero-skeleton-shimmer" />
-                    <div className="lp-hero-skeleton-ring" />
-                    <div className="lp-hero-skeleton-core">
-                      <div className="lp-hero-skeleton-spinner" />
-                    </div>
+                    <div className="lp-hero-skeleton-wave" />
                   </div>
                 )}
                 <img 
