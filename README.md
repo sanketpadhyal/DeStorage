@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Sovereign Web3 & Decentralized Zero-Knowledge Storage Platform</strong><br>
-  <em>Client-Side AES-256-GCM Encryption • PBKDF2 Master Key Wrapping • Decentralized IPFS Storage • Base Sepolia Blockchain Anchoring</em>
+  <em>Client-Side AES-256-GCM Encryption • PBKDF2 Master Key Wrapping • Hierarchical Folder Explorer • Decentralized IPFS Storage • Base Sepolia Blockchain Anchoring</em>
 </p>
 
 <p align="center">
@@ -18,14 +18,16 @@
   <a href="https://base.org"><img src="https://img.shields.io/badge/Network-Base%20Sepolia%20EVM-0052FF?logo=coinbase&logoColor=white" alt="Blockchain" /></a>
 </p>
 
-**DeStorage** is a high-performance, non-custodial decentralized storage platform. It bridges native in-browser **AES-256-GCM** encryption with the **InterPlanetary File System (IPFS)** and **Base Sepolia Ethereum L2** smart contracts. All cryptographic operations execute strictly inside volatile browser memory (`SubtleCrypto`), guaranteeing zero-knowledge privacy: plaintext data, private keys, and seed phrases never leave your local device.
+**DeStorage** is a high-performance, non-custodial decentralized storage platform. It bridges native in-browser **AES-256-GCM** envelope encryption with the **InterPlanetary File System (IPFS)** and **Base Sepolia Ethereum L2** smart contracts. All cryptographic operations execute strictly inside volatile browser memory (`SubtleCrypto`), guaranteeing zero-knowledge privacy: plaintext data, private keys, and seed phrases never leave your local device.
 
 ---
 
 ## Table of Contents
 
 - [Architectural Overview & Graph Tree](#architectural-overview--graph-tree)
+- [Hierarchical Folder & Directory System](#hierarchical-folder--directory-system)
 - [5-Stage Cryptographic Lifecycle](#5-stage-cryptographic-lifecycle)
+- [Wallet Permission & Decryption Verification Flow](#wallet-permission--decryption-verification-flow)
 - [Security Comparison: DeStorage vs Centralized Cloud](#security-comparison-destorage-vs-centralized-cloud)
 - [Decentralized Storage & Pinata Protocol](#decentralized-storage--pinata-protocol)
 - [System Data Flows](#system-data-flows)
@@ -53,7 +55,11 @@
    │                                                             • Wallet Address Salt
    │                                                             • 256-Bit Master Key (RAM Only)
    │
-   ├─► [ Raw Plaintext File Selected ] (Photos, PDFs, Videos, Archives)
+   ├─► [ File & Folder Ingestion Engine ]
+   │     • Standalone Files (Photos, PDFs, Audio, Video, Archives)
+   │     • Recursive Directory Traversal (HTML5 webkitdirectory & webkitGetAsEntry)
+   │     • Relative Path Preservation (folder/subfolder/file.ext)
+   │     • Batch Client-Side Queue Processing (Up to 30 files per directory batch)
    │     │
    │     ▼
    ├─► [ Web Cryptography API (SubtleCrypto) ]
@@ -98,12 +104,29 @@
 
  [ 4. ZERO-KNOWLEDGE RAM DECRYPTION & MEDIA STREAMING ]
    │
-   ├─► Connect Wallet on New Device ──► 1-Click Signature Unlocks Session Master Key
+   ├─► Interactive Signature Authorization ──► Wallet Live Checking Radar State
    ├─► Stream Ciphertext from IPFS ──► Verify against SHA-256 Checksum
    ├─► Unwrap File Key via Master Key ──► AES-256-GCM Decrypt in Volatile Memory
    └─► Instant In-Memory Blob URL Previews ──► Zero Disk Traces Left on Logout
 =============================================================================================
 ```
+
+---
+
+## Hierarchical Folder & Directory System
+
+DeStorage features a full directory management architecture designed for codebases, backups, and nested collections:
+
+1. **Recursive Client-Side Traversal**:
+   - **Upload Folder**: Uses HTML5 `webkitdirectory` and `directory` attributes to ingest entire directory trees.
+   - **Drag & Drop Folders**: Implements recursive filesystem traversal using `DataTransferItemList.webkitGetAsEntry()` and `FileSystemDirectoryReader.readEntries()`.
+   - **Relative Path Preservation**: Retains folder structure in client memory (e.g. `my-project/assets/image.png`).
+
+2. **Hierarchical Directory Cards & Drill-Down**:
+   - **Root Overview**: Files belonging to a directory are grouped into **Folder Directory Cards** showing total file count, aggregate folder byte size, and encryption specifications.
+   - **Drill-Down Explorer**: Clicking **Open** drills into the folder, presenting an interactive breadcrumb header (`All Files / folder-name`) and isolated inner file views.
+   - **Standalone File Isolation**: Files outside folders remain neatly displayed in the root overview.
+   - **Folder-Level Batch Deletion**: One-click folder removal removes all contained files in state and asynchronously unpins their CIDs from IPFS.
 
 ---
 
@@ -156,12 +179,23 @@ Every file processed by DeStorage passes through an auditable, multi-stage crypt
 
 ---
 
+## Wallet Permission & Decryption Verification Flow
+
+When previewing an encrypted file without an unlocked session Master Key:
+1. **Interactive Permission Prompt**: The preview modal opens instantly with a clean cryptographic summary (`PBKDF2 Master Key`, `120,000 Rounds`, `Free (0 Gas Fee)`).
+2. **Live Checking Radar**: Triggering **"Ask for Permission"** requests a wallet signature and displays an animated radar checking indicator.
+3. **Verified Confirmation**: Upon signature approval, an animated green confirmation tick confirms the derivation.
+4. **In-Memory Streaming**: The ciphertext is downloaded, unwrapped via Master Key, decrypted in RAM, and streamed as an ephemeral blob URL.
+
+---
+
 ## Security Comparison: DeStorage vs Centralized Cloud
 
 | Security Feature | DeStorage Vault | Google Drive / Photos | Dropbox / Apple iCloud |
 | :--- | :--- | :--- | :--- |
 | **Encryption Layer** | **Client-Side AES-256-GCM** (On-Device) | Server-Side (Company holds keys) | Server-Side (Company holds keys) |
 | **Master Key Custody** | **Non-Custodial** (Web3 Wallet Signature) | Custodial (Google account passwords) | Custodial (Apple/Dropbox servers) |
+| **Folder & File Privacy** | **100% Zero-Knowledge** (Encrypted in RAM) | Plaintext Directory Indexing | Plaintext Directory Indexing |
 | **AI Data Scanning / Scraping** | **Mathematically Impossible** (0 Plaintext Bytes) | Yes (Scanned for AI training & ads) | Yes (Scanned for content indexing) |
 | **File Integrity & Tampering** | **SHA-256 + IPFS CIDv1 + Blockchain** | Mutable Central Database | Mutable Central Database |
 | **Censorship & Account Lockout** | **0% Risk** (Decentralized P2P Network) | High (Suspension locks all files) | High (Suspension locks all files) |
@@ -183,7 +217,7 @@ DeStorage utilizes a dual-layer caching and pinning strategy:
      {
        "app": "DeStorage",
        "owner": "0xf026b53867f21b1f9c416b263b4995624e6c5b0c",
-       "name": "financial_report.pdf",
+       "name": "my-project/financial_report.pdf",
        "mime": "application/pdf",
        "size": "1048576",
        "key": "4a7f28... (wrapped key ciphertext hex)",
@@ -204,7 +238,10 @@ DeStorage utilizes a dual-layer caching and pinning strategy:
 
 ### Upload & Key Wrapping Pipeline
 ```text
-[ User Selects File ]
+[ User Selects File or Folder ]
+       │
+       ▼
+[ Recursive Traversal & Relative Path Extraction ]
        │
        ▼
 [ Web Crypto API: Generate DEK (256-bit) + IV (96-bit) ]
@@ -224,7 +261,7 @@ DeStorage utilizes a dual-layer caching and pinning strategy:
 [ IPFS Node Returns CIDv1 (bafkrei...) ]
        │
        ├─► Cache Ciphertext to Local IndexedDB
-       ├─► Update Local Vault State & Session Metadata
+       ├─► Update Local Vault State & Folder Hierarchies
        └─► Anchor to Base Sepolia Smart Contract
 ```
 
@@ -233,6 +270,11 @@ DeStorage utilizes a dual-layer caching and pinning strategy:
 [ User Requests Preview / Download ]
        │
        ▼
+[ Check Master Key in RAM ]
+       ├── Locked ───► Prompt "Ask for Permission" (Signature Live Check Radar)
+       └── Unlocked ─► Proceed to Fetch
+                             │
+                             ▼
 [ Check IndexedDB Binary Cache ]
        ├── Found ──────► Read Encrypted ArrayBuffer from Memory
        └── Not Found ──► Stream Ciphertext from IPFS Gateway
@@ -263,6 +305,7 @@ DeStorage utilizes a dual-layer caching and pinning strategy:
 | **Frontend Framework** | React 19.2, TypeScript 5.9 | Reactive UI, strict type safety |
 | **Build & Tooling** | CRACO, Webpack 5, Babel | Production bundling, polyfill handling |
 | **Cryptography** | Web Crypto API (`window.crypto.subtle`) | Client-side AES-256-GCM, PBKDF2, SHA-256 |
+| **Directory Ingestion** | HTML5 `webkitdirectory`, FileSystem API | Recursive folder traversal & batch queueing |
 | **Web3 & Blockchain** | Ethers.js v6, Base Sepolia EVM | Non-custodial wallet connection & smart contracts |
 | **Decentralized Storage** | IPFS, Pinata v3 Files API & v2 Pinning | Content-addressed storage & global gateway pinning |
 | **Local Persistence** | IndexedDB API, Web Storage API | Binary ciphertext cache & offline fallback |
@@ -311,8 +354,8 @@ destorage/
 ├── utils/                  # Formatters, address truncators, CID parsers
 │   └── formatters.ts
 └── vault/                  # Main Vault Dashboard & UI subsystems
-    ├── VaultDashboard.tsx  # Upload dropzone, file explorer, modal controllers
-    └── VaultDashboard.css  # Futuristic radar styling, selection physics
+    ├── VaultDashboard.tsx  # Folder explorer, batch uploader, permission radar
+    └── VaultDashboard.css  # Futuristic folder cards, breadcrumb bar, glass modals
 ```
 
 ---
@@ -381,9 +424,10 @@ npx tsc --noEmit
 
 1. **Zero Server Knowledge**: Encryption keys are derived client-side in volatile memory via PBKDF2 (120,000 iterations). Servers and network observers receive only ciphertext.
 2. **Envelope Security**: Raw AES-256 keys never touch storage nodes. Every file key is double-encrypted with your wallet's Master Key before upload.
-3. **Deterministic Verification**: Ciphertext integrity is verified against pre-encryption SHA-256 checksums prior to RAM decryption.
-4. **Non-Custodial Architecture**: Private keys and seed phrases never leave your wallet.
-5. **Memory Sanitization**: Plaintext buffers and Master Keys reside in volatile JavaScript memory and are purged upon session termination or tab closure.
+3. **Hierarchical Directory Isolation**: Directory structures are processed client-side without plaintext path leaks.
+4. **Deterministic Verification**: Ciphertext integrity is verified against pre-encryption SHA-256 checksums prior to RAM decryption.
+5. **Non-Custodial Architecture**: Private keys and seed phrases never leave your wallet.
+6. **Memory Sanitization**: Plaintext buffers and Master Keys reside in volatile JavaScript memory and are purged upon session termination or tab closure.
 
 ---
 

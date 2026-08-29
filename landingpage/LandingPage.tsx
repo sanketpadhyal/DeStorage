@@ -23,7 +23,8 @@ import {
   Database,
   Layers,
   Cpu,
-  LockKeyhole
+  LockKeyhole,
+  Folder
 } from 'lucide-react';
 
 const GithubIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
@@ -348,6 +349,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 </div>
                 <div className="lp-hero-check-item">
                   <Check size={16} />
+                  <span>Recursive Folder & File Uploads</span>
+                </div>
+                <div className="lp-hero-check-item">
+                  <Check size={16} />
                   <span>Tamper-Proof SHA-256</span>
                 </div>
               </div>
@@ -457,11 +462,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <section id="filetypes" className="lp-filetypes-section">
           <div className="lp-container">
             <div className="lp-section-header lp-reveal lp-reveal-up">
-              <h2 className="lp-section-title">Built for any confidential <span>file format</span></h2>
+              <h2 className="lp-section-title">Built for any confidential <span>file or folder format</span></h2>
             </div>
 
             <div className="lp-filetypes-grid">
               <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-1">
+                <div className="lp-filetype-icon" style={{ background: '#e0f2fe', color: '#0284c7' }}>
+                  <Folder size={22} />
+                </div>
+                <h4 className="lp-filetype-name">Directories & Folders</h4>
+                <p className="lp-filetype-desc">Full directory uploads, recursive client-side encryption, dedicated folder cards, and drill-down breadcrumb navigation.</p>
+              </div>
+
+              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-2">
                 <div className="lp-filetype-icon" style={{ background: '#eff6ff', color: '#2563eb' }}>
                   <Image size={22} />
                 </div>
@@ -469,28 +482,36 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <p className="lp-filetype-desc">Encrypted gallery view with local in-memory decryption and zero-knowledge previews.</p>
               </div>
 
-              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-2">
+              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-3">
                 <div className="lp-filetype-icon" style={{ background: '#f0fdf4', color: '#16a34a' }}>
                   <FileText size={22} />
                 </div>
                 <h4 className="lp-filetype-name">Documents & PDFs</h4>
-                <p className="lp-filetype-desc">Zero-knowledge storage for legal, confidential contracts, financial papers, and identity docs.</p>
+                <p className="lp-filetype-desc">Zero-knowledge storage for legal contracts, confidential papers, financial sheets, and identity documents.</p>
               </div>
 
-              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-3">
+              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-4">
                 <div className="lp-filetype-icon" style={{ background: '#fdf2f8', color: '#db2777' }}>
                   <Video size={22} />
                 </div>
                 <h4 className="lp-filetype-name">Videos & Streaming</h4>
-                <p className="lp-filetype-desc">Chunked cryptographic pipeline enabling ultra-fast encryption on large video archives.</p>
+                <p className="lp-filetype-desc">Chunked cryptographic pipeline enabling zero-knowledge client decryption on video recordings.</p>
               </div>
 
-              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-4">
+              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-5">
                 <div className="lp-filetype-icon" style={{ background: '#faf5ff', color: '#7c3aed' }}>
                   <Music size={22} />
                 </div>
                 <h4 className="lp-filetype-name">Audio & Music</h4>
                 <p className="lp-filetype-desc">Protected sound archives, audio recordings, and wallet-to-wallet decentralized sharing.</p>
+              </div>
+
+              <div className="lp-filetype-card lp-card-animated lp-reveal lp-stagger-6">
+                <div className="lp-filetype-icon" style={{ background: '#fffbeb', color: '#d97706' }}>
+                  <Box size={22} />
+                </div>
+                <h4 className="lp-filetype-name">Codebases & Archives</h4>
+                <p className="lp-filetype-desc">Sovereign backups for zip packages, datasets, repositories, and raw binaries with SHA-256 integrity.</p>
               </div>
             </div>
           </div>
