@@ -170,7 +170,6 @@ export async function uploadToIpfs(
           sha: metadataObj.sha256Hash,
         };
         if (metadataObj.wrapIvHex) keyvalues.kiv = metadataObj.wrapIvHex;
-        if (metadataObj.isKeyWrapped) keyvalues.wrp = '1';
         formData.append('keyvalues', JSON.stringify(keyvalues));
       }
 
@@ -237,7 +236,6 @@ export async function uploadToIpfs(
         keyvalues.iv = metadataObj.ivHex;
         keyvalues.sha = metadataObj.sha256Hash;
         if (metadataObj.wrapIvHex) keyvalues.kiv = metadataObj.wrapIvHex;
-        if (metadataObj.isKeyWrapped) keyvalues.wrp = '1';
       }
       formData.append('pinataMetadata', JSON.stringify({
         name: `DeStorage_${safeFileName}_${Date.now()}`.slice(0, 150),
