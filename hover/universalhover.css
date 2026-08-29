@@ -23,7 +23,6 @@ a.btn,
 .vd-switch-net-btn,
 .vd-filter-tab,
 .vd-filter-btn,
-.vd-wallet-option-btn,
 .universal-btn {
   user-select: none;
   -webkit-user-select: none;
@@ -36,8 +35,18 @@ a.btn,
   will-change: transform, box-shadow;
 }
 
+/* Explicit Zero Hover / Zero Transform for Wallet Modal Option Buttons */
+.vd-wallet-option-btn,
+.vd-wallet-option-btn:hover,
+.vd-wallet-option-btn:focus,
+.vd-wallet-option-btn:active {
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+
 /* Centered Hover Scale Physics (Zero Up/Down Movement) */
-button:hover:not(:disabled),
+button:hover:not(:disabled):not(.vd-wallet-option-btn),
 a.btn:hover,
 .lp-btn-cyan:hover,
 .lp-btn-black:hover,
@@ -60,7 +69,7 @@ a.btn:hover,
 }
 
 /* Centered Active / Tap-and-Hold Compression Physics (Zero Up/Down Movement) */
-button:active:not(:disabled),
+button:active:not(:disabled):not(.vd-wallet-option-btn),
 a.btn:active,
 .lp-btn-cyan:active,
 .lp-btn-black:active,
@@ -79,7 +88,6 @@ a.btn:active,
 .vd-btn-logout-wallet:active,
 .vd-filter-tab:active,
 .vd-filter-btn:active,
-.vd-wallet-option-btn:active,
 .universal-btn:active:not(:disabled),
 .universal-btn.is-pressed {
   transform: scale(0.95) !important;
