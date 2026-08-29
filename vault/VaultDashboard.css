@@ -1481,6 +1481,184 @@
   font-size: 13.5px;
 }
 
+/* =========================================================
+   PERMISSION & LIVE CHECKING STAGE IN PREVIEW MODAL
+   ========================================================= */
+
+.vd-perm-stage-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px 16px;
+  gap: 14px;
+  width: 100%;
+}
+
+.vd-perm-icon-wrapper {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vd-perm-icon-glow {
+  position: absolute;
+  inset: -6px;
+  background: radial-gradient(circle, rgba(2, 132, 199, 0.35) 0%, rgba(2, 132, 199, 0) 70%);
+  border-radius: 50%;
+  animation: vdGlowPulse 2.2s ease-in-out infinite alternate;
+}
+
+.vd-perm-icon-core {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.15);
+  position: relative;
+  z-index: 2;
+}
+
+.vd-perm-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 400px;
+}
+
+.vd-perm-stage-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0b2447;
+  font-family: var(--font-sans);
+  margin: 0;
+}
+
+.vd-perm-stage-desc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.vd-perm-specs-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 2px 0;
+}
+
+.vd-perm-spec-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #334155;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.vd-btn-ask-permission {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 28px;
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35);
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.vd-btn-ask-permission:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+}
+
+.vd-btn-ask-permission:active {
+  transform: translateY(0);
+}
+
+/* Live Checking Signature State */
+.vd-live-check-radar-wrap {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vd-live-check-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px dashed #0284c7;
+  border-radius: 50%;
+  animation: vdSpin 2.8s linear infinite;
+}
+
+.vd-live-check-ring-outer {
+  position: absolute;
+  inset: -6px;
+  border: 1.5px solid rgba(2, 132, 199, 0.25);
+  border-radius: 50%;
+  animation: vdGlowPulse 1.8s ease-in-out infinite alternate;
+}
+
+.vd-live-check-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(2, 132, 199, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(11, 36, 71, 0.08);
+  position: relative;
+  z-index: 2;
+}
+
+.vd-live-checking-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #0284c7;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+}
+
+.vd-perm-success-box {
+  animation: vdTickPop 0.35s ease-out both;
+}
+
 /* FUTURISTIC ZERO-KNOWLEDGE DECRYPTION LOADING STAGE */
 .vd-decrypt-stage {
   display: flex;

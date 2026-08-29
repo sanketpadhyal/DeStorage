@@ -11,7 +11,7 @@ import {
 import { uploadToIpfs, IpfsUploadResult } from '../ipfs/ipfsService';
 import { formatFileSize, truncateCid } from '../utils/formatters';
 import { VaultFileItem } from '../types';
-import { Wallet, Zap } from 'lucide-react';
+import { Wallet, Zap, Key, Lock, ShieldCheck, RefreshCw } from 'lucide-react';
 
 interface VaultDashboardProps {
   onBackToHome: () => void;
@@ -100,11 +100,12 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isSelecting, setIsSelecting] = useState<boolean>(false);
 
-  // Preview Modal State
+  // Preview Modal State with Permission, Live Checking, Green Tick and Decryption States
   const [previewItem, setPreviewItem] = useState<{
     file: VaultFileItem;
     previewUrl: string;
-    isDecrypting: boolean;
+    status: 'need_permission' | 'requesting_permission' | 'permission_success' | 'decrypting' | 'ready' | 'error';
+    errorMsg?: string;
   } | null>(null);
 
   const [isWalletClosing, setIsWalletClosing] = useState<boolean>(false);
@@ -373,8 +374,10 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       } else {
         document.title = 'Encrypting & Storing to IPFS... | DeStorage';
       }
-    } else if (previewItem?.isDecrypting) {
+    } else if (previewItem?.status === 'decrypting') {
       document.title = `Decrypting ${previewItem.file.name}... | DeStorage`;
+    } else if (previewItem?.status === 'requesting_permission') {
+      document.title = 'Authorizing Signature... | DeStorage';
     } else if (isConnected && address) {
       document.title = `DeStorage Vault (${files.length} files) | Zero-Knowledge Cloud`;
     } else {
@@ -605,27 +608,39 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
   // Decrypt and Preview file in-memory
   const handlePreview = async (item: VaultFileItem) => {
+    // If the file is key-wrapped and masterKey has not yet been unlocked in this session
+    const needsPermission = Boolean(item.isKeyWrapped && item.wrappedKeyHex && !masterKey);
+
+    if (needsPermission) {
+      setPreviewItem({
+        file: item,
+        previewUrl: '',
+        status: 'need_permission',
+      });
+      return;
+    }
+
+    // Otherwise, immediately execute in-memory decryption
+    await executeDecryption(item, masterKey);
+  };
+
+  // Execute in-memory decryption pipeline
+  const executeDecryption = async (item: VaultFileItem, activeMasterKey: CryptoKey | null) => {
+    setPreviewItem({
+      file: item,
+      previewUrl: '',
+      status: 'decrypting',
+    });
+
     try {
       let rawKeyHex = item.keyHex;
 
-      // If key is wrapped, unwrap with masterKey
-      if (item.isKeyWrapped && item.wrappedKeyHex && item.wrapIvHex) {
-        let activeMasterKey = masterKey;
-        if (!activeMasterKey && address) {
-          activeMasterKey = await unlockMasterKey(address);
-        }
-        if (activeMasterKey) {
-          const { unwrapKeyWithMasterKey } = await import('../crypto/encryptionEngine');
-          try {
-            rawKeyHex = await unwrapKeyWithMasterKey(item.wrappedKeyHex, item.wrapIvHex, activeMasterKey);
-            setFiles(prev => prev.map(f => f.id === item.id ? { ...f, keyHex: rawKeyHex, isKeyWrapped: false } : f));
-          } catch (e) {
-            console.warn('Could not unwrap key:', e);
-          }
-        }
+      // Unwrap wrapped file key if needed
+      if (item.isKeyWrapped && item.wrappedKeyHex && item.wrapIvHex && activeMasterKey) {
+        const { unwrapKeyWithMasterKey } = await import('../crypto/encryptionEngine');
+        rawKeyHex = await unwrapKeyWithMasterKey(item.wrappedKeyHex, item.wrapIvHex, activeMasterKey);
+        setFiles(prev => prev.map(f => f.id === item.id ? { ...f, keyHex: rawKeyHex, isKeyWrapped: false } : f));
       }
-
-      setPreviewItem({ file: { ...item, keyHex: rawKeyHex }, previewUrl: '', isDecrypting: true });
 
       let buffer = item.encryptedBuffer;
       if (!buffer) {
@@ -640,10 +655,60 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         item.mimeType
       );
 
-      setPreviewItem({ file: { ...item, keyHex: rawKeyHex }, previewUrl: objectUrl, isDecrypting: false });
+      setPreviewItem({
+        file: { ...item, keyHex: rawKeyHex, isKeyWrapped: false },
+        previewUrl: objectUrl,
+        status: 'ready',
+      });
     } catch (err: any) {
-      alert(`Decryption preview failed: ${err.message || 'Could not decrypt file'}`);
-      setPreviewItem(null);
+      console.error('Decryption failed:', err);
+      setPreviewItem({
+        file: item,
+        previewUrl: '',
+        status: 'error',
+        errorMsg: err?.message || 'Could not decrypt file in browser memory.',
+      });
+    }
+  };
+
+  // Handle User Clicking "Ask for Permission" in Preview Modal
+  const handleRequestPermission = async () => {
+    if (!previewItem) return;
+    const item = previewItem.file;
+
+    setPreviewItem(prev => prev ? { ...prev, status: 'requesting_permission', errorMsg: '' } : null);
+
+    try {
+      let activeMasterKey = masterKey;
+      if (!activeMasterKey && address) {
+        activeMasterKey = await unlockMasterKey(address);
+      }
+
+      if (!activeMasterKey) {
+        setPreviewItem(prev => prev ? {
+          ...prev,
+          status: 'error',
+          errorMsg: 'Wallet signature request was cancelled or not completed.',
+        } : null);
+        return;
+      }
+
+      // Show satisfying PhonePe-style green tick
+      setPreviewItem(prev => prev ? { ...prev, status: 'permission_success' } : null);
+
+      // Brief pause for the green tick animation
+      await new Promise(resolve => setTimeout(resolve, 1100));
+
+      // Proceed to decryption
+      await executeDecryption(item, activeMasterKey);
+    } catch (err: any) {
+      const rawMsg = String(err?.message || '');
+      const isRejected = err?.code === 4001 || rawMsg.includes('4001') || rawMsg.toLowerCase().includes('user rejected') || rawMsg.toLowerCase().includes('cancelled');
+      setPreviewItem(prev => prev ? {
+        ...prev,
+        status: 'error',
+        errorMsg: isRejected ? 'Signature permission request was cancelled by user.' : (err?.message || 'Failed to authorize wallet signature.'),
+      } : null);
     }
   };
 
@@ -1237,11 +1302,113 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
             <div className="vd-preview-meta-pill">
               <span className="vd-preview-filename">{previewItem.file.name}</span>
               <span className="vd-preview-filesize">{formatFileSize(previewItem.file.size)}</span>
-              <span className="vd-preview-cipher-tag">AES-256-GCM</span>
+              <span className="vd-preview-cipher-tag">
+                {previewItem.file.isKeyWrapped ? 'AES-256-GCM Envelope' : 'AES-256-GCM'}
+              </span>
             </div>
 
             <div className="vd-preview-stage">
-              {previewItem.isDecrypting ? (
+
+              {/* 1. NEED PERMISSION VIEW (ASK FOR PERMISSION BUTTON) */}
+              {previewItem.status === 'need_permission' && (
+                <div className="vd-perm-stage-box">
+                  <div className="vd-perm-icon-wrapper">
+                    <div className="vd-perm-icon-glow" />
+                    <div className="vd-perm-icon-core">
+                      <Lock size={30} color="#0284c7" />
+                    </div>
+                  </div>
+
+                  <div className="vd-perm-text-group">
+                    <h4 className="vd-perm-stage-title">Signature Permission Required</h4>
+                    <p className="vd-perm-stage-desc">
+                      This confidential file is protected with your wallet's master key envelope. Sign with your wallet to permit in-memory zero-knowledge decryption.
+                    </p>
+                  </div>
+
+                  <div className="vd-perm-specs-row">
+                    <span className="vd-perm-spec-tag">
+                      <ShieldCheck size={14} color="#16a34a" />
+                      PBKDF2 Master Key
+                    </span>
+                    <span className="vd-perm-spec-tag">
+                      <Key size={14} color="#0284c7" />
+                      120,000 Rounds
+                    </span>
+                    <span className="vd-perm-spec-tag">
+                      <Zap size={14} color="#f59e0b" />
+                      Free (0 Gas Fee)
+                    </span>
+                  </div>
+
+                  <button 
+                    type="button" 
+                    className="vd-btn-ask-permission"
+                    onClick={handleRequestPermission}
+                  >
+                    <Key size={18} />
+                    <span>Ask for Permission</span>
+                  </button>
+                </div>
+              )}
+
+              {/* 2. REQUESTING PERMISSION / LIVE CHECKING VIEW */}
+              {previewItem.status === 'requesting_permission' && (
+                <div className="vd-perm-stage-box">
+                  <div className="vd-live-check-radar-wrap">
+                    <div className="vd-live-check-ring" />
+                    <div className="vd-live-check-ring-outer" />
+                    <div className="vd-live-check-logo">
+                      <img 
+                        src={safeImages.metamask} 
+                        alt="MetaMask" 
+                        style={{ width: '32px', height: '32px', objectFit: 'contain' }} 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="vd-perm-text-group">
+                    <h4 className="vd-perm-stage-title">Awaiting Wallet Signature...</h4>
+                    <p className="vd-perm-stage-desc">
+                      Please approve the free cryptographic signature request in your wallet extension popup.
+                    </p>
+                  </div>
+
+                  <div className="vd-live-checking-pill">
+                    <span className="vd-pulse-dot" style={{ background: '#0284c7' }} />
+                    <span>Live Checking Signature Permission...</span>
+                  </div>
+                </div>
+              )}
+
+              {/* 3. PERMISSION SUCCESS GREEN TICK VIEW */}
+              {previewItem.status === 'permission_success' && (
+                <div className="vd-perm-stage-box vd-perm-success-box">
+                  <div className="vd-phonepe-tick-wrapper">
+                    <div className="vd-phonepe-tick-circle">
+                      <svg className="vd-phonepe-tick-svg" viewBox="0 0 52 52">
+                        <circle className="vd-phonepe-tick-circle-bg" cx="26" cy="26" r="24" fill="none"/>
+                        <path className="vd-phonepe-tick-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div className="vd-perm-text-group">
+                    <h4 className="vd-perm-stage-title" style={{ color: '#16a34a' }}>Permission Granted!</h4>
+                    <p className="vd-perm-stage-desc">
+                      Master Key derived in volatile memory. Proceeding to in-memory decryption...
+                    </p>
+                  </div>
+
+                  <div className="vd-live-checking-pill" style={{ background: '#f0fdf4', borderColor: '#bbf7d0', color: '#16a34a' }}>
+                    <span className="vd-pulse-dot" style={{ background: '#16a34a' }} />
+                    <span>Signature Permitted • Decrypting Next</span>
+                  </div>
+                </div>
+              )}
+
+              {/* 4. ZERO-KNOWLEDGE DECRYPTING VIEW */}
+              {previewItem.status === 'decrypting' && (
                 <div className="vd-decrypt-stage">
                   <div className="vd-decrypt-radar-box">
                     <div className="vd-decrypt-glow-bg" />
@@ -1254,7 +1421,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                   <div className="vd-decrypt-info-group">
                     <h4 className="vd-decrypt-stage-title">Zero-Knowledge Decryption</h4>
                     <p className="vd-decrypt-stage-sub">
-                      Streaming AES-256 cipher from IPFS & deciphering in local memory...
+                      Streaming AES-256 cipher from IPFS & deciphering in volatile RAM...
                     </p>
                   </div>
 
@@ -1273,20 +1440,52 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                     </span>
                   </div>
                 </div>
-              ) : previewItem.file.mimeType.startsWith('image/') ? (
-                <div className="vd-preview-image-wrap">
-                  <img src={previewItem.previewUrl} alt={previewItem.file.name} />
-                </div>
-              ) : previewItem.file.mimeType.startsWith('video/') ? (
-                <video controls src={previewItem.previewUrl} className="vd-preview-video" />
-              ) : previewItem.file.mimeType.startsWith('audio/') ? (
-                <audio controls src={previewItem.previewUrl} className="vd-preview-audio" />
-              ) : (
-                <div className="vd-preview-unsupported">
-                  <Icon icon="iconamoon:file-document-bold" width={48} height={48} color="#0284c7" />
-                  <p>Encrypted file decrypted cleanly in memory buffer.</p>
+              )}
+
+              {/* 5. READY / DECRYPTED MEDIA VIEW */}
+              {previewItem.status === 'ready' && (
+                <>
+                  {previewItem.file.mimeType.startsWith('image/') ? (
+                    <div className="vd-preview-image-wrap">
+                      <img src={previewItem.previewUrl} alt={previewItem.file.name} />
+                    </div>
+                  ) : previewItem.file.mimeType.startsWith('video/') ? (
+                    <video controls src={previewItem.previewUrl} className="vd-preview-video" autoPlay />
+                  ) : previewItem.file.mimeType.startsWith('audio/') ? (
+                    <audio controls src={previewItem.previewUrl} className="vd-preview-audio" autoPlay />
+                  ) : (
+                    <div className="vd-preview-unsupported">
+                      <Icon icon="iconamoon:file-document-bold" width={48} height={48} color="#0284c7" />
+                      <p>Encrypted document decrypted cleanly in memory buffer.</p>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* 6. ERROR VIEW */}
+              {previewItem.status === 'error' && (
+                <div className="vd-perm-stage-box">
+                  <div className="vd-connect-error-icon" style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon icon="iconamoon:close-circle-bold" width={40} height={40} color="#ef4444" />
+                  </div>
+                  <div className="vd-perm-text-group">
+                    <h4 className="vd-perm-stage-title" style={{ color: '#dc2626' }}>Decryption Authorization Failed</h4>
+                    <p className="vd-perm-stage-desc">
+                      {previewItem.errorMsg || 'The permission request was cancelled or timed out.'}
+                    </p>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="vd-btn-ask-permission"
+                    style={{ marginTop: '10px' }}
+                    onClick={handleRequestPermission}
+                  >
+                    <RefreshCw size={17} />
+                    <span>Try Again</span>
+                  </button>
                 </div>
               )}
+
             </div>
 
             <div className="vd-preview-footer-card">
@@ -1300,10 +1499,10 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               <button 
                 type="button" 
                 className="vd-btn-save-device" 
-                disabled={previewItem.isDecrypting}
+                disabled={previewItem.status !== 'ready'}
                 onClick={() => handleDecryptDownload(previewItem.file)}
               >
-                {previewItem.isDecrypting ? (
+                {previewItem.status === 'decrypting' ? (
                   <>
                     <div className="vd-spinner-white" />
                     <span>Decrypting...</span>
