@@ -1450,58 +1450,6 @@ section {
 .lp-val-cyan { color: #bae6fd; }
 .lp-val-emerald { color: #a7f3d0; font-weight: 600; }
 
-/* 7. CREATOR SECTION */
-.lp-creator-section {
-  width: 100%;
-  padding: 90px 0;
-  background: transparent;
-}
-
-.lp-creator-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(2, 132, 199, 0.2);
-  border-radius: 28px;
-  padding: 48px;
-  display: flex;
-  align-items: center;
-  gap: 48px;
-  text-align: left;
-  box-shadow: 0 12px 32px rgba(2, 132, 199, 0.06);
-}
-
-.lp-mascot-img {
-  width: 160px;
-  height: 160px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.lp-creator-details {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.lp-creator-name {
-  font-size: 28px;
-  font-weight: 800;
-  color: #0b2447;
-  font-family: var(--font-serif);
-}
-
-.lp-creator-bio {
-  font-size: 15px;
-  color: #475569;
-  line-height: 1.65;
-}
-
-.lp-creator-actions {
-  display: flex;
-  gap: 14px;
-  margin-top: 6px;
-}
-
 /* 8. FOOTER */
 .lp-footer {
   width: 100%;

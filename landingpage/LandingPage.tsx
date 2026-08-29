@@ -282,10 +282,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <span>Live Crypto Demo</span>
                 <ChevronRight size={16} className="lp-nav-chevron" />
               </button>
-              <button type="button" className="lp-mobile-nav-link-btn" onClick={() => scrollToSection('creator')}>
-                <span>Developer Profile</span>
-                <ChevronRight size={16} className="lp-nav-chevron" />
-              </button>
             </div>
 
             {/* Open Source Watermark & Attribution Card */}
@@ -843,50 +839,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
             </div>
 
-          </div>
-        </section>
-
-        {/* CREATOR & COMMUNITY */}
-        <section id="creator" className="lp-creator-section">
-          <div className="lp-container">
-            <div className="lp-creator-card lp-card-animated lp-reveal lp-reveal-up">
-              <img 
-                src={safeImages.mascotCharacter} 
-                alt="DeStorage Mascot Character" 
-                className="lp-mascot-img" 
-                draggable={false}
-              />
-
-              <div className="lp-creator-details">
-                <h3 className="lp-creator-name">Built by Sanket Padhyal</h3>
-                <p className="lp-creator-bio">
-                  Full Stack & Web3 Engineer building decentralized systems, on-device AI models, and privacy-first software. DeStorage ensures that files, cryptographic keys, and ownership proofs belong exclusively to the user.
-                </p>
-
-                <div className="lp-creator-actions">
-                  <a 
-                    href="https://sanketpadhyal.in" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="lp-btn-black"
-                  >
-                    <Globe size={15} />
-                    <span>sanketpadhyal.in</span>
-                    <ExternalLink size={13} />
-                  </a>
-
-                  <a 
-                    href="https://github.com/sanketpadhyal/DeStorage" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="lp-btn-cyan"
-                  >
-                    <GithubIcon size={15} />
-                    <span>GitHub Repository</span>
-                  </a>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
