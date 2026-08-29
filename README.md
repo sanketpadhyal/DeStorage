@@ -5,8 +5,8 @@
 <h1 align="center">DeStorage</h1>
 
 <p align="center">
-  <strong>Sovereign Web3 & Crypto Decentralized Storage Platform</strong><br>
-  <em>Zero-Knowledge Client-Side AES-256-GCM Encryption • IPFS P2P Content Addressing • Base EVM Verification</em>
+  <strong>Sovereign Web3 & Decentralized Zero-Knowledge Storage Platform</strong><br>
+  <em>Client-Side AES-256-GCM Encryption • PBKDF2 Master Key Wrapping • Decentralized IPFS Storage • Base Sepolia Blockchain Anchoring</em>
 </p>
 
 <p align="center">
@@ -15,177 +15,183 @@
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black" alt="React" /></a>
   <a href="https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto"><img src="https://img.shields.io/badge/Cryptography-AES--256--GCM-059669" alt="Cryptography" /></a>
   <a href="https://ipfs.tech"><img src="https://img.shields.io/badge/Storage-IPFS%20Network-0284C7?logo=ipfs&logoColor=white" alt="Storage" /></a>
-  <a href="https://base.org"><img src="https://img.shields.io/badge/Network-Base%20EVM-0052FF?logo=coinbase&logoColor=white" alt="Blockchain" /></a>
+  <a href="https://base.org"><img src="https://img.shields.io/badge/Network-Base%20Sepolia%20EVM-0052FF?logo=coinbase&logoColor=white" alt="Blockchain" /></a>
 </p>
 
-**DeStorage** is a high-performance, non-custodial decentralized storage platform. It bridges native client-side **AES-256-GCM** encryption with the **InterPlanetary File System (IPFS)** and **Base EVM** blockchain verification. All cryptographic operations execute strictly inside browser memory (`SubtleCrypto`), guaranteeing zero-knowledge privacy: plaintext data and encryption keys never touch any centralized server or storage node.
-
-**Live URL:** [https://destorage.sanketpadhyal.in](https://destorage.sanketpadhyal.in)
+**DeStorage** is a high-performance, non-custodial decentralized storage platform. It bridges native in-browser **AES-256-GCM** encryption with the **InterPlanetary File System (IPFS)** and **Base Sepolia Ethereum L2** smart contracts. All cryptographic operations execute strictly inside volatile browser memory (`SubtleCrypto`), guaranteeing zero-knowledge privacy: plaintext data, private keys, and seed phrases never leave your local device.
 
 ---
 
 ## Table of Contents
 
-- [Architectural Overview](#architectural-overview)
-- [Zero-Knowledge Cryptographic Pipeline](#zero-knowledge-cryptographic-pipeline)
-- [Core Features](#core-features)
-- [Decentralized Storage & Sync Protocol](#decentralized-storage--sync-protocol)
+- [Architectural Overview & Graph Tree](#architectural-overview--graph-tree)
+- [5-Stage Cryptographic Lifecycle](#5-stage-cryptographic-lifecycle)
+- [Security Comparison: DeStorage vs Centralized Cloud](#security-comparison-destorage-vs-centralized-cloud)
+- [Decentralized Storage & Pinata Protocol](#decentralized-storage--pinata-protocol)
 - [System Data Flows](#system-data-flows)
 - [Tech Stack](#tech-stack)
 - [Project Directory Structure](#project-directory-structure)
 - [Environment Configuration](#environment-configuration)
 - [Getting Started](#getting-started)
 - [Testing & Quality Assurance](#testing--quality-assurance)
-- [Security Model](#security-model)
+- [Security Guarantees & Verification](#security-guarantees--verification)
 - [License](#license)
 
 ---
 
-## Architectural Overview
+## Architectural Overview & Graph Tree
 
 ```text
-+-----------------------------------------------------------------------------------+
-|                                  CLIENT BROWSER                                   |
-|                                                                                   |
-|  [ File Dropzone / Multi-File Selector ]                                          |
-|       |                                                                           |
-|       v                                                                           |
-|  [ Web Crypto API (SubtleCrypto) ]                                                |
-|       |-- SHA-256 Checksum Calculation                                            |
-|       |-- 256-bit Random File Key (DEK) & 96-bit IV Generation                     |
-|       |-- AES-256-GCM Binary Encryption (Plaintext -> Ciphertext)                 |
-|       |                                                                           |
-|  [ Web3 Wallet Signature -> Master Key Derivation ]                              |
-|       |-- EIP-191 Free Signature ("Unlock DeStorage Sovereign Vault")             |
-|       |-- PBKDF2 Master Key Derivation (120,000 SHA-256 iterations)              |
-|       `-- Key Wrapping: AES-256-GCM Encrypt(MasterKey, FileKey) -> Wrapped Key    |
-|                                                                                   |
-|       +------------------------------------+                                      |
-|       | (Encrypted Ciphertext Buffer)      | (Plaintext & Raw Keys Kept in RAM)   |
-|       v                                    v                                      |
-|  [ IndexedDB Persistent Cache ]     [ XMLHttpRequest (XHR Upload) ]               |
-|  Stores ciphertext locally for      Live Transfer Tracking (Loaded / Total Bytes) |
-|  instant retrieval & offline cache  Speed Calculation (MB/s) & Dynamic ETA        |
-+-----------------------------------------------------------------------------------+
-                                         |
-                                         | Encrypted Binary + Wrapped Key Metadata (Pinata API)
-                                         v
-+-----------------------------------------------------------------------------------+
-|                             DECENTRALIZED IPFS NETWORK                            |
-|                                                                                   |
-|  [ Global IPFS Pinning Nodes ]                                                    |
-|  - Content-Addressed Storage via Immutable CIDv1 (bafy...)                        |
-|  - Cloud Metadata: owner, mime, size, sha256, WRAPPED CIPHERTEXT KEY, iv, kiv      |
-|  - Zero Plaintext Keys on Network: Pinata / IPFS only store encrypted blobs        |
-|  - Multi-Gateway Fallback Chain (Dedicated Gateway -> Pinata Cloud -> ipfs.io)    |
-+-----------------------------------------------------------------------------------+
-                                         ^
-                                         | Verification & Wallet Authentication
-+-----------------------------------------------------------------------------------+
-|                              BASE EVM BLOCKCHAIN LAYER                            |
-|                                                                                   |
-|  [ Web3 Wallet Provider (Ethers.js v6 / MetaMask / Coinbase) ]                    |
-|  - Non-custodial cryptographic wallet verification                                |
-|  - Sovereign identity without centralized databases or passwords                  |
-+-----------------------------------------------------------------------------------+
+=============================================================================================
+                                DESTORAGE ARCHITECTURAL GRAPH TREE
+=============================================================================================
+
+ [ 1. USER DEVICE (CLIENT-SIDE) ]
+   │
+   ├─► [ MetaMask / Coinbase Wallet ] ──(EIP-191 Signature)──► [ PBKDF2 Key Derivation ]
+   │                                                             • 120,000 SHA-256 Iterations
+   │                                                             • Wallet Address Salt
+   │                                                             • 256-Bit Master Key (RAM Only)
+   │
+   ├─► [ Raw Plaintext File Selected ] (Photos, PDFs, Videos, Archives)
+   │     │
+   │     ▼
+   ├─► [ Web Cryptography API (SubtleCrypto) ]
+   │     • Ephemeral 256-Bit AES Key (DEK) via crypto.getRandomValues(32)
+   │     • Unique 96-Bit Initialization Vector (IV) via crypto.getRandomValues(12)
+   │     • AES-256-GCM AEAD In-Place Binary Encryption -> Authenticated Ciphertext
+   │     • SHA-256 Checksum Hash Calculation (Tamper-Proof Verification)
+   │
+   └─► [ Envelope Key Wrapping Engine ]
+         • MasterKey Encrypts FileKey (DEK) using dedicated Wrap IV (kiv)
+         • Wrapped Key Ciphertext generated (Raw key purged from long-term memory)
+         • Zero Plaintext Bytes on Wire (100% Ciphertext Payload)
+
+                                         │
+                                         ▼ (Encrypted Binary + Wrapped Key Metadata)
+
+ [ 2. DECENTRALIZED IPFS NETWORK (PINATA CLOUD) ]
+   │
+   ├─► [ Pinata v3 Files API & v2 Pinning Fallback ]
+   │     • Immutable Content-Addressed CIDv1 (bafkrei...)
+   │     • Dual-Pinning Architecture: Public Network Distribution + Global Gateway Swarm
+   │     • Scoped Metadata Keyvalues (<= 9 Keys strictly compliant with Pinata 10-key limit):
+   │       [ app, owner, name, mime, size, key(wrapped), iv, kiv, sha ]
+   │
+   └─► [ Multi-Gateway Resilience Chain ]
+         • Primary: Dedicated IPFS Gateway (REACT_APP_PINATA_GATEWAY)
+         • Secondary: https://gateway.pinata.cloud/ipfs/{cid}
+         • Tertiary: Global Public Gateways (ipfs.io, cloudflare-ipfs.com)
+
+                                         │
+                                         ▼ (Immutable CID & SHA-256 Checksum)
+
+ [ 3. BASE SEPOLIA ETHEREUM L2 BLOCKCHAIN ]
+   │
+   └─► [ DeStorageRegistry.sol Smart Contract ]
+         • Sovereign non-custodial ownership registration
+         • Immutable on-chain timestamps & CID anchoring
+         • Censorship-resistant identity verified by EVM address
+
+                                         │
+                                         ▼ (Cross-Device Viewing & Retrieval)
+
+ [ 4. ZERO-KNOWLEDGE RAM DECRYPTION & MEDIA STREAMING ]
+   │
+   ├─► Connect Wallet on New Device ──► 1-Click Signature Unlocks Session Master Key
+   ├─► Stream Ciphertext from IPFS ──► Verify against SHA-256 Checksum
+   ├─► Unwrap File Key via Master Key ──► AES-256-GCM Decrypt in Volatile Memory
+   └─► Instant In-Memory Blob URL Previews ──► Zero Disk Traces Left on Logout
+=============================================================================================
 ```
 
 ---
 
-## Zero-Knowledge Cryptographic Pipeline
+## 5-Stage Cryptographic Lifecycle
 
-Every file processed by DeStorage passes through a multi-stage cryptographic pipeline executed via standard W3C Web Cryptography primitives (`window.crypto.subtle`):
+Every file processed by DeStorage passes through an auditable, multi-stage cryptographic pipeline executed via standard W3C Web Cryptography primitives (`window.crypto.subtle`):
 
-### 1. Integrity Hashing (SHA-256)
-Prior to encryption, a deterministic cryptographic checksum is generated across the plaintext buffer:
-```text
-hash = SHA-256(plaintext_buffer)
-```
-This checksum is stored alongside the file metadata and re-validated upon decryption to ensure byte-level integrity.
+### Stage 1: Deterministic Master Key Derivation
+- **Trigger**: The user signs a deterministic cryptographic challenge with MetaMask:
+  ```text
+  Sign to unlock your DeStorage Master Vault Key: 0x...
+  ```
+- **Derivation Function**: The signature bytes are passed to **PBKDF2-HMAC-SHA256** with **120,000 iterations** and a wallet-bound salt:
+  ```text
+  salt = "DeStorage_Master_Key_Salt_" + walletAddress.toLowerCase()
+  MasterKey = PBKDF2(Signature, salt, iterations=120000, hash="SHA-256", length=256)
+  ```
+- **Security**: The Master Key exists only in volatile browser RAM during the active session. Closing the tab immediately purges it.
 
-### 2. File Data Encryption (AES-256-GCM)
-* **Data Encryption Key (DEK)**: Generates a cryptographically strong, unique 256-bit AES key via `window.crypto.subtle.generateKey` and a 96-bit Initialization Vector (IV) via `window.crypto.getRandomValues`.
-* **Authenticated Symmetric Cipher**: The plaintext binary is encrypted using Galois/Counter Mode (GCM), providing authenticated encryption with associated data (AEAD) to protect both confidentiality and authenticity against tampering:
-```text
-ciphertext = AES-GCM-Encrypt(DEK_256, iv_96, plaintext_buffer)
-```
+### Stage 2: Client-Side AES-256-GCM File Encryption
+- **Ephemeral Key Generation**: For every individual file, the engine generates an independent 256-bit AES-GCM data key (`DEK`) and a 96-bit random initialization vector (`IV`):
+  ```text
+  fileKey = window.crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"])
+  iv = window.crypto.getRandomValues(new Uint8Array(12))
+  ```
+- **Authenticated Cipher**: Encrypts the raw file buffer using Galois/Counter Mode (GCM), generating ciphertext with an authenticated 128-bit AEAD tag:
+  ```text
+  ciphertext = AES-GCM-Encrypt(fileKey, iv, plaintextBuffer)
+  ```
 
-### 3. Envelope Encryption & Key Wrapping
-To enable cross-device synchronization without exposing plaintext keys to cloud pinning servers:
-1. **Master Key (KEK)**: Derived strictly in client memory from the user's Web3 wallet signature using **PBKDF2 with 120,000 iterations of SHA-256** and a wallet-scoped salt:
-```text
-MasterKey = PBKDF2(Signature, salt="destorage_salt_{address}", iterations=120000, hash=SHA-256)
-```
-2. **Key Wrapping (`wrapKeyWithMasterKey`)**: The unique 256-bit file key (`DEK`) is encrypted using the user's `MasterKey` with a dedicated 96-bit wrapping IV (`kiv`):
-```text
-wrappedKeyCiphertext = AES-GCM-Encrypt(MasterKey, wrap_iv_96, DEK_raw_bytes)
-```
-3. **Network Zero-Knowledge Guarantee**: Only `wrappedKeyCiphertext` and `wrap_iv_96` are uploaded in cloud metadata. Pinata, IPFS nodes, and network observers **never receive or possess the raw decryption key**.
+### Stage 3: Envelope Key Wrapping & SHA-256 Checksum
+- **Key Wrapping**: The ephemeral file key (`fileKey`) is wrapped using the user's `MasterKey` with a distinct wrapping IV (`kiv`):
+  ```text
+  wrapIv = window.crypto.getRandomValues(new Uint8Array(12))
+  wrappedKeyCiphertext = AES-GCM-Encrypt(MasterKey, wrapIv, rawFileKeyBytes)
+  ```
+- **Tamper-Proof Integrity**: A deterministic SHA-256 hash of the ciphertext is computed and stored in metadata:
+  ```text
+  sha256Hash = SHA-256(ciphertext)
+  ```
+- **Zero-Knowledge Guarantee**: Only `wrappedKeyCiphertext` and `wrapIv` are attached to IPFS metadata. Pinata, IPFS nodes, and network observers **never see or hold the raw decryption key**.
 
-### 4. Zero-Knowledge Decryption & Key Unwrapping
-When viewing or downloading a file on any device:
-1. Ciphertext is fetched from IndexedDB cache or streamed from the decentralized IPFS gateway.
-2. If opening on a new device, the browser unwraps the key in memory:
-```text
-DEK_raw_bytes = AES-GCM-Decrypt(MasterKey, wrap_iv_96, wrappedKeyCiphertext)
-```
-3. Decryption of the file payload occurs strictly in-memory into an ephemeral `Blob` and `Object URL`.
-4. Plaintext is released as a download or rendered in an isolated browser preview modal, leaving zero residual plaintext or unencrypted keys on any server.
+### Stage 4: Decentralized IPFS Storage
+- **CIDv1 Addressing**: The encrypted ciphertext is pinned directly to IPFS, generating a unique content-addressed hash (e.g. `bafkrei...`).
+- **Pinata v3 Files API**: Uploaded with `network: "public"`, ensuring files are globally distributed across IPFS gateway nodes.
 
----
-
-## Core Features
-
-### Envelope Encryption & Key Wrapping
-- True Zero-Knowledge security: Raw AES-256 file keys never leave browser memory.
-- Master Key derived from Web3 wallet signatures via **PBKDF2 (120,000 rounds)**.
-- Pinata cloud only receives double-encrypted ciphertext keys (`wrappedKeyHex`).
-
-### Multi-File Batch Upload (Up to 10 Files)
-- Batch upload queue supporting photos, videos, documents, PDFs, and binary archives simultaneously.
-- Real-time `XMLHttpRequest` byte tracking with active transfer speed (`MB/s` or `KB/s`) and dynamic completion ETA (`~12s left`).
-- Gradient progress visualization with per-file status logs.
-
-### Multi-Select Bulk Vault Deletion
-- Checkbox-based multi-select mode with **Select All** / **Deselect All** capabilities.
-- Atomic unpinning from Pinata IPFS Cloud (`DELETE /pinning/unpin/{cid}`) combined with local blacklist synchronization to prevent re-discovery during cross-device auto-sync.
-
-### Cross-Device Cloud Auto-Sync
-- Wallet-bound file indexing via Pinata IPFS metadata keyvalues (`owner`, `name`, `mime`, `size`, `key`, `iv`, `kiv`, `wrp`, `sha`).
-- Automatic vault reconstruction and in-memory key unwrapping on wallet connection across multiple devices.
-
-### In-Memory Decryption & Media Preview
-- Seamless browser preview for images, media, and text documents without writing unencrypted bytes to disk.
-- Clean linear shimmer wave skeleton placeholder during image and asset loading with automatic `localStorage` caching.
-
-### High-Fidelity UI / UX
-- Mobile-optimized navbar with compact wallet pill (`0xf0...5b0c`) and native deep-links for mobile MetaMask and Coinbase Wallet apps.
-- Hardware-accelerated smooth scrolling via **Lenis**.
-- Dynamic reactive tab title updates reflecting real-time upload progress, decryption status, and vault counts.
+### Stage 5: Base Sepolia Blockchain Anchoring & 1-Signature Decryption
+- **Smart Contract Verification**: The file's CID and SHA-256 integrity hash can be immutably recorded on the `DeStorageRegistry` smart contract on Base Sepolia.
+- **Session Decryption**: On any device, **only 1 signature** is required per session to derive the Master Key. All vault items automatically decrypt in RAM upon request.
 
 ---
 
-## Decentralized Storage & Sync Protocol
+## Security Comparison: DeStorage vs Centralized Cloud
+
+| Security Feature | DeStorage Vault | Google Drive / Photos | Dropbox / Apple iCloud |
+| :--- | :--- | :--- | :--- |
+| **Encryption Layer** | **Client-Side AES-256-GCM** (On-Device) | Server-Side (Company holds keys) | Server-Side (Company holds keys) |
+| **Master Key Custody** | **Non-Custodial** (Web3 Wallet Signature) | Custodial (Google account passwords) | Custodial (Apple/Dropbox servers) |
+| **AI Data Scanning / Scraping** | **Mathematically Impossible** (0 Plaintext Bytes) | Yes (Scanned for AI training & ads) | Yes (Scanned for content indexing) |
+| **File Integrity & Tampering** | **SHA-256 + IPFS CIDv1 + Blockchain** | Mutable Central Database | Mutable Central Database |
+| **Censorship & Account Lockout** | **0% Risk** (Decentralized P2P Network) | High (Suspension locks all files) | High (Suspension locks all files) |
+| **Server Plaintext Exposure** | **0 KB** (Zero-Knowledge Architecture) | 100% of files stored in plaintext | 100% of files stored in plaintext |
+
+---
+
+## Decentralized Storage & Pinata Protocol
 
 DeStorage utilizes a dual-layer caching and pinning strategy:
 
 1. **Persistent Binary Storage (IndexedDB)**:
    - Encrypted ArrayBuffers are cached in client IndexedDB (`destorage_ipfs_db / encrypted_payloads`).
-   - Enables instantaneous offline file decryption and preview without redundant network gateway requests.
+   - Enables instantaneous offline file decryption and preview without redundant network requests.
 
-2. **Decentralized Distribution (IPFS Pinning Network)**:
-   - Ciphertext payloads are pinned to IPFS nodes using Pinata REST APIs.
-   - Pinned objects carry sovereign metadata keyvalues (scoped within the 10-key limit) mapped to the connected wallet address:
-     - `app`: `DeStorage`
-     - `owner`: `<wallet_address_lowercase>`
-     - `name`: `<encoded_filename>`
-     - `mime`: `<mime_type>`
-     - `size`: `<original_size_bytes>`
-     - `key`: `<wrapped_key_ciphertext_hex>` (Double-encrypted, NEVER plaintext)
-     - `iv`: `<file_initialization_vector_hex>`
-     - `kiv`: `<key_wrapping_initialization_vector_hex>`
-     - `wrp`: `1` (indicates wrapped key protocol)
-     - `sha`: `<sha256_checksum>`
+2. **Decentralized IPFS Metadata Specification**:
+   - Pinned objects carry sovereign metadata keyvalues strictly limited to **<= 9 keys** to comply with Pinata's strict 10-key limit:
+     ```json
+     {
+       "app": "DeStorage",
+       "owner": "0xf026b53867f21b1f9c416b263b4995624e6c5b0c",
+       "name": "financial_report.pdf",
+       "mime": "application/pdf",
+       "size": "1048576",
+       "key": "4a7f28... (wrapped key ciphertext hex)",
+       "iv": "3c8a91... (file IV hex)",
+       "kiv": "9f182c... (key wrap IV hex)",
+       "sha": "e3b0c4... (SHA-256 checksum)"
+     }
+     ```
 
 3. **CORS-Compliant Gateway Fallback Chain**:
    - Primary: Dedicated custom IPFS gateway (`REACT_APP_PINATA_GATEWAY`).
@@ -196,49 +202,55 @@ DeStorage utilizes a dual-layer caching and pinning strategy:
 
 ## System Data Flows
 
-### File Upload Flow
-
+### Upload & Key Wrapping Pipeline
 ```text
-[ User Selects Files ]
-       |
-       v
-[ SubtleCrypto: AES-256-GCM Encryption ]
-       |
-       v
-[ XHR Stream to IPFS Endpoint with Live onprogress ]
-       |
-       +---> Emits (loaded / total) -> UI Progress Bar, Speed (MB/s), ETA (s)
-       |
-       v
-[ IPFS Node Returns CIDv1 (bafy...) ]
-       |
-       +---> Cache Ciphertext to Local IndexedDB
-       +---> Persist Metadata to localStorage (`destorage_vault_files_{address}`)
-       `---> Update Vault Dashboard State
+[ User Selects File ]
+       │
+       ▼
+[ Web Crypto API: Generate DEK (256-bit) + IV (96-bit) ]
+       │
+       ▼
+[ AES-256-GCM In-Place Binary Encryption ] ──► [ Compute SHA-256 Checksum ]
+       │
+       ▼
+[ PBKDF2 Master Key Wraps DEK with Wrap IV (kiv) ]
+       │
+       ▼
+[ XHR Stream to Pinata IPFS (uploads.pinata.cloud/v3/files) ]
+       │
+       ├─► Live onprogress Tracking (MB/s speed & dynamic ETA)
+       │
+       ▼
+[ IPFS Node Returns CIDv1 (bafkrei...) ]
+       │
+       ├─► Cache Ciphertext to Local IndexedDB
+       ├─► Update Local Vault State & Session Metadata
+       └─► Anchor to Base Sepolia Smart Contract
 ```
 
-### File Retrieval & Decryption Flow
-
+### Retrieval & In-Memory Decryption Pipeline
 ```text
 [ User Requests Preview / Download ]
-       |
-       v
+       │
+       ▼
 [ Check IndexedDB Binary Cache ]
-       |-- Found ------> Read Encrypted ArrayBuffer from Memory
-       `-- Not Found --> Stream Ciphertext from IPFS Gateway (No Auth Header)
-                                |
-                                v
-                [ SubtleCrypto: AES-256-GCM Decrypt ]
-                                |
-                                v
-                [ Verify SHA-256 Checksum against Metadata ]
-                                |
-                                v
-                [ Generate Ephemeral In-Memory Blob URL ]
-                                |
-                +---------------+---------------+
-                |                               |
-                v                               v
+       ├── Found ──────► Read Encrypted ArrayBuffer from Memory
+       └── Not Found ──► Stream Ciphertext from IPFS Gateway
+                                │
+                                ▼
+               [ Unwrap File Key via Master Key (kiv) ]
+                                │
+                                ▼
+               [ SubtleCrypto: AES-256-GCM Decrypt ]
+                                │
+                                ▼
+               [ Verify SHA-256 Checksum against Metadata ]
+                                │
+                                ▼
+               [ Generate Ephemeral In-Memory Blob URL ]
+                                │
+                ┌───────────────┴───────────────┐
+                ▼                               ▼
        [ In-Browser Preview ]          [ Save to Device Stream ]
 ```
 
@@ -248,14 +260,14 @@ DeStorage utilizes a dual-layer caching and pinning strategy:
 
 | Domain | Technology / Library | Purpose |
 | :--- | :--- | :--- |
-| **Frontend Framework** | React 19.2, TypeScript 5.9 | Reactive UI, strict type validation |
+| **Frontend Framework** | React 19.2, TypeScript 5.9 | Reactive UI, strict type safety |
 | **Build & Tooling** | CRACO, Webpack 5, Babel | Production bundling, polyfill handling |
 | **Cryptography** | Web Crypto API (`window.crypto.subtle`) | Client-side AES-256-GCM, PBKDF2, SHA-256 |
-| **Web3 & Blockchain** | Ethers.js v6, Base EVM | Wallet connection (MetaMask, Coinbase Wallet) |
-| **Storage & Pinning** | IPFS, Pinata Cloud SDK & APIs | Decentralized content addressing & cloud persistence |
-| **Local Storage** | IndexedDB API, Web Storage API | Persistent binary caching & blacklist registries |
-| **Smooth Scroll** | Lenis Scroll Engine | Momentum-based physics scrolling |
-| **Iconography** | Iconify React (`iconamoon`), Lucide React | Modular SVG vector rendering |
+| **Web3 & Blockchain** | Ethers.js v6, Base Sepolia EVM | Non-custodial wallet connection & smart contracts |
+| **Decentralized Storage** | IPFS, Pinata v3 Files API & v2 Pinning | Content-addressed storage & global gateway pinning |
+| **Local Persistence** | IndexedDB API, Web Storage API | Binary ciphertext cache & offline fallback |
+| **Smooth Scrolling** | Lenis Scroll Engine | Momentum-based physics scrolling |
+| **Iconography** | Iconify React, Lucide React | Modular SVG vector rendering |
 | **Testing** | Jest, React Testing Library, ts-node | Automated cryptographic & utility test suites |
 
 ---
@@ -265,38 +277,42 @@ DeStorage utilizes a dual-layer caching and pinning strategy:
 ```text
 destorage/
 ├── config/                 # CRACO & Webpack build configurations
-├── crypto/                 # Cryptographic engines & cross-device sync services
+├── contracts/              # Solidity smart contracts for Base Sepolia
+│   └── DeStorageRegistry.sol # Immutable CID & ownership proof registry
+├── crypto/                 # Cryptographic engines & envelope key wrappers
 │   ├── encryptionEngine.ts # AES-256-GCM, PBKDF2, SHA-256, hex serializers
+│   ├── envelopeEncryption.ts # Master key derivation & key wrapping logic
 │   └── vaultSyncService.ts # Sync protocol & wallet-scoped state persistence
+├── hover/                  # Universal interactive hover physics & button rules
+│   └── universalhover.css
 ├── ipfs/                   # Decentralized storage client & gateway fallbacks
-│   └── ipfsService.ts      # Pinata XHR upload, unpin API, IndexedDB cache
-├── landingpage/            # Hero section, feature matrices, architecture visualizer
+│   └── ipfsService.ts      # Pinata v3/v2 XHR upload, unpin API, IndexedDB cache
+├── landingpage/            # Hero section, 5-stage graph tree, feature matrices
 │   ├── LandingPage.tsx
 │   └── LandingPage.css
 ├── public/                 # Favicons, Web App Manifest, static assets
 │   ├── apple-touch-icon.png
-│   ├── favicon.ico         # Multi-size Windows ICO (16x16, 32x32, 48x48, 64x64)
+│   ├── favicon.ico
 │   ├── favicon-16x16.png
 │   ├── favicon-32x32.png
-│   ├── index.html          # SEO tags, theme-color, OpenGraph metadata
+│   ├── index.html
 │   ├── logo192.png
 │   ├── logo512.png
-│   └── manifest.json       # PWA specification
+│   └── manifest.json
 ├── src/                    # Application root & integration tests
 │   ├── App.tsx             # Lenis scroll setup, dynamic routing & title engine
-│   ├── App.css             # Global viewport styles & smooth transitions
-│   ├── crypto.test.ts      # Automated Jest suite for crypto engine
+│   ├── App.css
+│   ├── crypto.test.ts      # Automated Jest suite for crypto engine (8/8 pass)
+│   ├── index.css           # Root CSS custom variables & typography
 │   ├── index.js            # React DOM entrypoint
-│   └── react-app-env.d.ts  # Global TypeScript module declarations
+│   └── react-app-env.d.ts
 ├── types/                  # Shared enterprise TypeScript interface definitions
 │   └── index.ts            # VaultFileItem, EncryptedPayload, IpfsResult
 ├── utils/                  # Formatters, address truncators, CID parsers
 │   └── formatters.ts
-├── vault/                  # Main Vault Dashboard & UI subsystems
-│   ├── VaultDashboard.tsx  # Upload dropzone, file explorer, modal controllers
-│   └── VaultDashboard.css  # Futuristic radar styling, selection physics
-├── package.json
-└── tsconfig.json
+└── vault/                  # Main Vault Dashboard & UI subsystems
+    ├── VaultDashboard.tsx  # Upload dropzone, file explorer, modal controllers
+    └── VaultDashboard.css  # Futuristic radar styling, selection physics
 ```
 
 ---
@@ -306,17 +322,17 @@ destorage/
 Create a `.env` file in the root directory:
 
 ```env
-# Pinata IPFS Cloud API Authentication
+# Pinata IPFS Cloud API Authentication (Stored securely, never rendered in client UI)
 REACT_APP_PINATA_JWT=your_pinata_jwt_token_here
+REACT_APP_PINATA_API_KEY=your_pinata_api_key
+REACT_APP_PINATA_SECRET_API_KEY=your_pinata_secret_key
 
 # Dedicated IPFS Gateway (without trailing slash)
-REACT_APP_PINATA_GATEWAY=https://your-custom-gateway.mypinata.cloud
+REACT_APP_PINATA_GATEWAY=gateway.pinata.cloud
 
-# Optional: Base EVM RPC Configuration
-REACT_APP_BASE_RPC_URL=https://sepolia.base.org
+# Base Sepolia Ethereum L2 RPC Configuration
+REACT_APP_BASE_SEPOLIA_RPC=https://sepolia.base.org
 ```
-
-> **Note:** If no Pinata JWT is configured, DeStorage automatically falls back to local IndexedDB content-addressed storage for offline development.
 
 ---
 
@@ -349,27 +365,25 @@ Generates an optimized static bundle in the `build/` directory ready for deploym
 
 ## Testing & Quality Assurance
 
-Run the automated cryptographic and unit test suite:
-
+Run the automated cryptographic test suite:
 ```bash
-npm test -- --watchAll=false
+CI=true npm test
 ```
 
 Run static type checking across the entire TypeScript codebase:
-
 ```bash
 npx tsc --noEmit
 ```
 
 ---
 
-## Security Model
+## Security Guarantees & Verification
 
-1. **Envelope Encryption & Key Isolation**: Raw AES-256 decryption keys never leave browser memory. Before cloud pinning, every file key is encrypted (wrapped) with a Master Key derived from the user's wallet signature via PBKDF2 (120,000 rounds). Pinata, IPFS nodes, and network observers possess zero plaintext keys.
-2. **Client Isolation**: All plaintext data is discarded from JavaScript execution context once encrypted. Plaintext is never saved to `localStorage` or transmitted across the wire.
-3. **Deterministic Cryptographic Verification**: Every downloaded ciphertext is verified against its pre-encryption SHA-256 hash prior to presenting the decrypted payload.
-4. **No Private Key Custody**: DeStorage never manages, requests, or stores wallet private keys. Signatures are delegated exclusively to standard EIP-1193 wallet providers.
-5. **CORS Sanitization**: IPFS gateway requests for ciphertext omit authorization headers to prevent cross-origin preflight leaks.
+1. **Zero Server Knowledge**: Encryption keys are derived client-side in volatile memory via PBKDF2 (120,000 iterations). Servers and network observers receive only ciphertext.
+2. **Envelope Security**: Raw AES-256 keys never touch storage nodes. Every file key is double-encrypted with your wallet's Master Key before upload.
+3. **Deterministic Verification**: Ciphertext integrity is verified against pre-encryption SHA-256 checksums prior to RAM decryption.
+4. **Non-Custodial Architecture**: Private keys and seed phrases never leave your wallet.
+5. **Memory Sanitization**: Plaintext buffers and Master Keys reside in volatile JavaScript memory and are purged upon session termination or tab closure.
 
 ---
 
