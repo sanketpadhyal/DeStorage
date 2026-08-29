@@ -20,14 +20,15 @@
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(11, 36, 71, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(11, 36, 71, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 999990;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.75s cubic-bezier(0.19, 1, 0.22, 1), visibility 0.75s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
+  will-change: opacity, visibility;
 }
 
 .lp-mobile-backdrop.open {
@@ -127,20 +128,17 @@ section {
   border-bottom: none !important;
   z-index: 999999 !important;
   box-shadow: none !important;
-  transition: background-color 0.75s cubic-bezier(0.19, 1, 0.22, 1), 
-              border-radius 0.75s cubic-bezier(0.19, 1, 0.22, 1), 
-              box-shadow 0.75s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: background-color 0.25s ease, 
+              border-radius 0.25s ease, 
+              box-shadow 0.25s ease;
 }
 
 .lp-navbar.menu-open {
-  background: rgba(229, 243, 249, 0.88) !important;
-  backdrop-filter: blur(32px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
-  border-bottom: none !important;
+  background: rgba(229, 243, 249, 0.94) !important;
   border-bottom-left-radius: 28px !important;
   border-bottom-right-radius: 28px !important;
   overflow: hidden !important;
-  box-shadow: 0 24px 48px -10px rgba(11, 36, 71, 0.18) !important;
+  box-shadow: 0 20px 48px -10px rgba(11, 36, 71, 0.18) !important;
 }
 
 .lp-nav-inner {
@@ -228,43 +226,41 @@ section {
   background: rgba(2, 132, 199, 0.1);
 }
 
-/* ANIMATED MOBILE DROPDOWN PANEL - BUTTERY LIQUID SMOOTH MOTION */
+/* ANIMATED MOBILE DROPDOWN PANEL - HYPER SMOOTH 60/120 FPS */
 .lp-mobile-panel {
-  display: block;
-  max-height: 0;
-  height: 0;
+  display: grid;
+  grid-template-rows: 0fr;
   overflow: hidden;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-16px);
+  transform: translateY(-8px);
   transition: 
-    max-height 0.85s cubic-bezier(0.19, 1, 0.22, 1), 
-    height 0.85s cubic-bezier(0.19, 1, 0.22, 1), 
-    opacity 0.65s cubic-bezier(0.19, 1, 0.22, 1), 
-    transform 0.85s cubic-bezier(0.19, 1, 0.22, 1),
-    visibility 0.85s cubic-bezier(0.19, 1, 0.22, 1);
+    grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
+    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   background: transparent !important;
   border: none !important;
   border-bottom-left-radius: 28px !important;
   border-bottom-right-radius: 28px !important;
-  will-change: max-height, opacity, transform;
+  will-change: grid-template-rows, opacity, transform;
 }
 
 .lp-mobile-panel.open {
-  max-height: calc(100dvh - 76px);
-  height: auto;
+  grid-template-rows: 1fr;
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+  max-height: calc(100dvh - 76px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 .lp-mobile-panel-inner {
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  min-height: auto;
-  padding: 14px 20px 38px;
+  padding: 10px 20px 32px;
 }
 
 .lp-mobile-nav-group {
