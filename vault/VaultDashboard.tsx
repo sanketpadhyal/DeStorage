@@ -11,7 +11,7 @@ import {
 import { uploadToIpfs, IpfsUploadResult } from '../ipfs/ipfsService';
 import { formatFileSize, truncateCid } from '../utils/formatters';
 import { VaultFileItem } from '../types';
-import { Wallet, Zap, Key, Lock, ShieldCheck, RefreshCw, Folder, FolderUp } from 'lucide-react';
+import { Wallet, Zap, Key, Lock, ShieldCheck, RefreshCw, Folder, FolderUp, ChevronRight, ArrowLeft } from 'lucide-react';
 
 interface VaultDashboardProps {
   onBackToHome: () => void;
@@ -99,6 +99,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   const [copiedCid, setCopiedCid] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [isSelecting, setIsSelecting] = useState<boolean>(false);
+  const [currentFolder, setCurrentFolder] = useState<string | null>(null);
 
   // Preview Modal State with Permission, Live Checking, Green Tick and Decryption States
   const [previewItem, setPreviewItem] = useState<{
@@ -916,6 +917,77 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     });
   }, [files, searchQuery, selectedFilter]);
 
+  // Group files into Folders and Standalone Root Files in O(n)
+  const { folderGroups, rootFiles, currentFolderFiles, totalFolderCount } = useMemo(() => {
+    const folderMap = new Map<string, VaultFileItem[]>();
+    const root: VaultFileItem[] = [];
+
+    for (const file of filteredFiles) {
+      if (file.name.includes('/')) {
+        const folderName = file.name.split('/')[0];
+        if (!folderMap.has(folderName)) {
+          folderMap.set(folderName, []);
+        }
+        folderMap.get(folderName)!.push(file);
+      } else {
+        root.push(file);
+      }
+    }
+
+    const folders: Array<{
+      name: string;
+      files: VaultFileItem[];
+      totalSize: number;
+      latestTimestamp: number;
+    }> = [];
+
+    folderMap.forEach((fList, name) => {
+      const totalSize = fList.reduce((sum, f) => sum + (f.size || 0), 0);
+      const latestTimestamp = fList.reduce((max, f) => Math.max(max, f.timestamp || 0), 0);
+      folders.push({
+        name,
+        files: fList,
+        totalSize,
+        latestTimestamp,
+      });
+    });
+
+    folders.sort((a, b) => b.latestTimestamp - a.latestTimestamp);
+
+    const currFiles = currentFolder ? (folderMap.get(currentFolder) || []) : [];
+
+    return {
+      folderGroups: folders,
+      rootFiles: root,
+      currentFolderFiles: currFiles,
+      totalFolderCount: folders.length,
+    };
+  }, [filteredFiles, currentFolder]);
+
+  // Handle Deleting an entire folder and all contained files
+  const handleDeleteFolder = async (folderName: string, folderFiles: VaultFileItem[], e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!window.confirm(`Are you sure you want to remove the entire folder "${folderName}" (${folderFiles.length} files)?`)) {
+      return;
+    }
+
+    const idsToDelete = new Set(folderFiles.map(f => f.id));
+    const cidsToDelete = new Set(folderFiles.map(f => f.ipfsCid));
+
+    setFiles(prev => prev.filter(f => !idsToDelete.has(f.id)));
+
+    if (currentFolder === folderName) {
+      setCurrentFolder(null);
+    }
+
+    try {
+      const { unpinFromIpfs } = await import('../ipfs/ipfsService');
+      folderFiles.forEach(f => {
+        unpinFromIpfs(f.ipfsCid).catch(() => {});
+      });
+    } catch (err) {}
+  };
+
   const totalStorageBytes = useMemo(() => {
     return files.reduce((acc, curr) => acc + (curr.size || 0), 0);
   }, [files]);
@@ -1146,8 +1218,24 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
           <div className="vd-files-section">
             <div className="vd-files-header">
               <div className="vd-files-title-row">
-                <h3 className="vd-section-title">Encrypted Vault Storage</h3>
-                <span className="vd-files-count">{filteredFiles.length} files</span>
+                <h3 className="vd-section-title">
+                  {currentFolder ? (
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                      <Folder size={20} color="#0284c7" />
+                      <span>{currentFolder}</span>
+                    </span>
+                  ) : (
+                    'Encrypted Vault Storage'
+                  )}
+                </h3>
+                <span className="vd-files-count">
+                  {currentFolder ? `${currentFolderFiles.length} files` : `${filteredFiles.length} files`}
+                </span>
+                {!currentFolder && totalFolderCount > 0 && (
+                  <span className="vd-folder-total-badge">
+                    {totalFolderCount} {totalFolderCount === 1 ? 'folder' : 'folders'}
+                  </span>
+                )}
                 {filteredFiles.length > 0 && (
                   <button
                     type="button"
@@ -1174,10 +1262,19 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                   <button 
                     type="button" 
                     className={`vd-filter-btn ${selectedFilter === 'all' ? 'active' : ''}`}
-                    onClick={() => setSelectedFilter('all')}
+                    onClick={() => { setSelectedFilter('all'); }}
                   >
                     All
                   </button>
+                  {totalFolderCount > 0 && !currentFolder && (
+                    <button 
+                      type="button" 
+                      className={`vd-filter-btn ${selectedFilter === 'folders' ? 'active' : ''}`}
+                      onClick={() => setSelectedFilter('folders')}
+                    >
+                      Folders ({totalFolderCount})
+                    </button>
+                  )}
                   <button 
                     type="button" 
                     className={`vd-filter-btn ${selectedFilter === 'photos' ? 'active' : ''}`}
@@ -1202,6 +1299,46 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 </div>
               </div>
             </div>
+
+            {/* FOLDER BREADCRUMB NAVIGATION (INSIDE FOLDER VIEW) */}
+            {currentFolder && (
+              <div className="vd-folder-breadcrumb-bar">
+                <div className="vd-breadcrumb-left">
+                  <button 
+                    type="button" 
+                    className="vd-breadcrumb-back-btn" 
+                    onClick={() => setCurrentFolder(null)}
+                    title="Back to All Vault Files"
+                  >
+                    <ArrowLeft size={16} />
+                    <span>All Files</span>
+                  </button>
+                  <span className="vd-breadcrumb-sep">/</span>
+                  <div className="vd-breadcrumb-current-folder">
+                    <Folder size={18} color="#0284c7" />
+                    <span className="vd-breadcrumb-folder-name" title={currentFolder}>{currentFolder}</span>
+                  </div>
+                </div>
+
+                <div className="vd-breadcrumb-right">
+                  <span className="vd-folder-stat-pill">
+                    {currentFolderFiles.length} {currentFolderFiles.length === 1 ? 'file' : 'files'}
+                  </span>
+                  <span className="vd-folder-stat-pill">
+                    {formatFileSize(currentFolderFiles.reduce((acc, f) => acc + (f.size || 0), 0))}
+                  </span>
+                  <button 
+                    type="button" 
+                    className="vd-folder-delete-action-btn"
+                    onClick={(e) => handleDeleteFolder(currentFolder, currentFolderFiles, e)}
+                    title="Delete Entire Folder"
+                  >
+                    <Icon icon="iconamoon:trash-bold" width={15} height={15} />
+                    <span>Delete Folder</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* FILES LIST & SKELETON LOADING */}
             {isFetchingCloudFiles && files.length === 0 ? (
@@ -1243,7 +1380,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 <p>
                   {!isConnected 
                     ? 'Connect your Web3 wallet (MetaMask / Coinbase) to unlock and decrypt your sovereign zero-knowledge files.'
-                    : 'Upload any file above to encrypt it with AES-256-GCM and pin to IPFS.'}
+                    : 'Upload any file or folder above to encrypt it with AES-256-GCM and pin to IPFS.'}
                 </p>
                 {!isConnected && (
                   <button 
@@ -1259,135 +1396,206 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               </div>
             ) : (
               <>
-                {/* BULK DELETE ACTION BAR */}
-                {isSelecting && (
-                  <div className="vd-bulk-bar">
-                    <div className="vd-bulk-bar-left">
-                      <button
-                        type="button"
-                        className="vd-bulk-select-all"
-                        onClick={() => {
-                          if (selectedIds.size === filteredFiles.length) {
-                            setSelectedIds(new Set());
-                          } else {
-                            setSelectedIds(new Set(filteredFiles.map(f => f.id)));
-                          }
-                        }}
-                      >
-                        {selectedIds.size === filteredFiles.length ? 'Deselect All' : 'Select All'}
-                      </button>
-                      <span className="vd-bulk-count">
-                        {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Tap cards to select'}
-                      </span>
+                {/* 1. ROOT VIEW: TOP-LEVEL FOLDERS */}
+                {!currentFolder && folderGroups.length > 0 && (selectedFilter === 'all' || selectedFilter === 'folders') && (
+                  <div className="vd-folders-section">
+                    <div className="vd-section-subhead">
+                      <Folder size={16} color="#0284c7" />
+                      <span>Folders ({folderGroups.length})</span>
                     </div>
-                    <button
-                      type="button"
-                      className="vd-bulk-delete-btn"
-                      disabled={selectedIds.size === 0}
-                      onClick={handleBulkDelete}
-                    >
-                      <Icon icon="iconamoon:trash-bold" width={15} height={15} />
-                      <span>Delete {selectedIds.size > 0 ? `(${selectedIds.size})` : ''}</span>
-                    </button>
+                    <div className="vd-folder-grid">
+                      {folderGroups.map((fg) => (
+                        <div 
+                          key={fg.name} 
+                          className="vd-folder-card"
+                          onClick={() => setCurrentFolder(fg.name)}
+                        >
+                          <div className="vd-folder-card-left">
+                            <div className="vd-folder-icon-box">
+                              <Folder size={24} color="#0284c7" />
+                            </div>
+                            <div className="vd-folder-card-info">
+                              <h4 className="vd-folder-card-title" title={fg.name}>{fg.name}</h4>
+                              <div className="vd-folder-card-meta">
+                                <span>{fg.files.length} {fg.files.length === 1 ? 'file' : 'files'}</span>
+                                <span>•</span>
+                                <span>{formatFileSize(fg.totalSize)}</span>
+                                <span>•</span>
+                                <span className="vd-file-lock-tag">
+                                  <Icon icon="iconamoon:lock-bold" width={12} height={12} /> AES-256-GCM
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="vd-folder-card-actions" onClick={(e) => e.stopPropagation()}>
+                            <button 
+                              type="button" 
+                              className="vd-folder-open-btn"
+                              onClick={() => setCurrentFolder(fg.name)}
+                              title={`Open Folder "${fg.name}"`}
+                            >
+                              <span>Open</span>
+                              <ChevronRight size={15} />
+                            </button>
+
+                            <button 
+                              type="button" 
+                              className="vd-action-btn vd-delete-btn"
+                              onClick={(e) => handleDeleteFolder(fg.name, fg.files, e)}
+                              title="Delete Folder & All Contained Files"
+                            >
+                              <Icon icon="iconamoon:trash-bold" width={15} height={15} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
-                <div className="vd-file-list">
-                  {filteredFiles.map((file) => (
-                    <div
-                      key={file.id}
-                      className={`vd-file-card ${isSelecting && selectedIds.has(file.id) ? 'vd-file-card-selected' : ''}`}
-                      onClick={isSelecting ? () => toggleSelectId(file.id) : undefined}
-                      style={isSelecting ? { cursor: 'pointer' } : undefined}
-                    >
-                      {isSelecting && (
-                        <div className="vd-file-checkbox">
-                          <div className={`vd-checkbox-circle ${selectedIds.has(file.id) ? 'checked' : ''}`}>
-                            {selectedIds.has(file.id) && (
-                              <Icon icon="iconamoon:check-bold" width={12} height={12} color="#ffffff" />
+                {/* 2. ROOT VIEW: STANDALONE FILES OR FOLDER DRILLDOWN FILES */}
+                {((currentFolder && currentFolderFiles.length > 0) || (!currentFolder && rootFiles.length > 0 && selectedFilter !== 'folders')) && (
+                  <div className="vd-files-list-wrapper">
+                    {!currentFolder && folderGroups.length > 0 && selectedFilter === 'all' && (
+                      <div className="vd-section-subhead" style={{ marginTop: '24px' }}>
+                        <Icon icon="iconamoon:file-document-bold" width={16} height={16} color="#0284c7" />
+                        <span>Files ({rootFiles.length})</span>
+                      </div>
+                    )}
+
+                    {/* BULK DELETE ACTION BAR */}
+                    {isSelecting && (
+                      <div className="vd-bulk-bar">
+                        <div className="vd-bulk-bar-left">
+                          <button
+                            type="button"
+                            className="vd-bulk-select-all"
+                            onClick={() => {
+                              const activeFiles = currentFolder ? currentFolderFiles : rootFiles;
+                              if (selectedIds.size === activeFiles.length) {
+                                setSelectedIds(new Set());
+                              } else {
+                                setSelectedIds(new Set(activeFiles.map(f => f.id)));
+                              }
+                            }}
+                          >
+                            {selectedIds.size === (currentFolder ? currentFolderFiles.length : rootFiles.length) ? 'Deselect All' : 'Select All'}
+                          </button>
+                          <span className="vd-bulk-count">
+                            {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Tap cards to select'}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          className="vd-bulk-delete-btn"
+                          disabled={selectedIds.size === 0}
+                          onClick={handleBulkDelete}
+                        >
+                          <Icon icon="iconamoon:trash-bold" width={15} height={15} />
+                          <span>Delete {selectedIds.size > 0 ? `(${selectedIds.size})` : ''}</span>
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="vd-file-list">
+                      {(currentFolder ? currentFolderFiles : rootFiles).map((file) => {
+                        const cleanName = currentFolder 
+                          ? (file.name.startsWith(currentFolder + '/') ? file.name.slice(currentFolder.length + 1) : file.name)
+                          : file.name;
+
+                        return (
+                          <div
+                            key={file.id}
+                            className={`vd-file-card ${isSelecting && selectedIds.has(file.id) ? 'vd-file-card-selected' : ''}`}
+                            onClick={isSelecting ? () => toggleSelectId(file.id) : undefined}
+                            style={isSelecting ? { cursor: 'pointer' } : undefined}
+                          >
+                            {isSelecting && (
+                              <div className="vd-file-checkbox">
+                                <div className={`vd-checkbox-circle ${selectedIds.has(file.id) ? 'checked' : ''}`}>
+                                  {selectedIds.has(file.id) && (
+                                    <Icon icon="iconamoon:check-bold" width={12} height={12} color="#ffffff" />
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="vd-file-left">
+                              <div className="vd-file-icon-box">
+                                {getFileIcon(file.mimeType)}
+                              </div>
+
+                              <div className="vd-file-details">
+                                <div className="vd-file-title-row">
+                                  <span className="vd-file-name" title={file.name}>
+                                    {cleanName}
+                                  </span>
+                                </div>
+                                <div className="vd-file-meta-row">
+                                  <span className="vd-file-size">{formatFileSize(file.size)}</span>
+                                  <span>•</span>
+                                  <span className="vd-file-lock-tag">
+                                    <Icon icon="iconamoon:lock-bold" width={13} height={13} /> AES-256-GCM
+                                  </span>
+                                  <span>•</span>
+                                  <span className="vd-file-date">
+                                    {new Date(file.timestamp).toLocaleDateString()}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="vd-file-center">
+                              <div className="vd-cid-chip" onClick={(e) => { e.stopPropagation(); copyToClipboard(file.ipfsCid, file.id); }}>
+                                <span className="vd-cid-label">IPFS CID:</span>
+                                <span className="vd-cid-val">{truncateCid(file.ipfsCid)}</span>
+                                {copiedCid === file.id ? (
+                                  <Icon icon="iconamoon:check-bold" width={14} height={14} color="#16a34a" />
+                                ) : (
+                                  <Icon icon="iconamoon:copy-bold" width={14} height={14} />
+                                )}
+                              </div>
+                            </div>
+
+                            {!isSelecting && (
+                              <div className="vd-file-actions">
+                                <button 
+                                  type="button" 
+                                  className="vd-action-btn vd-preview-btn" 
+                                  onClick={() => handlePreview(file)}
+                                  title="Decrypt & Preview in Browser"
+                                >
+                                  <Icon icon="iconamoon:eye-bold" width={15} height={15} />
+                                  <span>Preview</span>
+                                </button>
+
+                                <button 
+                                  type="button" 
+                                  className="vd-action-btn vd-download-btn" 
+                                  onClick={() => handleDecryptDownload(file)}
+                                  title="Decrypt & Download Plaintext"
+                                >
+                                  <Icon icon="iconamoon:cloud-download-bold" width={15} height={15} />
+                                  <span>Download</span>
+                                </button>
+
+                                <button 
+                                  type="button" 
+                                  className="vd-action-btn vd-delete-btn" 
+                                  onClick={() => handleDelete(file.id)}
+                                  title="Remove from Vault"
+                                >
+                                  <Icon icon="iconamoon:trash-bold" width={15} height={15} />
+                                </button>
+                              </div>
                             )}
                           </div>
-                        </div>
-                      )}
-
-                      <div className="vd-file-left">
-                        <div className="vd-file-icon-box">
-                          {getFileIcon(file.mimeType)}
-                        </div>
-
-                        <div className="vd-file-details">
-                          <div className="vd-file-title-row">
-                            {file.name.includes('/') && (
-                              <span className="vd-folder-tag" title={file.name.substring(0, file.name.lastIndexOf('/'))}>
-                                <Folder size={11} />
-                                <span>{file.name.substring(0, file.name.lastIndexOf('/'))}</span>
-                              </span>
-                            )}
-                            <span className="vd-file-name" title={file.name}>
-                              {file.name.includes('/') ? file.name.split('/').pop() : file.name}
-                            </span>
-                          </div>
-                          <div className="vd-file-meta-row">
-                            <span className="vd-file-size">{formatFileSize(file.size)}</span>
-                            <span>•</span>
-                            <span className="vd-file-lock-tag">
-                              <Icon icon="iconamoon:lock-bold" width={13} height={13} /> AES-256-GCM
-                            </span>
-                            <span>•</span>
-                            <span className="vd-file-date">
-                              {new Date(file.timestamp).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="vd-file-center">
-                        <div className="vd-cid-chip" onClick={(e) => { e.stopPropagation(); copyToClipboard(file.ipfsCid, file.id); }}>
-                          <span className="vd-cid-label">IPFS CID:</span>
-                          <span className="vd-cid-val">{truncateCid(file.ipfsCid)}</span>
-                          {copiedCid === file.id ? (
-                            <Icon icon="iconamoon:check-bold" width={14} height={14} color="#16a34a" />
-                          ) : (
-                            <Icon icon="iconamoon:copy-bold" width={14} height={14} />
-                          )}
-                        </div>
-                      </div>
-
-                      {!isSelecting && (
-                        <div className="vd-file-actions">
-                          <button 
-                            type="button" 
-                            className="vd-action-btn vd-preview-btn" 
-                            onClick={() => handlePreview(file)}
-                            title="Decrypt & Preview in Browser"
-                          >
-                            <Icon icon="iconamoon:eye-bold" width={15} height={15} />
-                            <span>Preview</span>
-                          </button>
-
-                          <button 
-                            type="button" 
-                            className="vd-action-btn vd-download-btn" 
-                            onClick={() => handleDecryptDownload(file)}
-                            title="Decrypt & Download Plaintext"
-                          >
-                            <Icon icon="iconamoon:cloud-download-bold" width={15} height={15} />
-                            <span>Download</span>
-                          </button>
-
-                          <button 
-                            type="button" 
-                            className="vd-action-btn vd-delete-btn" 
-                            onClick={() => handleDelete(file.id)}
-                            title="Remove from Vault"
-                          >
-                            <Icon icon="iconamoon:trash-bold" width={15} height={15} />
-                          </button>
-                        </div>
-                      )}
+                        );
+                      })}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </>
             )}
           </div>
