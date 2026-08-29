@@ -1130,6 +1130,43 @@
 }
 
 /* =========================================================
+   SMOOTH FOLDER OPENING, CLOSING & TAB SWITCHING ANIMATIONS
+   ========================================================= */
+
+@keyframes vdFolderViewEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.995);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes vdBreadcrumbEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vd-view-transition-wrap {
+  width: 100%;
+}
+
+.vd-folder-view-animate {
+  animation: vdFolderViewEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity, filter;
+}
+
+/* =========================================================
    FOLDER CARDS, GRID & BREADCRUMB NAVIGATION
    ========================================================= */
 
@@ -1170,6 +1207,8 @@
   margin-bottom: 16px;
   box-shadow: 0 2px 10px rgba(11, 36, 71, 0.04);
   flex-wrap: wrap;
+  animation: vdBreadcrumbEnter 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .vd-breadcrumb-left {
@@ -1305,15 +1344,21 @@
   padding: 16px 22px;
   cursor: pointer;
   box-shadow: 0 2px 10px rgba(11, 36, 71, 0.03);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   width: 100%;
   box-sizing: border-box;
+  position: relative;
 }
 
 .vd-folder-card:hover {
   border-color: rgba(2, 132, 199, 0.5);
-  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.1);
+  box-shadow: 0 6px 24px rgba(2, 132, 199, 0.12);
   background: #fbfdff;
+  transform: translateY(-2px);
+}
+
+.vd-folder-card:active {
+  transform: scale(0.99) translateY(0);
 }
 
 .vd-folder-card-left {
@@ -1336,6 +1381,13 @@
   justify-content: center;
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(2, 132, 199, 0.1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vd-folder-card:hover .vd-folder-icon-box {
+  transform: scale(1.08) rotate(-4deg);
+  background: linear-gradient(135deg, #bae6fd 0%, #7dd3fc 100%);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
 }
 
 .vd-folder-card-info {
@@ -1389,15 +1441,17 @@
   padding: 7px 16px;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
 }
 
-.vd-folder-open-btn:hover {
+.vd-folder-open-btn:hover,
+.vd-folder-card:hover .vd-folder-open-btn {
   background: #0284c7;
   color: #ffffff;
   border-color: #0284c7;
-  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 3px 12px rgba(2, 132, 199, 0.25);
+  transform: translateX(2px);
 }
 
 /* FILE ITEM CARD */

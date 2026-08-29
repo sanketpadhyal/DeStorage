@@ -1398,7 +1398,10 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 )}
               </div>
             ) : (
-              <>
+              <div 
+                key={currentFolder ? `folder-${currentFolder}` : `root-${selectedFilter}`} 
+                className="vd-view-transition-wrap vd-folder-view-animate"
+              >
                 {/* 1. ROOT VIEW: TOP-LEVEL FOLDERS */}
                 {!currentFolder && folderGroups.length > 0 && (selectedFilter === 'all' || selectedFilter === 'folders') && (
                   <div className="vd-folders-section">
@@ -1599,7 +1602,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             )}
           </div>
         </div>
