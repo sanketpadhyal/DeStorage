@@ -363,12 +363,6 @@
   box-shadow: 0 4px 16px rgba(244, 63, 94, 0.08);
   cursor: pointer;
   animation: vdFadeIn 0.3s ease;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.vd-pinata-alert-banner:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(244, 63, 94, 0.12);
 }
 
 .vd-pinata-alert-left {
@@ -389,12 +383,6 @@
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.2s ease;
-}
-
-.vd-btn-pinata-alert:hover {
-  background: #be123c;
-  transform: scale(1.04);
 }
 
 .vd-session-key {

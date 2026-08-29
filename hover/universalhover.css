@@ -35,18 +35,24 @@ a.btn,
   will-change: transform, box-shadow;
 }
 
-/* Explicit Zero Hover / Zero Transform for Wallet Modal Option Buttons */
+/* Explicit Zero Hover / Zero Transform for Wallet Modal Option Buttons & Pinata Alert */
 .vd-wallet-option-btn,
 .vd-wallet-option-btn:hover,
 .vd-wallet-option-btn:focus,
-.vd-wallet-option-btn:active {
+.vd-wallet-option-btn:active,
+.vd-btn-pinata-alert,
+.vd-btn-pinata-alert:hover,
+.vd-btn-pinata-alert:focus,
+.vd-btn-pinata-alert:active,
+.vd-pinata-alert-banner,
+.vd-pinata-alert-banner:hover {
   transform: none !important;
   filter: none !important;
   transition: none !important;
 }
 
 /* Centered Hover Scale Physics (Zero Up/Down Movement) */
-button:hover:not(:disabled):not(.vd-wallet-option-btn),
+button:hover:not(:disabled):not(.vd-wallet-option-btn):not(.vd-btn-pinata-alert),
 a.btn:hover,
 .lp-btn-cyan:hover,
 .lp-btn-black:hover,
