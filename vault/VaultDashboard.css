@@ -728,8 +728,17 @@
   outline: none;
 }
 
+.vd-upload-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
 .vd-btn-select-file {
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   color: #ffffff;
   border: none;
   border-radius: 9999px;
@@ -743,17 +752,48 @@
   gap: 8px;
   font-family: var(--font-sans);
   white-space: nowrap;
-  box-shadow: 0 4px 18px rgba(99, 102, 241, 0.38);
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.35);
   transition: all 0.2s ease;
 }
 
 .vd-btn-select-file:hover:not(:disabled) {
-  transform: scale(1.03);
-  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
-  opacity: 0.96;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(2, 132, 199, 0.45);
 }
 
 .vd-btn-select-file:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vd-btn-select-folder {
+  background: #ffffff;
+  color: #0b2447;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 9999px;
+  padding: 0 22px;
+  height: 46px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(11, 36, 71, 0.06);
+  transition: all 0.2s ease;
+}
+
+.vd-btn-select-folder:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: #0284c7;
+  color: #0284c7;
+  background: #f0f9ff;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.18);
+}
+
+.vd-btn-select-folder:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -1129,6 +1169,34 @@
   gap: 4px;
   text-align: left;
   min-width: 0;
+}
+
+.vd-file-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.vd-folder-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #0284c7;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  line-height: 1.2;
 }
 
 .vd-file-name {
@@ -2130,10 +2198,13 @@
   .vd-passphrase-row {
     flex-direction: column;
   }
-  .vd-passphrase-input-wrap {
+  .vd-upload-actions-row {
     width: 100%;
+    flex-direction: column;
+    gap: 10px;
   }
-  .vd-btn-select-file {
+  .vd-btn-select-file,
+  .vd-btn-select-folder {
     width: 100%;
     justify-content: center;
   }

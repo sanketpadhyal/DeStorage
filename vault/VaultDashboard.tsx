@@ -11,7 +11,7 @@ import {
 import { uploadToIpfs, IpfsUploadResult } from '../ipfs/ipfsService';
 import { formatFileSize, truncateCid } from '../utils/formatters';
 import { VaultFileItem } from '../types';
-import { Wallet, Zap, Key, Lock, ShieldCheck, RefreshCw } from 'lucide-react';
+import { Wallet, Zap, Key, Lock, ShieldCheck, RefreshCw, Folder, FolderUp } from 'lucide-react';
 
 interface VaultDashboardProps {
   onBackToHome: () => void;
@@ -236,6 +236,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
   // Guard: prevent persist effect from running with initial empty state and wiping localStorage
   const filesLoadedRef = useRef<boolean>(false);
 
@@ -402,37 +403,93 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     }
   }, [isConnected, address]);
 
-  // Handle Drag & Drop Upload
-  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
+  // Helper: Recursively extract files from Drag & Drop entries (including folders)
+  const extractFilesFromDataTransfer = async (dataTransfer: DataTransfer): Promise<File[]> => {
+    const files: File[] = [];
+
+    if (dataTransfer.items && dataTransfer.items.length > 0) {
+      const entries: any[] = [];
+      for (let i = 0; i < dataTransfer.items.length; i++) {
+        const item = dataTransfer.items[i];
+        if (item.kind === 'file') {
+          const entry = (item as any).webkitGetAsEntry ? (item as any).webkitGetAsEntry() : null;
+          if (entry) entries.push(entry);
+        }
+      }
+
+      if (entries.length > 0) {
+        const readEntry = async (entry: any, currentPath = ''): Promise<void> => {
+          if (entry.isFile) {
+            await new Promise<void>((resolve) => {
+              entry.file((file: File) => {
+                const fullPath = currentPath ? `${currentPath}/${file.name}` : file.name;
+                try {
+                  Object.defineProperty(file, 'webkitRelativePath', {
+                    value: fullPath,
+                    writable: true,
+                    configurable: true,
+                  });
+                } catch (e) {}
+                files.push(file);
+                resolve();
+              }, () => resolve());
+            });
+          } else if (entry.isDirectory) {
+            const dirReader = entry.createReader();
+            const readAllEntries = async (): Promise<any[]> => {
+              let allEntries: any[] = [];
+              let batch: any[] = [];
+              do {
+                batch = await new Promise<any[]>((resolve) => {
+                  dirReader.readEntries((res: any[]) => resolve(res || []), () => resolve([]));
+                });
+                allEntries = allEntries.concat(batch);
+              } while (batch.length > 0);
+              return allEntries;
+            };
+
+            const childEntries = await readAllEntries();
+            for (const child of childEntries) {
+              await readEntry(child, currentPath ? `${currentPath}/${entry.name}` : entry.name);
+            }
+          }
+        }
+
+        for (const entry of entries) {
+          await readEntry(entry);
+        }
+
+        if (files.length > 0) return files;
+      }
+    }
+
+    if (dataTransfer.files && dataTransfer.files.length > 0) {
+      return Array.from(dataTransfer.files);
+    }
+
+    return [];
+  };
+
+  // Upload a batch of files (from multi-file select, folder select, or drag & drop)
+  const uploadBatchFiles = async (allFiles: File[]) => {
     if (!isConnected || !address) {
       openWalletModal();
       return;
     }
-    let selectedFiles: FileList | null = null;
-    if ('dataTransfer' in e) {
-      e.preventDefault();
-      selectedFiles = e.dataTransfer.files;
-    } else if (e.target.files) {
-      selectedFiles = e.target.files;
+    if (allFiles.length === 0) return;
+
+    // Support up to 30 files at once in a folder / batch
+    const MAX_FILES = 30;
+    if (allFiles.length > MAX_FILES) {
+      alert(`Uploading the first ${MAX_FILES} files from your selection (${allFiles.length} total found).`);
     }
-
-    if (!selectedFiles || selectedFiles.length === 0) return;
-
-    const allFiles = Array.from(selectedFiles);
-
-    // Batch up to 10 files of any type
-    if (allFiles.length > 10) {
-      alert(`Only the first 10 files will be uploaded (${allFiles.length} selected).`);
-    }
-    const batch = allFiles.slice(0, 10);
+    const batch = allFiles.slice(0, MAX_FILES);
 
     if (batch.length === 1) {
-      // Single file — use normal flow
       await processFileUpload(batch[0]);
       return;
     }
 
-    // Multi-file batch
     setBatchTotal(batch.length);
     setBatchDone(0);
     setIsUploading(true);
@@ -450,6 +507,38 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     }, 1500);
   };
 
+  // Handle Drag & Drop Upload
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>) => {
+    if (!isConnected || !address) {
+      openWalletModal();
+      return;
+    }
+    let allFiles: File[] = [];
+
+    if ('dataTransfer' in e) {
+      e.preventDefault();
+      allFiles = await extractFilesFromDataTransfer(e.dataTransfer);
+    } else if (e.target.files) {
+      allFiles = Array.from(e.target.files);
+      e.target.value = '';
+    }
+
+    if (allFiles.length === 0) return;
+    await uploadBatchFiles(allFiles);
+  };
+
+  // Handle Folder Upload Selector
+  const handleFolderSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isConnected || !address) {
+      openWalletModal();
+      return;
+    }
+    if (!e.target.files || e.target.files.length === 0) return;
+    const allFiles = Array.from(e.target.files);
+    e.target.value = '';
+    await uploadBatchFiles(allFiles);
+  };
+
   const processFileUpload = async (file: File, isBatch = false) => {
     if (!isConnected || !address) {
       openWalletModal();
@@ -458,11 +547,13 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     try {
       if (!isBatch) setIsUploading(true);
 
+      const displayName = file.webkitRelativePath || file.name;
+
       // Step 1: Encrypt File locally in browser memory
       const encryptedData: EncryptedFilePayload = await encryptFile(
         file,
         customPassphrase,
-        (stage) => setUploadStage(isBatch ? `${file.name}: ${stage}` : stage)
+        (stage) => setUploadStage(isBatch ? `${displayName}: ${stage}` : stage)
       );
 
       // Step 1.5: Envelope Encryption: Wrap the File Key with the user's Master Key (if available)
@@ -482,8 +573,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       }
 
       // Step 2: Upload to decentralized IPFS with full sovereign cloud metadata
-      // Notice: if wrappedInfo exists, we send wrappedKeyHex and wrapIvHex to Pinata, NEVER raw key!
-      setUploadStage(isBatch ? `${file.name}: Pinning to IPFS...` : 'Pinning to IPFS...');
+      setUploadStage(isBatch ? `${displayName}: Pinning to IPFS...` : 'Pinning to IPFS...');
       setUploadedBytes(0);
       setTotalBytes(encryptedData.encryptedBuffer.byteLength);
       setUploadSpeed('');
@@ -491,7 +581,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       const uploadStartTime = Date.now();
       const ipfsResult: IpfsUploadResult = await uploadToIpfs(
         encryptedData.encryptedBuffer,
-        file.name,
+        displayName,
         {
           ownerAddress: address,
           originalSize: file.size,
@@ -525,7 +615,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       // Step 3: Register in Vault
       const newVaultItem: VaultFileItem = {
         id: `file_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
-        name: file.name,
+        name: displayName,
         size: file.size,
         mimeType: file.type || 'application/octet-stream',
         ipfsCid: ipfsResult.cid,
@@ -596,7 +686,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
       const downloadUrl = URL.createObjectURL(decryptedBlob);
       const a = document.createElement('a');
       a.href = downloadUrl;
-      a.download = item.name;
+      a.download = item.name.split('/').pop() || item.name;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -961,6 +1051,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               multiple
               onChange={handleFileSelect} 
             />
+            <input 
+              type="file" 
+              ref={folderInputRef} 
+              style={{ display: 'none' }} 
+              multiple
+              {...({ webkitdirectory: '', directory: '', mozdirectory: '' } as any)}
+              onChange={handleFolderSelect} 
+            />
 
             {isUploading ? (
               /* ── FULL-PANEL UPLOADING STATE ── */
@@ -1015,20 +1113,29 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 </div>
 
                 <div className="vd-upload-texts">
-                  <h3 className="vd-upload-title">Drag & drop to encrypt and store</h3>
+                  <h3 className="vd-upload-title">Drag & drop files or folders to encrypt</h3>
                   <p className="vd-upload-desc">
-                    Upload up to <strong>10 files at once</strong> — photos, videos, docs & more. AES-256-GCM encrypted locally before IPFS storage.
+                    Upload individual files or <strong>entire folders</strong>. Every file is AES-256-GCM encrypted locally in memory before IPFS storage.
                   </p>
                 </div>
 
-                <div className="vd-passphrase-row" style={{ justifyContent: 'center' }}>
+                <div className="vd-upload-actions-row">
                   <button 
                     type="button" 
                     className="vd-btn-select-file" 
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    <Icon icon="iconamoon:cloud-upload-bold" width={19} height={19} />
-                    <span>Select Files to Encrypt</span>
+                    <Icon icon="iconamoon:file-bold" width={18} height={18} />
+                    <span>Upload Files</span>
+                  </button>
+
+                  <button 
+                    type="button" 
+                    className="vd-btn-select-folder" 
+                    onClick={() => folderInputRef.current?.click()}
+                  >
+                    <FolderUp size={18} />
+                    <span>Upload Folder</span>
                   </button>
                 </div>
               </div>
@@ -1209,7 +1316,17 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                         </div>
 
                         <div className="vd-file-details">
-                          <span className="vd-file-name" title={file.name}>{file.name}</span>
+                          <div className="vd-file-title-row">
+                            {file.name.includes('/') && (
+                              <span className="vd-folder-tag" title={file.name.substring(0, file.name.lastIndexOf('/'))}>
+                                <Folder size={11} />
+                                <span>{file.name.substring(0, file.name.lastIndexOf('/'))}</span>
+                              </span>
+                            )}
+                            <span className="vd-file-name" title={file.name}>
+                              {file.name.includes('/') ? file.name.split('/').pop() : file.name}
+                            </span>
+                          </div>
                           <div className="vd-file-meta-row">
                             <span className="vd-file-size">{formatFileSize(file.size)}</span>
                             <span>•</span>
