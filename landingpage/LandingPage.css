@@ -507,7 +507,7 @@ section {
 /* 2. RICH HERO SECTION */
 .lp-hero-section {
   width: 100%;
-  padding: 48px 0 60px;
+  padding: 32px 0 20px;
 }
 
 .lp-hero-grid {
@@ -863,7 +863,7 @@ section {
 /* 4. FILE TYPES SUPPORTED SECTION */
 .lp-filetypes-section {
   width: 100%;
-  padding: 80px 0;
+  padding: 24px 0 60px;
   background: transparent;
 }
 
@@ -871,7 +871,7 @@ section {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  margin-top: 36px;
+  margin-top: 24px;
 }
 
 .lp-filetype-card {
