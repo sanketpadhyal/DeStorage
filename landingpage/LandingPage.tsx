@@ -457,7 +457,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <section id="filetypes" className="lp-filetypes-section">
           <div className="lp-container">
             <div className="lp-section-header lp-reveal lp-reveal-up">
-              <h2 className="lp-section-title">Built for any confidential file format</h2>
+              <h2 className="lp-section-title">Built for any confidential <span>file format</span></h2>
             </div>
 
             <div className="lp-filetypes-grid">
