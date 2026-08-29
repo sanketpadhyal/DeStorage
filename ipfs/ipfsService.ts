@@ -113,45 +113,36 @@ export async function uploadToIpfs(
     ''
   ).trim();
 
-  // If Pinata JWT is configured, upload to live IPFS network
   if (activeJwt.length > 0) {
+    const safeFileName = (fileName || 'file').replace(/[^a-zA-Z0-9._-]/g, '_');
+    const blob = new Blob([encryptedBuffer], { type: 'application/octet-stream' });
+
+    // --- 1. Pinata v3 Files API (shows files in Pinata web dashboard under Files -> Public) ---
     try {
-      const safeFileName = (fileName || 'file').replace(/[^a-zA-Z0-9._-]/g, '_');
-      const blob = new Blob([encryptedBuffer], { type: 'application/octet-stream' });
       const formData = new FormData();
       formData.append('file', blob, `${safeFileName}.encrypted`);
-
-      const keyvalues: Record<string, string> = {
-        app: 'DeStorage',
-      };
+      formData.append('name', `DeStorage_${safeFileName}_${Date.now()}`.slice(0, 150));
+      formData.append('network', 'public');
 
       if (metadataObj) {
-        keyvalues.owner = metadataObj.ownerAddress.toLowerCase();
-        keyvalues.name = encodeURIComponent(fileName).slice(0, 100);
-        keyvalues.mime = metadataObj.mimeType;
-        keyvalues.size = String(metadataObj.originalSize);
-        keyvalues.key = metadataObj.keyHex;
-        keyvalues.iv = metadataObj.ivHex;
-        keyvalues.sha = metadataObj.sha256Hash;
-        if (metadataObj.wrapIvHex) {
-          keyvalues.kiv = metadataObj.wrapIvHex;
-        }
-        if (metadataObj.isKeyWrapped) {
-          keyvalues.wrp = '1';
-        }
+        const keyvalues: Record<string, string> = {
+          app: 'DeStorage',
+          owner: metadataObj.ownerAddress.toLowerCase(),
+          name: encodeURIComponent(fileName).slice(0, 50),
+          mime: metadataObj.mimeType.slice(0, 50),
+          size: String(metadataObj.originalSize),
+          key: metadataObj.keyHex.slice(0, 200),
+          iv: metadataObj.ivHex,
+          sha: metadataObj.sha256Hash,
+        };
+        if (metadataObj.wrapIvHex) keyvalues.kiv = metadataObj.wrapIvHex;
+        if (metadataObj.isKeyWrapped) keyvalues.wrp = '1';
+        formData.append('keyvalues', JSON.stringify(keyvalues));
       }
 
-      const metadata = JSON.stringify({
-        name: `DeStorage_${safeFileName}_${Date.now()}`.slice(0, 150),
-        keyvalues,
-      });
-      formData.append('pinataMetadata', metadata);
-      formData.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
-
-      // Use XHR for real-time upload progress
       const result = await new Promise<IpfsUploadResult>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://api.pinata.cloud/pinning/pinFileToIPFS');
+        xhr.open('POST', 'https://uploads.pinata.cloud/v3/files');
         xhr.setRequestHeader('Authorization', `Bearer ${activeJwt}`);
 
         if (onProgress) {
@@ -164,7 +155,11 @@ export async function uploadToIpfs(
           if (xhr.status >= 200 && xhr.status < 300) {
             try {
               const data = JSON.parse(xhr.responseText);
-              const liveCid = data.IpfsHash;
+              const liveCid = data?.data?.cid || data?.IpfsHash;
+              if (!liveCid) {
+                reject(new Error('Pinata v3 response missing CID: ' + xhr.responseText));
+                return;
+              }
               Promise.all([
                 saveToPersistentCache(liveCid, encryptedBuffer),
                 saveToPersistentCache(fallbackCid, encryptedBuffer),
@@ -172,43 +167,103 @@ export async function uploadToIpfs(
                 resolve({
                   cid: liveCid,
                   gatewayUrl: `https://gateway.pinata.cloud/ipfs/${liveCid}`,
-                  sizeBytes: data.PinSize || encryptedBuffer.byteLength,
+                  sizeBytes: data?.data?.size || encryptedBuffer.byteLength,
                   isPinned: true,
                 });
               });
             } catch (e) {
-              reject(new Error('Failed to parse Pinata response'));
+              reject(new Error('Failed to parse Pinata v3 response: ' + xhr.responseText));
             }
           } else {
-            console.warn('Pinata responded with status:', xhr.status, xhr.responseText);
-            reject(new Error(`Pinata upload failed: ${xhr.status}`));
+            reject(new Error(`Pinata v3 upload failed (${xhr.status}): ${xhr.responseText}`));
           }
         };
 
-        xhr.onerror = () => reject(new Error('Network error during IPFS upload'));
+        xhr.onerror = () => reject(new Error('Network error during IPFS v3 upload'));
         xhr.send(formData);
       });
 
       return result;
-    } catch (err) {
-      console.warn('Live IPFS Pinning fell back to local content addressing:', err);
+    } catch (err: any) {
+      console.warn('[DeStorage] Pinata v3 upload failed, attempting v2 fallback:', err?.message || err);
+    }
+
+    // --- 2. Pinata v2 Pinning API fallback ---
+    try {
+      const formData = new FormData();
+      formData.append('file', blob, `${safeFileName}.encrypted`);
+
+      const keyvalues: Record<string, string> = { app: 'DeStorage' };
+      if (metadataObj) {
+        keyvalues.owner = metadataObj.ownerAddress.toLowerCase();
+        keyvalues.name = encodeURIComponent(fileName).slice(0, 100);
+        keyvalues.mime = metadataObj.mimeType;
+        keyvalues.size = String(metadataObj.originalSize);
+        keyvalues.key = metadataObj.keyHex;
+        keyvalues.iv = metadataObj.ivHex;
+        keyvalues.sha = metadataObj.sha256Hash;
+        if (metadataObj.wrapIvHex) keyvalues.kiv = metadataObj.wrapIvHex;
+        if (metadataObj.isKeyWrapped) keyvalues.wrp = '1';
+      }
+      formData.append('pinataMetadata', JSON.stringify({
+        name: `DeStorage_${safeFileName}_${Date.now()}`.slice(0, 150),
+        keyvalues,
+      }));
+      formData.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
+
+      const result = await new Promise<IpfsUploadResult>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://api.pinata.cloud/pinning/pinFileToIPFS');
+        xhr.setRequestHeader('Authorization', `Bearer ${activeJwt}`);
+        if (onProgress) {
+          xhr.upload.onprogress = (ev) => { if (ev.lengthComputable) onProgress(ev.loaded, ev.total); };
+        }
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              const liveCid = data.IpfsHash;
+              Promise.all([
+                saveToPersistentCache(liveCid, encryptedBuffer),
+                saveToPersistentCache(fallbackCid, encryptedBuffer),
+              ]).then(() => resolve({
+                cid: liveCid,
+                gatewayUrl: `https://gateway.pinata.cloud/ipfs/${liveCid}`,
+                sizeBytes: data.PinSize || encryptedBuffer.byteLength,
+                isPinned: true,
+              }));
+            } catch (e) {
+              reject(new Error('Failed to parse Pinata v2 response'));
+            }
+          } else {
+            reject(new Error(`Pinata v2 upload failed (${xhr.status}): ${xhr.responseText}`));
+          }
+        };
+        xhr.onerror = () => reject(new Error('Network error during IPFS v2 upload'));
+        xhr.send(formData);
+      });
+
+      return result;
+    } catch (err: any) {
+      console.error('[DeStorage] Both Pinata v3 and v2 upload failed:', err?.message || err);
+      throw new Error(`IPFS upload failed: ${err?.message || 'Check Pinata JWT and network'}`);
     }
   }
 
-  // Fallback to local persistent cache
+  // No JWT configured — save locally only
   await saveToPersistentCache(fallbackCid, encryptedBuffer);
-
+  console.warn('[DeStorage] No Pinata JWT configured — file saved locally only (will not persist across devices)');
   return {
     cid: fallbackCid,
     gatewayUrl: `https://ipfs.io/ipfs/${fallbackCid}`,
     sizeBytes: encryptedBuffer.byteLength,
-    isPinned: true,
+    isPinned: false,
   };
 }
 
 /**
  * Automatically recover all user files from Pinata IPFS Cloud by wallet address
- * Queries Pinata directly by owner wallet address using keyvalue metadata filters.
+ * Supports both Pinata v3 Files API and legacy v2 Pinning API.
  */
 export async function fetchWalletFilesFromPinata(
   walletAddress: string,
@@ -225,93 +280,129 @@ export async function fetchWalletFilesFromPinata(
   if (!activeJwt || !walletAddress) return [];
 
   const targetOwner = walletAddress.toLowerCase();
-  const recoveredFiles: any[] = [];
+  const rawFilesMap = new Map<string, any>();
 
+  // 1. Query Pinata v3 Files API (Public files)
   try {
-    // Query Pinata directly by owner + app keyvalues at API level
-    // NOTE: Raw brackets required — URLSearchParams would encode them as %5B%5D which Pinata ignores
-    const url = `https://api.pinata.cloud/data/pinList?status=pinned&pageLimit=1000` +
+    const v3Url = `https://api.pinata.cloud/v3/files/public?keyvalues[owner]=${encodeURIComponent(targetOwner)}`;
+    const v3Res = await fetch(v3Url, {
+      headers: { Authorization: `Bearer ${activeJwt}` },
+    });
+    if (v3Res.ok) {
+      const v3Data = await v3Res.json();
+      if (Array.isArray(v3Data?.data?.files)) {
+        for (const file of v3Data.data.files) {
+          if (file.cid && file.keyvalues) {
+            rawFilesMap.set(file.cid, {
+              id: file.id,
+              cid: file.cid,
+              size: file.size,
+              keyvalues: file.keyvalues,
+              name: file.name,
+              createdAt: file.created_at,
+            });
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[DeStorage] Pinata v3 list query failed:', err);
+  }
+
+  // 2. Query Pinata v2 Pinning API (Legacy pins fallback)
+  try {
+    const v2Url = `https://api.pinata.cloud/data/pinList?status=pinned&pageLimit=1000` +
       `&metadata[keyvalues][app][value]=DeStorage&metadata[keyvalues][app][op]=eq` +
       `&metadata[keyvalues][owner][value]=${encodeURIComponent(targetOwner)}&metadata[keyvalues][owner][op]=eq`;
 
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${activeJwt}`,
-      },
+    const v2Res = await fetch(v2Url, {
+      headers: { Authorization: `Bearer ${activeJwt}` },
     });
-
-    if (!res.ok) {
-      console.warn('[DeStorage] Pinata pinList query failed:', res.status, res.statusText);
-      return [];
-    }
-
-    const data = await res.json();
-    if (!data.rows || data.rows.length === 0) return [];
-
-    for (const row of data.rows) {
-      const kv = row.metadata?.keyvalues;
-      const keyVal = kv?.key || kv?.keyHex;
-      const ivVal = kv?.iv || kv?.ivHex;
-      const wrapIv = kv?.kiv;
-      const isWrapped = kv?.wrp === '1' || !!wrapIv;
-
-      if (kv && kv.app === 'DeStorage' && kv.owner === targetOwner && keyVal && ivVal) {
-        let originalName = 'Decrypted File';
-        const rawName = kv.name || kv.originalName;
-        try {
-          originalName = rawName ? decodeURIComponent(rawName) : (row.metadata?.name?.replace(/^DeStorage_/, '').replace(/_\d+$/, '') || 'Decrypted File');
-        } catch (e) {
-          originalName = rawName || 'Decrypted File';
-        }
-
-        let unwrappedKey = keyVal;
-        let unwrappedSuccessfully = !isWrapped;
-
-        if (isWrapped && wrapIv && masterKey) {
-          try {
-            unwrappedKey = await unwrapKeyWithMasterKey(keyVal, wrapIv, masterKey);
-            unwrappedSuccessfully = true;
-          } catch (e) {
-            console.warn('Could not unwrap key with master key:', e);
+    if (v2Res.ok) {
+      const v2Data = await v2Res.json();
+      if (Array.isArray(v2Data?.rows)) {
+        for (const row of v2Data.rows) {
+          const cid = row.ipfs_pin_hash;
+          if (cid && row.metadata?.keyvalues && !rawFilesMap.has(cid)) {
+            rawFilesMap.set(cid, {
+              id: row.id,
+              cid,
+              size: row.size,
+              keyvalues: row.metadata.keyvalues,
+              name: row.metadata.name,
+              createdAt: row.date_pinned,
+            });
           }
         }
-
-        recoveredFiles.push({
-          id: `file_${row.id || row.ipfs_pin_hash}`,
-          name: originalName,
-          size: Number(kv.size || kv.originalSize) || row.size,
-          mimeType: kv.mime || kv.mimeType || 'application/octet-stream',
-          ipfsCid: row.ipfs_pin_hash,
-          sha256Hash: kv.sha || kv.sha256Hash || '',
-          keyHex: unwrappedKey,
-          ivHex: ivVal,
-          wrappedKeyHex: isWrapped ? keyVal : undefined,
-          wrapIvHex: wrapIv,
-          isKeyWrapped: !unwrappedSuccessfully,
-          timestamp: Number(kv.timestamp) || new Date(row.date_pinned).getTime(),
-        });
       }
     }
-
-    // Filter out locally deleted CIDs
-    if (typeof localStorage !== 'undefined') {
-      const delKey = `destorage_deleted_${targetOwner}`;
-      const delCids = JSON.parse(localStorage.getItem(delKey) || '[]');
-      if (Array.isArray(delCids) && delCids.length > 0) {
-        const delSet = new Set(delCids);
-        return recoveredFiles.filter(f => !delSet.has(f.ipfsCid));
-      }
-    }
-
-    return recoveredFiles;
   } catch (err) {
-    console.warn('[DeStorage] Could not recover files from Pinata:', err);
-    return [];
+    console.warn('[DeStorage] Pinata v2 pinList query failed:', err);
   }
+
+  // 3. Process and Decrypt/Unwrap Key Metadata
+  const recoveredFiles: any[] = [];
+
+  for (const item of Array.from(rawFilesMap.values())) {
+    const kv = item.keyvalues;
+    const keyVal = kv?.key || kv?.keyHex;
+    const ivVal = kv?.iv || kv?.ivHex;
+    const wrapIv = kv?.kiv;
+    const isWrapped = kv?.wrp === '1' || !!wrapIv;
+
+    if (kv && keyVal && ivVal) {
+      let originalName = 'Decrypted File';
+      const rawName = kv.name || kv.originalName;
+      try {
+        originalName = rawName ? decodeURIComponent(rawName) : (item.name?.replace(/^DeStorage_/, '').replace(/_\d+$/, '') || 'Decrypted File');
+      } catch (e) {
+        originalName = rawName || 'Decrypted File';
+      }
+
+      let unwrappedKey = keyVal;
+      let unwrappedSuccessfully = !isWrapped;
+
+      if (isWrapped && wrapIv && masterKey) {
+        try {
+          unwrappedKey = await unwrapKeyWithMasterKey(keyVal, wrapIv, masterKey);
+          unwrappedSuccessfully = true;
+        } catch (e) {
+          console.warn('Could not unwrap key with master key:', e);
+        }
+      }
+
+      recoveredFiles.push({
+        id: `file_${item.id || item.cid}`,
+        name: originalName,
+        size: Number(kv.size || kv.originalSize) || item.size,
+        mimeType: kv.mime || kv.mimeType || 'application/octet-stream',
+        ipfsCid: item.cid,
+        sha256Hash: kv.sha || kv.sha256Hash || '',
+        keyHex: unwrappedKey,
+        ivHex: ivVal,
+        wrappedKeyHex: isWrapped ? keyVal : undefined,
+        wrapIvHex: wrapIv,
+        isKeyWrapped: !unwrappedSuccessfully,
+        timestamp: Number(kv.timestamp) || (item.createdAt ? new Date(item.createdAt).getTime() : Date.now()),
+      });
+    }
+  }
+
+  // Filter out locally deleted CIDs
+  if (typeof localStorage !== 'undefined') {
+    const delKey = `destorage_deleted_${targetOwner}`;
+    const delCids = JSON.parse(localStorage.getItem(delKey) || '[]');
+    if (Array.isArray(delCids) && delCids.length > 0) {
+      const delSet = new Set(delCids);
+      return recoveredFiles.filter(f => !delSet.has(f.ipfsCid));
+    }
+  }
+
+  return recoveredFiles;
 }
 
 /**
- * Permanently unpin and delete a file from Pinata IPFS Cloud
+ * Permanently unpin and delete a file from Pinata IPFS Cloud (both v3 & v2)
  */
 export async function unpinFromIpfs(
   cid: string,
@@ -326,18 +417,40 @@ export async function unpinFromIpfs(
 
   if (!activeJwt || !cid) return false;
 
+  let success = false;
+
+  // 1. Delete from Pinata v3 Files API
+  try {
+    const findRes = await fetch(`https://api.pinata.cloud/v3/files/public?cid=${cid}`, {
+      headers: { Authorization: `Bearer ${activeJwt}` },
+    });
+    if (findRes.ok) {
+      const findData = await findRes.json();
+      const fileId = findData?.data?.files?.[0]?.id;
+      if (fileId) {
+        const delRes = await fetch(`https://api.pinata.cloud/v3/files/public/${fileId}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${activeJwt}` },
+        });
+        if (delRes.ok) success = true;
+      }
+    }
+  } catch (err) {
+    console.warn('[DeStorage] Error deleting from Pinata v3:', err);
+  }
+
+  // 2. Also unpin from Pinata v2 pinning API
   try {
     const res = await fetch(`https://api.pinata.cloud/pinning/unpin/${cid}`, {
       method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${activeJwt}`,
-      },
+      headers: { Authorization: `Bearer ${activeJwt}` },
     });
-    return res.ok;
+    if (res.ok) success = true;
   } catch (err) {
-    console.warn('Could not unpin from Pinata:', err);
-    return false;
+    console.warn('[DeStorage] Error unpinning from Pinata v2:', err);
   }
+
+  return success;
 }
 
 /**

@@ -1603,33 +1603,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                   </div>
                 </div>
 
-                {/* Faucet helper banner */}
-                <a 
-                  href="https://www.coinbase.com/faucets/base-ethereum-sepolia-faucet"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="vd-account-faucet-link"
-                >
-                  <Icon icon="iconamoon:lightning-bold" width={16} height={16} color="#0284c7" />
-                  <span>Need testnet gas? Get Free Base Sepolia ETH ➔</span>
-                </a>
 
-                {/* Zero-Knowledge Cross-Device Sync Card */}
-                <div className="vd-account-sync-card">
-                  <div className="vd-account-sync-info">
-                    <div className="vd-account-sync-title-row">
-                      <Icon icon="iconamoon:cloud-upload-bold" width={17} height={17} color="#0284c7" />
-                      <span className="vd-account-sync-title">Cross-Device Master Sync</span>
-                    </div>
-                    <span className="vd-account-sync-desc">
-                      Your encrypted vault is automatically synced across all devices via Pinata IPFS Cloud — no manual sync needed.
-                    </span>
-                  </div>
-                  <span className="vd-auto-sync-badge">
-                    <Icon icon="iconamoon:check-circle-1-bold" width={13} height={13} />
-                    Auto
-                  </span>
-                </div>
 
                 {/* Disconnect & Logout Button */}
                 <div className="vd-account-logout-wrapper">
