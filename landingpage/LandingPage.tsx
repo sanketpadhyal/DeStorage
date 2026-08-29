@@ -500,7 +500,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <section id="architecture" className="lp-arch-tree-section">
           <div className="lp-container">
             <div className="lp-section-header lp-reveal lp-reveal-up">
-              <span className="lp-section-tag">Auditable Cryptographic Engine</span>
               <h2 className="lp-section-title">How your files & media are mathematically protected</h2>
               <p className="lp-section-subtitle">
                 Zero server knowledge. Every byte is encrypted in volatile client memory before hitting IPFS or the Base blockchain. Here is the verified end-to-end cryptographic lifecycle.
