@@ -336,12 +336,6 @@ export async function fetchWalletFilesFromPinata(
           }
         }
       }
-    } else if (v3Res.status === 401 || v3Res.status === 403) {
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('destorage:pinata_auth_error', {
-          detail: { status: v3Res.status, reason: v3Res.status === 403 ? 'revoked' : 'unauthorized' }
-        }));
-      }
     }
   } catch (err) {
     console.warn('[DeStorage] Pinata v3 list query failed:', err);
@@ -372,12 +366,6 @@ export async function fetchWalletFilesFromPinata(
             });
           }
         }
-      }
-    } else if (v2Res.status === 401 || v2Res.status === 403) {
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('destorage:pinata_auth_error', {
-          detail: { status: v2Res.status, reason: v2Res.status === 403 ? 'revoked' : 'unauthorized' }
-        }));
       }
     }
   } catch (err) {
