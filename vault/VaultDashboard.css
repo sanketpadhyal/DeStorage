@@ -1254,35 +1254,37 @@
   color: #b91c1c;
 }
 
-/* Folders Grid */
+/* Folders List (Full-Width Row Cards) */
 .vd-folders-section {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .vd-folder-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }
 
 .vd-folder-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 16px;
   background: #ffffff;
-  border: 1.5px solid rgba(2, 132, 199, 0.18);
-  border-radius: 18px;
-  padding: 16px 20px;
+  border: 1px solid rgba(2, 132, 199, 0.16);
+  border-radius: 20px;
+  padding: 16px 22px;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(11, 36, 71, 0.04);
+  box-shadow: 0 2px 10px rgba(11, 36, 71, 0.03);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .vd-folder-card:hover {
-  border-color: #0284c7;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.5);
+  box-shadow: 0 4px 20px rgba(2, 132, 199, 0.1);
   background: #fbfdff;
 }
 
@@ -1292,19 +1294,20 @@
   gap: 14px;
   min-width: 0;
   flex: 1;
+  overflow: hidden;
 }
 
 .vd-folder-icon-box {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
   border: 1px solid rgba(2, 132, 199, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.1);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.1);
 }
 
 .vd-folder-card-info {
@@ -1312,11 +1315,13 @@
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+  overflow: hidden;
+  text-align: left;
 }
 
 .vd-folder-card-title {
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 14.5px;
+  font-weight: 700;
   color: #0b2447;
   font-family: var(--font-sans);
   margin: 0;
@@ -1328,40 +1333,43 @@
 .vd-folder-card-meta {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 12px;
   color: #64748b;
   white-space: nowrap;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .vd-folder-card-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .vd-folder-open-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   background: #eff6ff;
   border: 1px solid #bfdbfe;
   color: #0284c7;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   font-family: var(--font-sans);
-  padding: 6px 14px;
-  border-radius: 10px;
+  padding: 7px 16px;
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .vd-folder-open-btn:hover {
   background: #0284c7;
   color: #ffffff;
   border-color: #0284c7;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.25);
 }
 
 /* FILE ITEM CARD */
