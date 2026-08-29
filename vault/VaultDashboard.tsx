@@ -8,10 +8,16 @@ import {
   decryptFile, 
   EncryptedFilePayload 
 } from '../crypto/encryptionEngine';
-import { uploadToIpfs, IpfsUploadResult } from '../ipfs/ipfsService';
+import { 
+  uploadToIpfs, 
+  IpfsUploadResult,
+  getActivePinataJwt,
+  setCustomPinataJwt,
+  testPinataAuthentication
+} from '../ipfs/ipfsService';
 import { formatFileSize, truncateCid } from '../utils/formatters';
 import { VaultFileItem } from '../types';
-import { Wallet, Zap } from 'lucide-react';
+import { Wallet, Zap, Cloud, Key, CheckCircle, AlertTriangle } from 'lucide-react';
 
 interface VaultDashboardProps {
   onBackToHome: () => void;
@@ -121,6 +127,50 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
   // PhonePe-style animated disconnection state
   const [disconnectStep, setDisconnectStep] = useState<'idle' | 'disconnecting' | 'success'>('idle');
+
+  // Pinata IPFS Cloud Settings & Status
+  const [isPinataModalOpen, setIsPinataModalOpen] = useState<boolean>(false);
+  const [pinataJwtInput, setPinataJwtInput] = useState<string>(() => getActivePinataJwt());
+  const [pinataStatus, setPinataStatus] = useState<'connected' | 'revoked' | 'unconfigured' | 'testing'>('connected');
+  const [pinataTestMsg, setPinataTestMsg] = useState<string>('');
+  const [isSavingPinata, setIsSavingPinata] = useState<boolean>(false);
+
+  // Listen to Pinata auth errors from ipfsService
+  useEffect(() => {
+    const handlePinataError = (e: any) => {
+      setPinataStatus('revoked');
+    };
+    window.addEventListener('destorage:pinata_auth_error', handlePinataError);
+    return () => window.removeEventListener('destorage:pinata_auth_error', handlePinataError);
+  }, []);
+
+  const handleTestAndSavePinataKey = async () => {
+    setIsSavingPinata(true);
+    setPinataTestMsg('Verifying Pinata JWT token...');
+    const trimmed = pinataJwtInput.trim();
+    if (!trimmed) {
+      setCustomPinataJwt('');
+      setPinataStatus('unconfigured');
+      setPinataTestMsg('Pinata JWT cleared. Files will be stored locally only.');
+      setIsSavingPinata(false);
+      return;
+    }
+
+    const testRes = await testPinataAuthentication(trimmed);
+    if (testRes.ok) {
+      setCustomPinataJwt(trimmed);
+      setPinataStatus('connected');
+      setPinataTestMsg('Authenticated successfully! Cloud sync active.');
+      setTimeout(() => {
+        setIsPinataModalOpen(false);
+        setPinataTestMsg('');
+      }, 1200);
+    } else {
+      setPinataStatus('revoked');
+      setPinataTestMsg(testRes.message);
+    }
+    setIsSavingPinata(false);
+  };
 
   const handleInitiateConnect = async (
     walletName: string,
@@ -846,12 +896,33 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
               <span className="vd-session-val">aes-256-gcm</span>
             </div>
 
-            <div className="vd-session-pill">
-              <span className="vd-session-dot vd-dot-cyan" />
+            <button 
+              type="button" 
+              className="vd-session-pill vd-session-pill-clickable"
+              onClick={() => setIsPinataModalOpen(true)}
+              title="Configure or Test Pinata IPFS Cloud Connection"
+            >
+              <span className={`vd-session-dot ${pinataStatus === 'revoked' ? 'vd-dot-red' : pinataStatus === 'unconfigured' ? 'vd-dot-amber' : 'vd-dot-cyan'}`} />
               <span className="vd-session-key">protocol:</span>
-              <span className="vd-session-val">ipfs</span>
-            </div>
+              <span className="vd-session-val">ipfs {pinataStatus === 'revoked' ? '(key revoked)' : '(pinata)'}</span>
+              <Icon icon="iconamoon:settings-bold" width={12} height={12} style={{ opacity: 0.7, marginLeft: 2 }} />
+            </button>
           </div>
+
+          {/* PINATA WARNING BANNER (When Key Revoked / Missing) */}
+          {pinataStatus === 'revoked' && (
+            <div className="vd-pinata-alert-banner" onClick={() => setIsPinataModalOpen(true)}>
+              <div className="vd-pinata-alert-left">
+                <Icon icon="iconamoon:attention-circle-bold" width={22} height={22} color="#f43f5e" />
+                <span>
+                  <strong>Pinata IPFS Key Revoked:</strong> Cross-device cloud sync requires an active Pinata JWT. Click here to update your token.
+                </span>
+              </div>
+              <button type="button" className="vd-btn-pinata-alert" onClick={(e) => { e.stopPropagation(); setIsPinataModalOpen(true); }}>
+                Update Key
+              </button>
+            </div>
+          )}
 
           {/* STATS OVERVIEW CARDS (Premium Multi-Color Gradient Suite) */}
           <div className="vd-stats-grid">
@@ -1656,6 +1727,125 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 </p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* 5. PINATA IPFS SETTINGS MODAL */}
+      {isPinataModalOpen && (
+        <div className="vd-modal-overlay" onClick={() => setIsPinataModalOpen(false)}>
+          <div className="vd-wallet-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '520px' }}>
+            <div className="vd-modal-header">
+              <div className="vd-modal-title-row">
+                <Icon icon="iconamoon:cloud-bold" width={24} height={24} color="#0284c7" />
+                <h3 className="vd-modal-title">IPFS Cloud Settings</h3>
+              </div>
+              <button 
+                type="button" 
+                className="vd-modal-close"
+                onClick={() => setIsPinataModalOpen(false)}
+                aria-label="Close modal"
+              >
+                <Icon icon="iconamoon:close-bold" width={18} height={18} />
+              </button>
+            </div>
+
+            <p className="vd-modal-subtitle" style={{ fontSize: '13px', lineHeight: 1.5, color: '#475569', marginTop: '4px' }}>
+              DeStorage connects directly to <strong>Pinata IPFS</strong> to store your encrypted files and metadata permanently across devices.
+            </p>
+
+            <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+                  Pinata JWT (Bearer Token)
+                </label>
+                <textarea
+                  value={pinataJwtInput}
+                  onChange={(e) => setPinataJwtInput(e.target.value)}
+                  placeholder="Paste your Pinata JWT token here (starts with eyJhbGci...)"
+                  rows={4}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(2, 132, 199, 0.25)',
+                    fontSize: '12px',
+                    fontFamily: 'monospace',
+                    resize: 'vertical',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                    background: '#ffffff'
+                  }}
+                />
+              </div>
+
+              {pinataTestMsg && (
+                <div style={{
+                  fontSize: '12px',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  background: pinataStatus === 'connected' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+                  color: pinataStatus === 'connected' ? '#059669' : '#e11d48',
+                  fontWeight: 600
+                }}>
+                  {pinataTestMsg}
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '4px' }}>
+                <button
+                  type="button"
+                  className="vd-btn-connect"
+                  style={{ flex: 1, height: '42px', borderRadius: '12px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', justifyContent: 'center' }}
+                  disabled={isSavingPinata}
+                  onClick={handleTestAndSavePinataKey}
+                >
+                  {isSavingPinata ? 'Verifying...' : 'Save & Verify Key'}
+                </button>
+                {pinataJwtInput && (
+                  <button
+                    type="button"
+                    style={{
+                      padding: '0 14px',
+                      height: '42px',
+                      borderRadius: '12px',
+                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      background: 'rgba(239, 68, 68, 0.08)',
+                      color: '#dc2626',
+                      fontSize: '12px',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => {
+                      setPinataJwtInput('');
+                      setCustomPinataJwt('');
+                      setPinataStatus('unconfigured');
+                      setPinataTestMsg('Key removed. Files will be stored locally only.');
+                    }}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              <div style={{
+                background: 'rgba(2, 132, 199, 0.05)',
+                border: '1px solid rgba(2, 132, 199, 0.15)',
+                borderRadius: '12px',
+                padding: '12px 14px',
+                fontSize: '12px',
+                color: '#334155',
+                lineHeight: 1.5
+              }}>
+                <strong style={{ color: '#0b2447' }}>How to get a fresh Pinata JWT:</strong>
+                <ol style={{ margin: '6px 0 0', paddingLeft: '18px' }}>
+                  <li>Go to <a href="https://app.pinata.cloud/developers/api-keys" target="_blank" rel="noreferrer" style={{ color: '#0284c7', fontWeight: 600 }}>app.pinata.cloud → API Keys</a></li>
+                  <li>Click <strong>New Key</strong>, toggle <strong>Admin</strong> (all permissions) on</li>
+                  <li>Name it <strong>DeStorage</strong> and click <strong>Generate API Key</strong></li>
+                  <li>Copy the <strong>JWT</strong> and paste it in the box above.</li>
+                </ol>
+              </div>
+            </div>
           </div>
         </div>
       )}

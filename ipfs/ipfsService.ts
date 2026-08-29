@@ -93,6 +93,48 @@ export interface FileUploadMetadata {
   wrapIvHex?: string;
 }
 
+export function getActivePinataJwt(): string {
+  if (typeof localStorage !== 'undefined') {
+    const local = localStorage.getItem('destorage_pinata_jwt');
+    if (local && local.trim().length > 0) return local.trim();
+  }
+  return (process.env.REACT_APP_PINATA_JWT || '').trim();
+}
+
+export function setCustomPinataJwt(jwt: string): void {
+  if (typeof localStorage !== 'undefined') {
+    if (!jwt || jwt.trim().length === 0) {
+      localStorage.removeItem('destorage_pinata_jwt');
+    } else {
+      localStorage.setItem('destorage_pinata_jwt', jwt.trim());
+    }
+  }
+}
+
+export async function testPinataAuthentication(jwt?: string): Promise<{ ok: boolean; message: string }> {
+  const token = (jwt || getActivePinataJwt()).trim();
+  if (!token) {
+    return { ok: false, message: 'No Pinata JWT provided or configured.' };
+  }
+  try {
+    const res = await fetch('https://api.pinata.cloud/data/testAuthentication', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) {
+      return { ok: true, message: 'Pinata API connected successfully!' };
+    }
+    if (res.status === 403) {
+      return { ok: false, message: 'Pinata API key has been revoked or lacks permissions.' };
+    }
+    if (res.status === 401) {
+      return { ok: false, message: 'Invalid or unauthorized Pinata JWT token.' };
+    }
+    return { ok: false, message: `Pinata responded with status ${res.status}` };
+  } catch (err: any) {
+    return { ok: false, message: err?.message || 'Network error connecting to Pinata.' };
+  }
+}
+
 /**
  * Upload encrypted buffer to IPFS (Pinata Cloud & Local IndexedDB)
  */
@@ -105,13 +147,8 @@ export async function uploadToIpfs(
 ): Promise<IpfsUploadResult> {
   const fallbackCid = await generateContentCid(encryptedBuffer);
 
-  // Auto-detect JWT from parameter, process.env or localStorage
-  const activeJwt = (
-    pinataJwt || 
-    process.env.REACT_APP_PINATA_JWT || 
-    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
-    ''
-  ).trim();
+  // Auto-detect JWT from parameter, localStorage or process.env
+  const activeJwt = (pinataJwt || getActivePinataJwt()).trim();
 
   if (activeJwt.length > 0) {
     const safeFileName = (fileName || 'file').replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -270,12 +307,7 @@ export async function fetchWalletFilesFromPinata(
   pinataJwt?: string,
   masterKey?: CryptoKey | null
 ): Promise<any[]> {
-  const activeJwt = (
-    pinataJwt || 
-    process.env.REACT_APP_PINATA_JWT || 
-    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
-    ''
-  ).trim();
+  const activeJwt = (pinataJwt || getActivePinataJwt()).trim();
 
   if (!activeJwt || !walletAddress) return [];
 
@@ -303,6 +335,12 @@ export async function fetchWalletFilesFromPinata(
             });
           }
         }
+      }
+    } else if (v3Res.status === 401 || v3Res.status === 403) {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('destorage:pinata_auth_error', {
+          detail: { status: v3Res.status, reason: v3Res.status === 403 ? 'revoked' : 'unauthorized' }
+        }));
       }
     }
   } catch (err) {
@@ -334,6 +372,12 @@ export async function fetchWalletFilesFromPinata(
             });
           }
         }
+      }
+    } else if (v2Res.status === 401 || v2Res.status === 403) {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('destorage:pinata_auth_error', {
+          detail: { status: v2Res.status, reason: v2Res.status === 403 ? 'revoked' : 'unauthorized' }
+        }));
       }
     }
   } catch (err) {
@@ -408,12 +452,7 @@ export async function unpinFromIpfs(
   cid: string,
   pinataJwt?: string
 ): Promise<boolean> {
-  const activeJwt = (
-    pinataJwt || 
-    process.env.REACT_APP_PINATA_JWT || 
-    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
-    ''
-  ).trim();
+  const activeJwt = (pinataJwt || getActivePinataJwt()).trim();
 
   if (!activeJwt || !cid) return false;
 
@@ -464,12 +503,7 @@ export async function fetchFromIpfs(cid: string): Promise<ArrayBuffer> {
   }
 
   // 2. Multi-Gateway Fallback Fetch
-  const activeJwt = (
-    process.env.REACT_APP_PINATA_JWT || 
-    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
-    ''
-  ).trim();
-
+  const activeJwt = getActivePinataJwt();
   const customGateway = (process.env.REACT_APP_PINATA_GATEWAY || '').trim();
 
   const gateways = [
