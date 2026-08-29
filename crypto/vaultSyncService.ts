@@ -137,18 +137,15 @@ export async function decryptVaultRegistry(
 /**
  * Sync the encrypted Vault Registry to Pinata IPFS Cloud
  */
+import { getActivePinataJwt } from '../ipfs/ipfsService';
+
 export async function syncVaultToCloud(
   walletAddress: string,
   files: VaultFileItem[],
   masterKey: CryptoKey,
   pinataJwt?: string
 ): Promise<string | null> {
-  const activeJwt = (
-    pinataJwt || 
-    process.env.REACT_APP_PINATA_JWT || 
-    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
-    ''
-  ).trim();
+  const activeJwt = (pinataJwt || getActivePinataJwt()).trim();
 
   if (!activeJwt) return null;
 
@@ -198,12 +195,7 @@ export async function fetchVaultFromCloud(
   masterKey: CryptoKey,
   pinataJwt?: string
 ): Promise<VaultFileItem[] | null> {
-  const activeJwt = (
-    pinataJwt || 
-    process.env.REACT_APP_PINATA_JWT || 
-    (typeof localStorage !== 'undefined' ? localStorage.getItem('destorage_pinata_jwt') : null) || 
-    ''
-  ).trim();
+  const activeJwt = (pinataJwt || getActivePinataJwt()).trim();
 
   if (!activeJwt) return null;
 

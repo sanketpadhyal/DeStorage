@@ -94,21 +94,18 @@ export interface FileUploadMetadata {
 }
 
 export function getActivePinataJwt(): string {
+  const envJwt = (process.env.REACT_APP_PINATA_JWT || '').trim();
+  if (envJwt.length > 0) {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('destorage_pinata_jwt');
+    }
+    return envJwt;
+  }
   if (typeof localStorage !== 'undefined') {
     const local = localStorage.getItem('destorage_pinata_jwt');
     if (local && local.trim().length > 0) return local.trim();
   }
-  return (process.env.REACT_APP_PINATA_JWT || '').trim();
-}
-
-export function setCustomPinataJwt(jwt: string): void {
-  if (typeof localStorage !== 'undefined') {
-    if (!jwt || jwt.trim().length === 0) {
-      localStorage.removeItem('destorage_pinata_jwt');
-    } else {
-      localStorage.setItem('destorage_pinata_jwt', jwt.trim());
-    }
-  }
+  return '';
 }
 
 export async function testPinataAuthentication(jwt?: string): Promise<{ ok: boolean; message: string }> {
