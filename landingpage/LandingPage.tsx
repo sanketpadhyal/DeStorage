@@ -500,7 +500,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <section id="architecture" className="lp-arch-tree-section">
           <div className="lp-container">
             <div className="lp-section-header lp-reveal lp-reveal-up">
-              <h2 className="lp-section-title">How your files & media are mathematically protected</h2>
+              <h2 className="lp-section-title">How your files & media are <span>mathematically protected</span></h2>
               <p className="lp-section-subtitle">
                 Zero server knowledge. Every byte is encrypted in volatile client memory before hitting IPFS or the Base blockchain. Here is the verified end-to-end cryptographic lifecycle.
               </p>
@@ -722,7 +722,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         <section id="features" className="lp-features-section">
           <div className="lp-container">
             <div className="lp-section-header lp-reveal lp-reveal-up">
-              <h2 className="lp-section-title">Our deep decentralized security</h2>
+              <h2 className="lp-section-title">Our deep <span>decentralized security</span></h2>
             </div>
             
             <div className="lp-features-grid">
