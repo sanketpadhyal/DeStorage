@@ -1,0 +1,88 @@
+name: DeStorage CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-test:
+    name: Typecheck & Cryptographic Tests (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci || npm install --legacy-peer-deps
+
+      - name: Static TypeScript Type Checking
+        run: npm run typecheck
+
+      - name: Run Cryptographic & Engine Test Suites
+        run: npm run test:ci
+
+      - name: Upload Test Coverage
+        if: matrix.node-version == '20.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-coverage-report
+          path: coverage/
+          retention-days: 14
+
+  build-production:
+    name: Production Build Verification
+    needs: validate-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci || npm install --legacy-peer-deps
+
+      - name: Build Optimized Production Bundle
+        run: npm run build
+        env:
+          CI: false
+          REACT_APP_PINATA_GATEWAY: gateway.pinata.cloud
+          REACT_APP_BASE_SEPOLIA_RPC: https://sepolia.base.org
+
+      - name: Verify Build Integrity
+        run: |
+          test -f build/index.html || (echo "build/index.html missing" && exit 1)
+          test -d build/static/js || (echo "build/static/js missing" && exit 1)
+          test -d build/static/css || (echo "build/static/css missing" && exit 1)
+          echo "Production build verified successfully."
+
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: destorage-production-bundle
+          path: build/
+          retention-days: 7

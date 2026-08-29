@@ -113,3 +113,59 @@ describe('DeStorage Formatters Tests', () => {
     expect(truncateCid(cid, 10, 6)).toBe('bafybeigdy...5fbzdi');
   });
 });
+
+describe('DeStorage Folder & Directory Handling Tests', () => {
+  test('correctly extracts top-level folder name and clean filename', () => {
+    const relativePath = 'deploy-6a3a186320a8740d/assets/hero.png';
+    const hasFolder = relativePath.includes('/');
+    expect(hasFolder).toBe(true);
+
+    const folderName = relativePath.split('/')[0];
+    expect(folderName).toBe('deploy-6a3a186320a8740d');
+
+    const cleanFileName = relativePath.split('/').pop();
+    expect(cleanFileName).toBe('hero.png');
+
+    const relativeSubPath = relativePath.startsWith(folderName + '/') 
+      ? relativePath.slice(folderName.length + 1) 
+      : relativePath;
+    expect(relativeSubPath).toBe('assets/hero.png');
+  });
+
+  test('standalone root files have no folder prefix', () => {
+    const rootFile = 'financial_statement.pdf';
+    expect(rootFile.includes('/')).toBe(false);
+    expect(rootFile.split('/').pop()).toBe('financial_statement.pdf');
+  });
+
+  test('folder grouping calculates aggregate sizes and file counts accurately', () => {
+    const mockFiles = [
+      { id: '1', name: 'docs/doc1.pdf', size: 1024, timestamp: 1000 },
+      { id: '2', name: 'docs/doc2.pdf', size: 2048, timestamp: 2000 },
+      { id: '3', name: 'photos/vacation.jpg', size: 4096, timestamp: 1500 },
+      { id: '4', name: 'standalone.txt', size: 512, timestamp: 500 },
+    ];
+
+    const folderMap = new Map<string, typeof mockFiles>();
+    const rootFiles: typeof mockFiles = [];
+
+    for (const f of mockFiles) {
+      if (f.name.includes('/')) {
+        const folder = f.name.split('/')[0];
+        if (!folderMap.has(folder)) folderMap.set(folder, []);
+        folderMap.get(folder)!.push(f);
+      } else {
+        rootFiles.push(f);
+      }
+    }
+
+    expect(folderMap.size).toBe(2);
+    expect(folderMap.get('docs')?.length).toBe(2);
+    expect(folderMap.get('photos')?.length).toBe(1);
+    expect(rootFiles.length).toBe(1);
+
+    const docsTotalSize = folderMap.get('docs')!.reduce((sum, f) => sum + f.size, 0);
+    expect(docsTotalSize).toBe(3072);
+  });
+});
+
