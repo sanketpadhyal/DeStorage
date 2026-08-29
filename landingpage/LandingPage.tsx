@@ -6,18 +6,24 @@ import { Icon } from '@iconify/react';
 import { 
   Lock, 
   Check, 
-  ExternalLink,
-  ArrowRight,
-  Globe,
-  Menu,
-  X,
-  FileText,
-  Image,
-  Video,
-  Music,
-  Box,
-  ChevronRight,
-  Zap
+  ExternalLink, 
+  ArrowRight, 
+  Globe, 
+  Menu, 
+  X, 
+  FileText, 
+  Image, 
+  Video, 
+  Music, 
+  Box, 
+  ChevronRight, 
+  Zap,
+  ShieldCheck,
+  Key,
+  Database,
+  Layers,
+  Cpu,
+  LockKeyhole
 } from 'lucide-react';
 
 const GithubIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
@@ -487,6 +493,229 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 <p className="lp-filetype-desc">Protected sound archives, audio recordings, and wallet-to-wallet decentralized sharing.</p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* 5. INTERACTIVE CRYPTOGRAPHIC GRAPH TREE & DATAFLOW ARCHITECTURE */}
+        <section id="architecture" className="lp-arch-tree-section">
+          <div className="lp-container">
+            <div className="lp-section-header lp-reveal lp-reveal-up">
+              <span className="lp-section-tag">Auditable Cryptographic Engine</span>
+              <h2 className="lp-section-title">How your files & media are mathematically protected</h2>
+              <p className="lp-section-subtitle">
+                Zero server knowledge. Every byte is encrypted in volatile client memory before hitting IPFS or the Base blockchain. Here is the verified end-to-end cryptographic lifecycle.
+              </p>
+            </div>
+
+            {/* Visual Multi-Node Cryptographic Graph Tree */}
+            <div className="lp-tree-wrapper lp-reveal lp-stagger-1">
+
+              {/* Node 1: Deterministic Master Key Derivation */}
+              <div className="lp-tree-node lp-node-blue lp-card-animated">
+                <div className="lp-tree-node-badge">STAGE 01</div>
+                <div className="lp-tree-node-icon lp-icon-blue">
+                  <Key size={24} />
+                </div>
+                <div className="lp-tree-node-content">
+                  <div className="lp-tree-node-header">
+                    <h4 className="lp-tree-node-title">1. Deterministic Master Key Derivation</h4>
+                    <span className="lp-tree-node-tech">PBKDF2-SHA256 • 120,000 Rounds</span>
+                  </div>
+                  <p className="lp-tree-node-desc">
+                    Your MetaMask wallet signs a deterministic EIP-191 cryptographic challenge. Fed through PBKDF2 with 120,000 iterations and your wallet address as salt, deriving a 256-bit AES-GCM Master Key strictly inside browser volatile memory (<code className="lp-inline-code">SubtleCrypto</code>). Zero private keys or passwords ever leave your machine.
+                  </p>
+                  <div className="lp-tree-node-specs">
+                    <span className="lp-spec-item">Algorithm: PBKDF2-HMAC-SHA256</span>
+                    <span className="lp-spec-item">Iterations: 120,000</span>
+                    <span className="lp-spec-item">Salt: DeStorage_Master_Key_Salt_0x...</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tree Connector 1 */}
+              <div className="lp-tree-connector">
+                <div className="lp-tree-line"></div>
+                <div className="lp-tree-arrow">
+                  <Icon icon="iconamoon:arrow-down-2-bold" width={22} height={22} />
+                </div>
+                <span className="lp-tree-step-label">File Selected locally (Photos, Docs, Videos)</span>
+              </div>
+
+              {/* Node 2: On-Device File Encryption */}
+              <div className="lp-tree-node lp-node-emerald lp-card-animated">
+                <div className="lp-tree-node-badge">STAGE 02</div>
+                <div className="lp-tree-node-icon lp-icon-emerald">
+                  <LockKeyhole size={24} />
+                </div>
+                <div className="lp-tree-node-content">
+                  <div className="lp-tree-node-header">
+                    <h4 className="lp-tree-node-title">2. Client-Side AES-256-GCM File Encryption</h4>
+                    <span className="lp-tree-node-tech">AES-256-GCM + 96-Bit Random IV</span>
+                  </div>
+                  <p className="lp-tree-node-desc">
+                    For every uploaded item, the browser generates an ephemeral 256-bit AES encryption key and a unique 12-byte initialization vector (IV) via <code className="lp-inline-code">crypto.getRandomValues</code>. The file buffer is encrypted in-place into authenticated ciphertext with 128-bit AEAD tag protection.
+                  </p>
+                  <div className="lp-tree-node-specs">
+                    <span className="lp-spec-item">Cipher: AES-256-GCM (AEAD)</span>
+                    <span className="lp-spec-item">Auth Tag: 128-Bit Integrity Tag</span>
+                    <span className="lp-spec-item">Nonce: 96-Bit Unique IV</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tree Connector 2 */}
+              <div className="lp-tree-connector">
+                <div className="lp-tree-line"></div>
+                <div className="lp-tree-arrow">
+                  <Icon icon="iconamoon:arrow-down-2-bold" width={22} height={22} />
+                </div>
+                <span className="lp-tree-step-label">Master Key Envelope Wrapping & Checksum</span>
+              </div>
+
+              {/* Node 3: Envelope Wrapping & SHA-256 Checksum */}
+              <div className="lp-tree-node lp-node-purple lp-card-animated">
+                <div className="lp-tree-node-badge">STAGE 03</div>
+                <div className="lp-tree-node-icon lp-icon-purple">
+                  <Layers size={24} />
+                </div>
+                <div className="lp-tree-node-content">
+                  <div className="lp-tree-node-header">
+                    <h4 className="lp-tree-node-title">3. Envelope Key Wrapping & SHA-256 Checksum</h4>
+                    <span className="lp-tree-node-tech">AES-GCM Key Wrap + SHA-256</span>
+                  </div>
+                  <p className="lp-tree-node-desc">
+                    The file's random 256-bit key is wrapped (double-encrypted) using the user's Master Key and a dedicated wrap IV (<code className="lp-inline-code">kiv</code>). Simultaneously, a deterministic SHA-256 hash of the ciphertext is computed to guarantee mathematically auditable, tamper-proof file integrity.
+                  </p>
+                  <div className="lp-tree-node-specs">
+                    <span className="lp-spec-item">Key Wrapping: AES-GCM Envelope</span>
+                    <span className="lp-spec-item">Integrity: SHA-256 Cryptographic Hash</span>
+                    <span className="lp-spec-item">Server Plaintext: 0 Bytes</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tree Connector 3 */}
+              <div className="lp-tree-connector">
+                <div className="lp-tree-line"></div>
+                <div className="lp-tree-arrow">
+                  <Icon icon="iconamoon:arrow-down-2-bold" width={22} height={22} />
+                </div>
+                <span className="lp-tree-step-label">Decentralized IPFS Pinning (CID v1)</span>
+              </div>
+
+              {/* Node 4: IPFS Decentralized Storage */}
+              <div className="lp-tree-node lp-node-cyan lp-card-animated">
+                <div className="lp-tree-node-badge">STAGE 04</div>
+                <div className="lp-tree-node-icon lp-icon-blue">
+                  <Database size={24} />
+                </div>
+                <div className="lp-tree-node-content">
+                  <div className="lp-tree-node-header">
+                    <h4 className="lp-tree-node-title">4. Immutable IPFS Content Addressing</h4>
+                    <span className="lp-tree-node-tech">CID v1 (bafkrei...) • Global Peer Nodes</span>
+                  </div>
+                  <p className="lp-tree-node-desc">
+                    The encrypted ciphertext is uploaded to IPFS. It receives a unique, content-addressed CID (<code className="lp-inline-code">bafkrei...</code>). Pinata distributes the ciphertext across decentralized gateway nodes globally. Even if IPFS traffic is intercepted, adversaries only see random, uncrackable ciphertext bytes.
+                  </p>
+                  <div className="lp-tree-node-specs">
+                    <span className="lp-spec-item">Protocol: IPFS CID v1 (Base32)</span>
+                    <span className="lp-spec-item">Nodes: Global Distributed Swarm</span>
+                    <span className="lp-spec-item">Data Privacy: 100% Zero-Knowledge</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tree Connector 4 */}
+              <div className="lp-tree-connector">
+                <div className="lp-tree-line"></div>
+                <div className="lp-tree-arrow">
+                  <Icon icon="iconamoon:arrow-down-2-bold" width={22} height={22} />
+                </div>
+                <span className="lp-tree-step-label">Base Sepolia L2 Blockchain Anchoring & Decryption</span>
+              </div>
+
+              {/* Node 5: Blockchain Smart Contract Proofs & Zero-Knowledge Decryption */}
+              <div className="lp-tree-node lp-node-amber lp-card-animated">
+                <div className="lp-tree-node-badge">STAGE 05</div>
+                <div className="lp-tree-node-icon lp-icon-amber">
+                  <Cpu size={24} />
+                </div>
+                <div className="lp-tree-node-content">
+                  <div className="lp-tree-node-header">
+                    <h4 className="lp-tree-node-title">5. Base EVM Ownership & 1-Signature RAM Decryption</h4>
+                    <span className="lp-tree-node-tech">Base Sepolia Smart Contract + In-Memory Blob</span>
+                  </div>
+                  <p className="lp-tree-node-desc">
+                    Ownership proofs and CIDs are anchored on Base Sepolia. On any new device, you sign once with MetaMask to unlock the Master Key in volatile memory. Files are fetched from IPFS, verified against SHA-256, unwrapped, and streamed into RAM-only blob URLs. Zero disk traces remain on logout.
+                  </p>
+                  <div className="lp-tree-node-specs">
+                    <span className="lp-spec-item">Network: Base Sepolia Ethereum L2</span>
+                    <span className="lp-spec-item">Decryption: In-Memory Blob URL</span>
+                    <span className="lp-spec-item">Session Cache: RAM Only (Purged on Close)</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Security vs Centralized Cloud Matrix */}
+            <div className="lp-security-matrix lp-card-animated lp-reveal lp-stagger-2">
+              <div className="lp-matrix-header">
+                <div className="lp-matrix-header-icon">
+                  <ShieldCheck size={28} />
+                </div>
+                <div>
+                  <h3 className="lp-matrix-title">Security Comparison: DeStorage vs Centralized Cloud</h3>
+                  <p className="lp-matrix-subtitle">Auditable, cryptographic guarantees compared to Google Photos, Dropbox, and iCloud</p>
+                </div>
+              </div>
+
+              <div className="lp-matrix-table-wrap">
+                <table className="lp-matrix-table">
+                  <thead>
+                    <tr>
+                      <th>Security Feature</th>
+                      <th className="lp-col-destorage">DeStorage Vault</th>
+                      <th>Google Drive / Photos</th>
+                      <th>Dropbox / iCloud</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Encryption Layer</strong></td>
+                      <td className="lp-td-destorage"><Check size={16} /> Client-Side AES-256-GCM</td>
+                      <td className="lp-td-threat">Server-Side (Company holds keys)</td>
+                      <td className="lp-td-threat">Server-Side (Company holds keys)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Master Key Custody</strong></td>
+                      <td className="lp-td-destorage"><Check size={16} /> Non-Custodial (Web3 Wallet Signature)</td>
+                      <td className="lp-td-threat">Custodial (Google account passwords)</td>
+                      <td className="lp-td-threat">Custodial (Apple/Dropbox servers)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>AI Data Scanning & Scraping</strong></td>
+                      <td className="lp-td-destorage"><Check size={16} /> Impossible (0 Plaintext Bytes)</td>
+                      <td className="lp-td-threat">Yes (Scanned for AI & advertising)</td>
+                      <td className="lp-td-threat">Yes (Scanned for content indexing)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>File Integrity & Tamper Proof</strong></td>
+                      <td className="lp-td-destorage"><Check size={16} /> Cryptographic SHA-256 + IPFS CID</td>
+                      <td className="lp-td-threat">Mutable Central Database</td>
+                      <td className="lp-td-threat">Mutable Central Database</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Account Ban & File Loss Risk</strong></td>
+                      <td className="lp-td-destorage"><Check size={16} /> 0% (Immutable Base L2 + IPFS)</td>
+                      <td className="lp-td-threat">High (Account suspension locks files)</td>
+                      <td className="lp-td-threat">High (Account suspension locks files)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         </section>
 
