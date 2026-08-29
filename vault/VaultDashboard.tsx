@@ -1300,11 +1300,16 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
             {/* File Meta Pill Bar */}
             <div className="vd-preview-meta-pill">
-              <span className="vd-preview-filename">{previewItem.file.name}</span>
-              <span className="vd-preview-filesize">{formatFileSize(previewItem.file.size)}</span>
-              <span className="vd-preview-cipher-tag">
-                {previewItem.file.isKeyWrapped ? 'AES-256-GCM Envelope' : 'AES-256-GCM'}
-              </span>
+              <div className="vd-preview-meta-left">
+                <Icon icon="iconamoon:file-document-bold" width={18} height={18} color="#0284c7" className="vd-preview-meta-icon" />
+                <span className="vd-preview-filename" title={previewItem.file.name}>{previewItem.file.name}</span>
+              </div>
+              <div className="vd-preview-meta-right">
+                <span className="vd-preview-filesize">{formatFileSize(previewItem.file.size)}</span>
+                <span className="vd-preview-cipher-tag">
+                  {previewItem.file.isKeyWrapped ? 'AES-256-GCM Envelope' : 'AES-256-GCM'}
+                </span>
+              </div>
             </div>
 
             <div className="vd-preview-stage">

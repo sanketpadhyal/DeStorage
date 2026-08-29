@@ -1397,38 +1397,76 @@
 .vd-preview-meta-pill {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(2, 132, 199, 0.18);
-  border-radius: 9999px;
-  padding: 6px 14px;
+  justify-content: space-between;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 8px 14px;
   margin-bottom: 16px;
-  font-size: 12px;
-  font-weight: 700;
-  width: fit-content;
-  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.vd-preview-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.vd-preview-meta-icon {
+  flex-shrink: 0;
 }
 
 .vd-preview-filename {
   color: #0b2447;
-  max-width: 240px;
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
+}
+
+.vd-preview-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .vd-preview-filesize {
-  color: #64748b;
-  font-size: 11.5px;
+  color: #475569;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
 }
 
 .vd-preview-cipher-tag {
-  background: rgba(2, 132, 199, 0.12);
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   color: #0284c7;
-  padding: 2px 7px;
-  border-radius: 9999px;
-  font-size: 10.5px;
-  letter-spacing: 0.03em;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.2;
 }
 
 .vd-preview-stage {
@@ -1855,6 +1893,19 @@
   .vd-preview-modal-card {
     padding: 20px 18px 20px;
     max-width: 100%;
+  }
+  .vd-preview-meta-pill {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+  .vd-preview-meta-left {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+  .vd-preview-meta-right {
+    width: 100%;
+    justify-content: space-between;
   }
   .vd-preview-stage {
     min-height: 180px;
