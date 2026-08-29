@@ -1321,12 +1321,14 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 </div>
 
                 <div className="vd-breadcrumb-right">
-                  <span className="vd-folder-stat-pill">
-                    {currentFolderFiles.length} {currentFolderFiles.length === 1 ? 'file' : 'files'}
-                  </span>
-                  <span className="vd-folder-stat-pill">
-                    {formatFileSize(currentFolderFiles.reduce((acc, f) => acc + (f.size || 0), 0))}
-                  </span>
+                  <div className="vd-breadcrumb-stats-group">
+                    <span className="vd-folder-stat-pill">
+                      {currentFolderFiles.length} {currentFolderFiles.length === 1 ? 'file' : 'files'}
+                    </span>
+                    <span className="vd-folder-stat-pill">
+                      {formatFileSize(currentFolderFiles.reduce((acc, f) => acc + (f.size || 0), 0))}
+                    </span>
+                  </div>
                   <button 
                     type="button" 
                     className="vd-folder-delete-action-btn"
@@ -1334,7 +1336,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                     title="Delete Entire Folder"
                   >
                     <Icon icon="iconamoon:trash-bold" width={15} height={15} />
-                    <span>Delete Folder</span>
+                    <span className="vd-folder-del-full">Delete Folder</span>
+                    <span className="vd-folder-del-short">Delete</span>
                   </button>
                 </div>
               </div>

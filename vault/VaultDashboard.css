@@ -1069,10 +1069,20 @@
 
 .vd-filter-tabs {
   display: flex;
+  align-items: center;
   background: #f1f5f9;
   border-radius: 9999px;
   padding: 3px;
   border: 1px solid rgba(2, 132, 199, 0.1);
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-wrap: nowrap;
+}
+
+.vd-filter-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .vd-filter-btn {
@@ -1086,6 +1096,8 @@
   cursor: pointer;
   font-family: var(--font-sans);
   transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .vd-filter-btn.active {
@@ -1216,8 +1228,15 @@
 .vd-breadcrumb-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
+}
+
+.vd-breadcrumb-stats-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .vd-folder-stat-pill {
@@ -1247,11 +1266,20 @@
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .vd-folder-delete-action-btn:hover {
   background: #fecaca;
   color: #b91c1c;
+}
+
+.vd-folder-del-full {
+  display: inline;
+}
+
+.vd-folder-del-short {
+  display: none;
 }
 
 /* Folders List (Full-Width Row Cards) */
@@ -2511,12 +2539,30 @@
     width: 100%;
     flex-direction: column;
     align-items: flex-start;
+    gap: 8px;
   }
   .vd-search-box {
     width: 100%;
   }
   .vd-search-box input {
     width: 100%;
+  }
+  .vd-filter-tabs {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    padding: 3px;
+    gap: 3px;
+    justify-content: flex-start;
+    border-radius: 9999px;
+  }
+  .vd-filter-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
   .vd-folder-grid {
     grid-template-columns: 1fr;
@@ -2537,15 +2583,46 @@
   }
   .vd-folder-breadcrumb-bar {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 10px;
+    padding: 10px 12px;
+    border-radius: 14px;
   }
   .vd-breadcrumb-left {
     width: 100%;
+    gap: 8px;
+  }
+  .vd-breadcrumb-folder-name {
+    font-size: 13.5px;
+    max-width: 180px;
   }
   .vd-breadcrumb-right {
     width: 100%;
     justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+  .vd-breadcrumb-stats-group {
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+  .vd-folder-stat-pill {
+    padding: 3px 7px;
+    font-size: 10.5px;
+    border-radius: 6px;
+  }
+  .vd-folder-delete-action-btn {
+    padding: 4px 10px;
+    font-size: 11.5px;
+    border-radius: 8px;
+    gap: 4px;
+  }
+  .vd-folder-del-full {
+    display: none;
+  }
+  .vd-folder-del-short {
+    display: inline;
   }
 
   /* FILE CARD MOBILE OPTIMIZATION */
