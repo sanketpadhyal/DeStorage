@@ -234,31 +234,23 @@ section {
 }
 
 /* ANIMATED MOBILE DROPDOWN PANEL - HYPER SMOOTH 60/120 FPS */
+/* Hidden on desktop, only shown inside @media (max-width: 767px) */
 .lp-mobile-panel {
-  display: grid;
-  grid-template-rows: 0fr;
+  display: none;
   overflow: hidden;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px);
-  transition: 
-    grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
-    opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
-    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   background: transparent !important;
   border: none !important;
-  border-bottom-left-radius: 28px !important;
-  border-bottom-right-radius: 28px !important;
-  will-change: grid-template-rows, opacity, transform;
+  border-bottom-left-radius: 24px !important;
+  border-bottom-right-radius: 24px !important;
 }
 
 .lp-mobile-panel.open {
-  grid-template-rows: 1fr;
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-  max-height: calc(100dvh - 76px);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -1218,6 +1210,21 @@ section {
   }
   .lp-mobile-menu-toggle {
     display: flex;
+  }
+  /* Enable animated mobile dropdown inside mobile breakpoint */
+  .lp-mobile-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: 
+      grid-template-rows 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
+      opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+      transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: grid-template-rows, opacity, transform;
+  }
+  .lp-mobile-panel.open {
+    grid-template-rows: 1fr;
+    max-height: calc(100dvh - 54px);
   }
   .lp-hero-grid, .lp-features-grid, .lp-sandbox-layout {
     grid-template-columns: 1fr;
