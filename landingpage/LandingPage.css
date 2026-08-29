@@ -1238,16 +1238,21 @@ section {
   }
 }
 
+.lp-sandbox-section {
+  width: 100%;
+  padding: 80px 0;
+  background: #ffffff;
+  position: relative;
+}
+
 .lp-sandbox-card {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(2, 132, 199, 0.18);
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
   border-radius: 28px;
   padding: 32px 36px 36px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 60px -15px rgba(11, 36, 71, 0.08), 0 0 1px rgba(2, 132, 199, 0.2);
+  box-shadow: 0 16px 48px rgba(11, 36, 71, 0.06);
 }
 
 .lp-sandbox-accent-bar {
