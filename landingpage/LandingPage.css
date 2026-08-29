@@ -40,7 +40,7 @@
 /* Page Content Wrapper with top padding for fixed navbar */
 .lp-main-content {
   width: 100%;
-  padding-top: 76px;
+  padding-top: 58px;
   display: flex;
   flex-direction: column;
 }
@@ -122,9 +122,9 @@ section {
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  background: rgba(229, 243, 249, 0.78) !important;
-  backdrop-filter: blur(28px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+  background: rgba(229, 243, 249, 0.82) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   border-bottom: none !important;
   z-index: 999999 !important;
   box-shadow: none !important;
@@ -145,20 +145,20 @@ section {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 76px;
+  height: 58px;
 }
 
 /* Brand Logo Text - Bold Geometric Navy with Cyan Accent */
 .lp-brand-btn {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
   font-family: var(--font-sans);
-  font-size: 26px;
+  font-size: 21px;
   font-weight: 800;
   color: #0b2447;
   letter-spacing: -0.03em;
@@ -169,16 +169,16 @@ section {
 }
 
 .lp-brand-btn img {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   object-fit: cover;
 }
 
 .lp-nav-links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   list-style: none;
 }
 
@@ -186,11 +186,11 @@ section {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   color: #334155;
   font-family: var(--font-sans);
-  padding: 8px 16px;
+  padding: 6px 14px;
   border-radius: 9999px;
   transition: all 0.18s ease;
 }
@@ -204,7 +204,13 @@ section {
 .lp-nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+.lp-nav-actions .lp-btn-black {
+  padding: 0 16px;
+  height: 36px;
+  font-size: 13px;
 }
 
 /* MOBILE HAMBURGER BUTTON */
