@@ -208,6 +208,7 @@ export async function uploadToIpfs(
 
 /**
  * Automatically recover all user files from Pinata IPFS Cloud by wallet address
+ * Queries Pinata directly by owner wallet address using keyvalue metadata filters.
  */
 export async function fetchWalletFilesFromPinata(
   walletAddress: string,
@@ -223,20 +224,33 @@ export async function fetchWalletFilesFromPinata(
 
   if (!activeJwt || !walletAddress) return [];
 
+  const targetOwner = walletAddress.toLowerCase();
+  const recoveredFiles: any[] = [];
+
   try {
-    const res = await fetch('https://api.pinata.cloud/data/pinList?status=pinned&pageLimit=100', {
+    // Query Pinata directly by owner + app keyvalues at API level (no client-side limit issues)
+    const params = new URLSearchParams({
+      status: 'pinned',
+      pageLimit: '1000',
+      'metadata[keyvalues][app][value]': 'DeStorage',
+      'metadata[keyvalues][app][op]': 'eq',
+      'metadata[keyvalues][owner][value]': targetOwner,
+      'metadata[keyvalues][owner][op]': 'eq',
+    });
+
+    const res = await fetch(`https://api.pinata.cloud/data/pinList?${params.toString()}`, {
       headers: {
         Authorization: `Bearer ${activeJwt}`,
       },
     });
 
-    if (!res.ok) return [];
+    if (!res.ok) {
+      console.warn('[DeStorage] Pinata pinList query failed:', res.status, res.statusText);
+      return [];
+    }
 
     const data = await res.json();
     if (!data.rows || data.rows.length === 0) return [];
-
-    const targetOwner = walletAddress.toLowerCase();
-    const recoveredFiles: any[] = [];
 
     for (const row of data.rows) {
       const kv = row.metadata?.keyvalues;
@@ -295,7 +309,7 @@ export async function fetchWalletFilesFromPinata(
 
     return recoveredFiles;
   } catch (err) {
-    console.warn('Could not recover files from Pinata:', err);
+    console.warn('[DeStorage] Could not recover files from Pinata:', err);
     return [];
   }
 }

@@ -308,20 +308,28 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         setIsFetchingCloudFiles(true);
       }
 
-      // Automatically query Pinata IPFS Cloud to restore files across cache clears and new devices
+      // Always query Pinata Cloud — this is the authoritative source across all devices
       import('../ipfs/ipfsService').then(({ fetchWalletFilesFromPinata }) => {
         fetchWalletFilesFromPinata(address, undefined, masterKey).then((cloudFiles) => {
           if (cloudFiles && cloudFiles.length > 0) {
             setFiles(prev => {
-              const existingCids = new Set(prev.map(f => f.ipfsCid));
-              const newFiles = cloudFiles.filter(f => !existingCids.has(f.ipfsCid));
-              if (newFiles.length > 0) {
-                const merged = [...newFiles, ...prev];
-                localStorage.setItem(walletKey, JSON.stringify(merged));
-                return merged;
-              }
-              return prev;
+              // Build a map of existing files by CID to preserve any local-only state
+              const existingByIpfsCid = new Map(prev.map(f => [f.ipfsCid, f]));
+              // Merge: cloud files are authoritative for metadata; preserve local encryptedBuffer if present
+              const merged = cloudFiles.map(cf => {
+                const local = existingByIpfsCid.get(cf.ipfsCid);
+                return local ? { ...cf, encryptedBuffer: local.encryptedBuffer } : cf;
+              });
+              // Add any local-only files not yet in Pinata (just uploaded, mid-sync)
+              const cloudCids = new Set(cloudFiles.map(f => f.ipfsCid));
+              const localOnly = prev.filter(f => !cloudCids.has(f.ipfsCid));
+              const final = [...merged, ...localOnly];
+              localStorage.setItem(walletKey, JSON.stringify(final.map(f => ({ ...f, encryptedBuffer: undefined }))));
+              return final;
             });
+          } else if (!hasLocal) {
+            // Cloud returned nothing and no local cache — genuinely empty vault
+            setFiles([]);
           }
         }).catch(() => {}).finally(() => {
           setIsFetchingCloudFiles(false);
