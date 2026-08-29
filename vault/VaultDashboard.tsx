@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import './VaultDashboard.css';
 import { safeImages } from '../etc/safeimages';
 import { useWeb3 } from '../web3/Web3Context';
@@ -705,11 +705,12 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
 
       const delKey = `destorage_deleted_${address.toLowerCase()}`;
       try {
-        const delCids = JSON.parse(localStorage.getItem(delKey) || '[]');
+        const existingDel: string[] = JSON.parse(localStorage.getItem(delKey) || '[]');
+        const delSet = new Set<string>(existingDel);
         for (const f of toDelete) {
-          if (!delCids.includes(f.ipfsCid)) delCids.push(f.ipfsCid);
+          if (f.ipfsCid) delSet.add(f.ipfsCid);
         }
-        localStorage.setItem(delKey, JSON.stringify(delCids));
+        localStorage.setItem(delKey, JSON.stringify(Array.from(delSet)));
       } catch (e) {}
     }
 
@@ -746,19 +747,23 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
     return <Icon icon="iconamoon:file-bold" width={22} height={22} color="#475569" />;
   };
 
-  // Filter files
-  const filteredFiles = files.filter(f => {
-    const matchesSearch = f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          f.ipfsCid.toLowerCase().includes(searchQuery.toLowerCase());
-    if (!matchesSearch) return false;
+  // Filter files with O(n) memoized evaluation
+  const filteredFiles = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return files.filter(f => {
+      if (q && !f.name.toLowerCase().includes(q) && !f.ipfsCid.toLowerCase().includes(q)) {
+        return false;
+      }
+      if (selectedFilter === 'photos') return f.mimeType.startsWith('image/');
+      if (selectedFilter === 'docs') return f.mimeType.includes('pdf') || f.mimeType.includes('text') || f.mimeType.includes('document');
+      if (selectedFilter === 'media') return f.mimeType.startsWith('video/') || f.mimeType.startsWith('audio/');
+      return true;
+    });
+  }, [files, searchQuery, selectedFilter]);
 
-    if (selectedFilter === 'photos') return f.mimeType.startsWith('image/');
-    if (selectedFilter === 'docs') return f.mimeType.includes('pdf') || f.mimeType.includes('text') || f.mimeType.includes('document');
-    if (selectedFilter === 'media') return f.mimeType.startsWith('video/') || f.mimeType.startsWith('audio/');
-    return true;
-  });
-
-  const totalStorageBytes = files.reduce((acc, curr) => acc + curr.size, 0);
+  const totalStorageBytes = useMemo(() => {
+    return files.reduce((acc, curr) => acc + (curr.size || 0), 0);
+  }, [files]);
 
   return (
     <div className="vd-root">

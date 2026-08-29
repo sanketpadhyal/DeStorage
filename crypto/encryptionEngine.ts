@@ -13,20 +13,27 @@ export interface EncryptedFilePayload {
   mimeType: string;
 }
 
-// Convert ArrayBuffer to Hex String
+/**
+ * Convert ArrayBuffer or Uint8Array to Hex string in O(n)
+ */
 export function bufToHex(buffer: ArrayBuffer | Uint8Array): string {
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
-  return Array.from(bytes)
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
+  let hex = '';
+  for (let i = 0; i < bytes.length; i++) {
+    hex += bytes[i].toString(16).padStart(2, '0');
+  }
+  return hex;
 }
 
-// Convert Hex String to Uint8Array
+/**
+ * Convert Hex string to Uint8Array in O(n)
+ */
 export function hexToBytes(hex: string): Uint8Array {
   const cleanHex = hex.startsWith('0x') ? hex.slice(2) : hex;
-  const bytes = new Uint8Array(cleanHex.length / 2);
-  for (let i = 0; i < cleanHex.length; i += 2) {
-    bytes[i / 2] = parseInt(cleanHex.substr(i, 2), 16);
+  const len = cleanHex.length;
+  const bytes = new Uint8Array(len >> 1);
+  for (let i = 0; i < len; i += 2) {
+    bytes[i >> 1] = parseInt(cleanHex.slice(i, i + 2), 16);
   }
   return bytes;
 }

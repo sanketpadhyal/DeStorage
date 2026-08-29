@@ -32,6 +32,8 @@ const GithubIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
   </svg>
 );
 
+import { bufToHex } from '../crypto/encryptionEngine';
+
 export interface LandingPageProps {
   onLaunchApp?: () => void;
 }
@@ -78,7 +80,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
     const img = new window.Image();
     img.src = safeImages.heroIllustration;
     img.onload = () => {
-      // Once loaded, convert to base64 Data URL and persist in local storage for instant future visits
       fetch(safeImages.heroIllustration)
         .then(res => res.blob())
         .then(blob => {
@@ -113,7 +114,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
     }
   }, []);
 
-  // Premium Scroll-Reveal IntersectionObserver
+  // Scroll-Reveal IntersectionObserver
   useEffect(() => {
     const observerCallback: IntersectionObserverCallback = (entries, observer) => {
       entries.forEach(entry => {
@@ -137,8 +138,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
     };
   }, []);
 
-  // Real-time client-side Web Crypto AES-256-GCM encryption
+  // Real-time client-side Web Crypto AES-256-GCM encryption in O(n)
   useEffect(() => {
+    let isCancelled = false;
+
     async function runLiveEncryption() {
       try {
         if (!window.crypto || !window.crypto.subtle) return;
@@ -153,20 +156,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
         const encodedText = new TextEncoder().encode(demoInput || ' ');
 
         const encryptedBuf = await window.crypto.subtle.encrypt(
-          { name: 'AES-GCM', iv: iv },
+          { name: 'AES-GCM', iv },
           key,
           encodedText
         );
 
+        if (isCancelled) return;
+
         const hashBuf = await window.crypto.subtle.digest('SHA-256', encryptedBuf);
-        const hashArray = Array.from(new Uint8Array(hashBuf));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-        const cipherArray = Array.from(new Uint8Array(encryptedBuf));
-        const ivArray = Array.from(iv);
-
-        const ivHex = ivArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        const cipherHex = cipherArray.slice(0, 24).map(b => b.toString(16).padStart(2, '0')).join('') + '...';
+        const hashHex = bufToHex(hashBuf);
+        const ivHex = bufToHex(iv);
+        const cipherHex = bufToHex(encryptedBuf).slice(0, 24) + '...';
 
         setDemoOutput({
           iv: `0x${ivHex}`,
@@ -180,6 +180,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
     }
 
     runLiveEncryption();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [demoInput]);
 
   const scrollToSection = (sectionId: string) => {
