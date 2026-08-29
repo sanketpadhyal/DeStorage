@@ -2122,17 +2122,9 @@
   border-radius: 16px;
   padding: 12px 16px;
   cursor: pointer;
-  transition: all 0.18s ease;
   width: 100%;
   text-align: left;
   box-shadow: 0 2px 10px rgba(11, 36, 71, 0.04);
-}
-
-.vd-wallet-option-btn:hover {
-  background: #ffffff;
-  border-color: #0284c7;
-  transform: scale(1.02);
-  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.14);
 }
 
 .vd-wallet-option-left {
