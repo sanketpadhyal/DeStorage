@@ -515,21 +515,21 @@ section {
 /* 2. RICH HERO SECTION */
 .lp-hero-section {
   width: 100%;
-  padding: 60px 0 80px;
+  padding: 20px 0 50px;
 }
 
 .lp-hero-grid {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   align-items: center;
-  gap: 48px;
+  gap: 40px;
   width: 100%;
 }
 
 .lp-hero-left {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 16px;
   text-align: left;
 }
 
