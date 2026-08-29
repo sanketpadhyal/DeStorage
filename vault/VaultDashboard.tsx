@@ -841,7 +841,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
           <div className="vd-stats-grid">
             <div className="vd-stat-card vd-card-blue">
               <div className="vd-stat-icon vd-icon-blue">
-                <Icon icon="iconamoon:shield-yes-bold" width={22} height={22} />
+                <Icon icon="iconamoon:lock-bold" width={22} height={22} />
               </div>
               <div className="vd-stat-info">
                 <span className="vd-stat-label">Encrypted Files</span>
