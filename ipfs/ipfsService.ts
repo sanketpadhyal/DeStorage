@@ -228,17 +228,13 @@ export async function fetchWalletFilesFromPinata(
   const recoveredFiles: any[] = [];
 
   try {
-    // Query Pinata directly by owner + app keyvalues at API level (no client-side limit issues)
-    const params = new URLSearchParams({
-      status: 'pinned',
-      pageLimit: '1000',
-      'metadata[keyvalues][app][value]': 'DeStorage',
-      'metadata[keyvalues][app][op]': 'eq',
-      'metadata[keyvalues][owner][value]': targetOwner,
-      'metadata[keyvalues][owner][op]': 'eq',
-    });
+    // Query Pinata directly by owner + app keyvalues at API level
+    // NOTE: Raw brackets required — URLSearchParams would encode them as %5B%5D which Pinata ignores
+    const url = `https://api.pinata.cloud/data/pinList?status=pinned&pageLimit=1000` +
+      `&metadata[keyvalues][app][value]=DeStorage&metadata[keyvalues][app][op]=eq` +
+      `&metadata[keyvalues][owner][value]=${encodeURIComponent(targetOwner)}&metadata[keyvalues][owner][op]=eq`;
 
-    const res = await fetch(`https://api.pinata.cloud/data/pinList?${params.toString()}`, {
+    const res = await fetch(url, {
       headers: {
         Authorization: `Bearer ${activeJwt}`,
       },

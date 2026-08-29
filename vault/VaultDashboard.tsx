@@ -235,6 +235,8 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  // Guard: prevent persist effect from running with initial empty state and wiping localStorage
+  const filesLoadedRef = useRef<boolean>(false);
 
   const [isCloudSyncing, setIsCloudSyncing] = useState<boolean>(false);
   const [cloudSyncStatus, setCloudSyncStatus] = useState<string>('');
@@ -299,6 +301,7 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
           if (Array.isArray(parsed) && parsed.length > 0) {
             setFiles(parsed);
             hasLocal = true;
+            filesLoadedRef.current = true;
           }
         } catch (e) {}
       }
@@ -308,10 +311,11 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
         setIsFetchingCloudFiles(true);
       }
 
-      // Always query Pinata Cloud — this is the authoritative source across all devices
+      // Always query Pinata Cloud — authoritative source across all devices
       import('../ipfs/ipfsService').then(({ fetchWalletFilesFromPinata }) => {
         fetchWalletFilesFromPinata(address, undefined, masterKey).then((cloudFiles) => {
           if (cloudFiles && cloudFiles.length > 0) {
+            filesLoadedRef.current = true;
             setFiles(prev => {
               // Build a map of existing files by CID to preserve any local-only state
               const existingByIpfsCid = new Map(prev.map(f => [f.ipfsCid, f]));
@@ -320,30 +324,34 @@ export const VaultDashboard: React.FC<VaultDashboardProps> = ({ onBackToHome }) 
                 const local = existingByIpfsCid.get(cf.ipfsCid);
                 return local ? { ...cf, encryptedBuffer: local.encryptedBuffer } : cf;
               });
-              // Add any local-only files not yet in Pinata (just uploaded, mid-sync)
+              // Preserve local-only files not yet in Pinata (just uploaded, mid-sync)
               const cloudCids = new Set(cloudFiles.map(f => f.ipfsCid));
               const localOnly = prev.filter(f => !cloudCids.has(f.ipfsCid));
               const final = [...merged, ...localOnly];
               localStorage.setItem(walletKey, JSON.stringify(final.map(f => ({ ...f, encryptedBuffer: undefined }))));
               return final;
             });
-          } else if (!hasLocal) {
-            // Cloud returned nothing and no local cache — genuinely empty vault
-            setFiles([]);
           }
+          // Never call setFiles([]) from cloud sync — if Pinata returns nothing,
+          // keep whatever files are already in state (local cache or in-progress uploads).
+          // An empty vault is already the initial default state.
         }).catch(() => {}).finally(() => {
           setIsFetchingCloudFiles(false);
+          filesLoadedRef.current = true;
         });
       });
     } else {
       // Wallet disconnected: clear active files for Zero-Knowledge privacy
+      filesLoadedRef.current = false;
       setFiles([]);
       setIsFetchingCloudFiles(false);
     }
   }, [isConnected, address, masterKey]);
 
   // Persist files strictly scoped to active wallet & background sync
+  // Guard: only run after files have been loaded from localStorage or cloud — never on initial empty mount
   useEffect(() => {
+    if (!filesLoadedRef.current) return;
     if (isConnected && address) {
       const walletKey = `destorage_vault_files_${address.toLowerCase()}`;
       const metadataOnly = files.map(f => ({
