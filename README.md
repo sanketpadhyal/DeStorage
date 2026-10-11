@@ -5,7 +5,7 @@
 <h1 align="center">DeStorage</h1>
 
 <p align="center">
-  <strong>Sovereign Web3 & Decentralized Zero-Knowledge Storage Platform</strong><br>
+  <strong>Sovereign Web3 & Decentralized Zero-Knowledge Storage Platform.</strong><br>
   <em>Client-Side AES-256-GCM Encryption • PBKDF2 Master Key Wrapping • Hierarchical Folder Explorer • Decentralized IPFS Storage • Base Sepolia Blockchain Anchoring.</em>
 </p>
 
